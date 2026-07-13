@@ -4,12 +4,55 @@
 Kuwantima is an open-source Avalonia UI glass-glow design system library.
 Single entry point: `<StyleInclude Source="avares://Kuwantima/Theme/KuwantimaPrimaryTheme.axaml"/>`
 
+## Who this is actually for
+Checked 2026-07-13: NuGet shows ~245 downloads (mirrors and scanners — noise), GitHub shows 0 stars,
+0 watchers, 0 views, and **1 fork**. The `docs/` handouts are step-by-step instructions for forking
+this repo. That one fork is almost certainly the person the teacher guide was written for.
+
+So Kuwantima's real user is **a student learning to fork, clone, edit and push** — not a NuGet
+consumer integrating a design system. Prioritise accordingly:
+- **The IDE previewer working is a first-class feature**, not a nicety. A beginner who opens a style
+  file and sees an error has no way to know it isn't their fault. That is where a first-time
+  contributor quits.
+- Readability beats cleverness. Someone is reading this code *to learn from it*.
+- The handouts are as much the product as the package is.
+- API/versioning polish matters least. It is still worth doing right (see below) — just don't let it
+  outrank the two above.
+
 ## Version Management
 - **Source of truth**: `<Version>` in `Kuwantima/Kuwantima.csproj`
 - Sandbox UI reads version from the Kuwantima assembly at runtime (`MainWindowViewModel.KuwantimaVersion`)
 - Header bar and Documents page both bind to this property — no hardcoded version strings
 - `KuwantimaPrimaryTheme.axaml` header has a manual VERSION HISTORY changelog — update it when bumping version
 - Git tags should match: `git tag v{version}`
+
+### What earns a major version
+Version numbers describe the **consumer's migration burden, not the maintainer's effort**. A big
+session is not a major release.
+
+MAJOR (2.0.0) — the consumer must edit something to keep working:
+- removing or renaming a class selector (`Kuwantima`, `KuwantimaGlass`, `Pill`, `Accent`, …)
+- removing or renaming a theme resource key
+- changing the `StyleInclude` entry point
+- dropping a control, or a deliberate redesign of the colour story
+- **raising `<TargetFramework>`** — this makes the package *uninstallable* for consumers on the old
+  TFM, which is worse than any visual change
+
+MINOR (1.x.0) — new controls/variants, bug fixes, visible behaviour corrections, dependency minors.
+Fixing a bug is not a breaking change even when it is visible.
+
+### TargetFramework: stay on `net10.0`. Deliberately.
+Do not "upgrade" to .NET 11 when it ships. Reasons, in order:
+1. **Zero benefit.** The library has no C#. A framework bump buys language features, runtime perf and
+   BCL APIs — all of which need code to use. The TFM here is nearly vestigial.
+2. **`net10.0` packages already run inside `net11.0` apps.** Forward compatibility means you lose no
+   reach by staying. Raising the TFM only ever *subtracts* consumers.
+3. .NET 10 is **LTS**; .NET 11 is **STS** (18 months). A library should floor on LTS.
+4. Multi-targeting `net10.0;net11.0` is NOT the clever workaround — it produces two identical
+   outputs for a package with no code. Don't.
+
+Revisit when .NET 10 leaves support (~2028), not before. If you want to play with a new .NET, move
+**`Kuwantima.Sandbox`** — it has its own TFM and is never published.
 
 ## Completeness Invariants
 Items 2, 3, 4, and 8 below are **enforced by `Kuwantima.Tests`** — you cannot forget them, the
@@ -77,10 +120,35 @@ These were replaced by Fluent equivalents. Use the Fluent key instead:
 - **System accent**: #0078D4 (Fluent blue) — filled accent backgrounds
 - Do not introduce colors outside this story without intention
 
+## Avalonia Gotchas
+Four framework behaviours that are load-bearing for style authoring here. All four were **verified
+headlessly** rather than assumed, because reasoning got at least two of them backwards.
+
+- **Setters resolve by DOCUMENT ORDER, not selector specificity.** Unlike CSS. A later, *less*
+  specific selector overrides an earlier, more specific one. This is why the GridSplitter's
+  `:disabled` block sits at the bottom of its file — one plain `GridSplitter.Kuwantima:disabled`
+  beats the resize cursor set by all six variant base styles above it. Move it up and it stops
+  working, silently, while the markup still parses.
+- **`:pointerover` does NOT fire on a disabled control** (unlike WPF's `IsMouseOver`). So hover and
+  press styling is automatically dead when disabled — no need to neutralise it. It also means
+  `Opacity` is often the *only* signal that a control is inert.
+- **`:disabled` tracks `IsEffectivelyEnabled`, which inherits.** A control inside a disabled
+  ancestor gets `:disabled` even though its own `IsEnabled` is still `true`. This is why disabled
+  styling works when a consumer disables a whole pane — the realistic usage.
+- **`.axaml` is compiled to IL and the raw markup is STRIPPED from the assembly.** The built
+  Kuwantima package exposes exactly one avares asset: `!AvaloniaResourceXamlInfo`. You cannot
+  `AssetLoader.Open()` a style file back at runtime. `Kuwantima.Tests` works around this by linking
+  the sources in as `<EmbeddedResource>`.
+
+When you next have a question of this kind, **do not reason about it — probe it.** A throwaway
+`[AvaloniaFact]` answers it in under a minute, and the harness already exists.
+
 ## Build Notes
 - Running sandbox locks DLLs — close app before full rebuild
 - `dotnet build --no-dependencies` + grep `error CS` to verify code when DLL locked
 - `dotnet pack Kuwantima/Kuwantima.csproj -c Release` to build NuGet package
+- `Avalonia.Headless.XUnit` is built against **xunit v3**. The v2 `xunit` package that
+  `dotnet new xunit` scaffolds collides with it (`MemberDataAttribute` becomes ambiguous, CS0433).
 
 ## Handouts (`docs/`)
 Teaching material, distributed as standalone files — copied to USB, printed, emailed
