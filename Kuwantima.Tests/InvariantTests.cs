@@ -1,6 +1,9 @@
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using Avalonia.Controls;
 using Avalonia.Headless.XUnit;
+using Avalonia.Input;
+using Avalonia.Threading;
 
 namespace Kuwantima.Tests;
 
@@ -45,8 +48,19 @@ public class InvariantTests
     /// <summary>
     /// What each style file is, and which invariants apply to it. A null exemption means the
     /// invariant is REQUIRED; a non-null one is the argument for why it does not apply.
+    ///
+    /// <para><see cref="ForegroundPinExemption"/> exists because the disabled invariant is really
+    /// three claims — pin Foreground, pin Cursor="Arrow", pin Opacity — and they do not stand or
+    /// fall together. A control can have no text to double-dim while still very much needing the
+    /// cursor and opacity pins. Collapsing them into one all-or-nothing exemption is how the
+    /// GridSplitter originally escaped the invariant on the strength of an argument that was only
+    /// true about Foreground.</para>
     /// </summary>
-    private sealed record Subject(string Control, string? CursorExemption, string? DisabledExemption);
+    private sealed record Subject(
+        string Control,
+        string? CursorExemption,
+        string? DisabledExemption,
+        string? ForegroundPinExemption = null);
 
     private static readonly Dictionary<string, Subject> Subjects = new(StringComparer.Ordinal)
     {
@@ -76,13 +90,20 @@ public class InvariantTests
                 "A drag-to-resize handle must telegraph resizability, not clickability: it correctly sets "
                 + "SizeWestEast / SizeNorthSouth. That exemption is only honest if the resize cursor is "
                 + "really there, so it is checked instead by GridSplitter_sets_a_resize_cursor_on_every_variant.",
-            DisabledExemption:
-                "The pin exists to stop Fluent dimming TEXT that Kuwantima has already dimmed via Opacity. A "
-                + "GridSplitter renders no text: its rails, pill and chevrons are all Background-driven, so "
-                + "nothing reaches the screen through Foreground and the double-dimming failure mode cannot "
-                + "occur. CONCEDED: the file declares no :disabled block at all, so a disabled splitter would "
-                + "keep its resize cursor and full opacity. That is accepted because nothing in the library or "
-                + "sandbox ever disables a splitter — revisit this exemption the moment something does."),
+            // NOT exempt from the disabled invariant. It was, briefly, on the argument that a splitter
+            // renders no text so there is nothing to double-dim. True — and true only of the Foreground
+            // clause, which was then used to excuse the cursor and opacity clauses too. Those matter MORE
+            // here than anywhere else in the library: a splitter has no label, no glyph, no content, so the
+            // cursor and the dimming ARE its entire affordance. Kuwantima is a published package, so
+            // "nothing in this repo disables a splitter" is a fact about us, not about our consumers.
+            DisabledExemption: null,
+            ForegroundPinExemption:
+                "A GridSplitter renders no text — its rails, pill and chevrons are all Background-driven — so "
+                + "nothing reaches the screen through Foreground and there is nothing for Fluent to dim twice. "
+                + "The Cursor and Opacity pins still apply and are enforced. Note that the hover/press glow "
+                + "needs no neutralising: Avalonia does not set :pointerover on a disabled control (unlike "
+                + "WPF's IsMouseOver), verified headlessly, so those selectors are already dead. That leaves "
+                + "Opacity as the ONLY signal that a splitter is inert."),
 
         ["KuwantimaProgressBar.axaml"] = new(
             "ProgressBar",
@@ -408,8 +429,12 @@ public class InvariantTests
         // three pins inside EVERY :disabled block would fail five compliant files.
         var pinned = disabled.SelectMany(r => r.Setters).ToArray();
 
+        // The three clauses are checked independently. A control may be exempt from the Foreground pin
+        // (nothing renders through it) while still owing the Cursor and Opacity pins — see Subject.
+        var foregroundExempt = Subjects[file].ForegroundPinExemption is not null;
+
         var missing = new List<string>();
-        if (!pinned.Any(s => s.Property == "Foreground")) missing.Add("Foreground");
+        if (!foregroundExempt && !pinned.Any(s => s.Property == "Foreground")) missing.Add("Foreground");
         if (!pinned.Any(s => s.Property == "Cursor" && s.Value == "Arrow")) missing.Add("Cursor=\"Arrow\"");
         if (!pinned.Any(s => s.Property == "Opacity")) missing.Add("Opacity");
 
@@ -510,6 +535,53 @@ public class InvariantTests
             $"{File}: these GridSplitter variants set no resize cursor, so they give the user no signal that they "
             + $"can be dragged: {string.Join(", ", cursorless)}. Each variant's base selector must set Cursor to "
             + "SizeWestEast (vertical splitter) or SizeNorthSouth (horizontal splitter).");
+    }
+
+    /// <summary>
+    /// Every other test in this file reasons about the MARKUP. This one drives a live control, because the
+    /// splitter's disabled block rests on a claim about the framework, not about our XAML: that Avalonia
+    /// resolves competing setters by DOCUMENT ORDER rather than selector specificity, so one late
+    /// "GridSplitter.Kuwantima:disabled" overrides the resize cursor that all six variant base styles set
+    /// above it. If that ever stops being true — an Avalonia upgrade, a reordering of the file — the markup
+    /// still parses, the static tests still pass, and a disabled splitter silently goes back to advertising
+    /// itself as draggable. Only a real control can catch that.
+    /// </summary>
+    [AvaloniaTheory]
+    [InlineData("Kuwantima", "SizeWestEast")]
+    [InlineData("Kuwantima Horizontal", "SizeNorthSouth")]
+    [InlineData("Kuwantima Pill", "SizeNorthSouth")]
+    [InlineData("Kuwantima Pill Vertical", "SizeWestEast")]
+    [InlineData("Kuwantima Arrow", "SizeNorthSouth")]
+    [InlineData("Kuwantima Arrow Vertical", "SizeWestEast")]
+    public void Disabled_splitter_drops_its_resize_cursor_and_dims(string classes, string enabledCursor)
+    {
+        GridSplitter Splitter(bool enabled)
+        {
+            var s = new GridSplitter { IsEnabled = enabled };
+            foreach (var c in classes.Split(' ')) s.Classes.Add(c);
+            return s;
+        }
+
+        var enabledSplitter = Splitter(true);
+        var disabledSplitter = Splitter(false);
+
+        var window = new Window
+        {
+            Content = new StackPanel { Children = { enabledSplitter, disabledSplitter } },
+            Width = 300,
+            Height = 300,
+        };
+        window.Show();
+        Dispatcher.UIThread.RunJobs();
+
+        // Cursor overrides Equals with reference semantics, so compare the resolved name.
+        Assert.Equal(enabledCursor, enabledSplitter.Cursor?.ToString());
+        Assert.Equal(1d, enabledSplitter.Opacity, 3);
+
+        Assert.Equal(
+            new Cursor(StandardCursorType.Arrow).ToString(),
+            disabledSplitter.Cursor?.ToString());
+        Assert.Equal(0.5d, disabledSplitter.Opacity, 3);
     }
 
     // ───────────────────────────────────────────────────────────────────────────────

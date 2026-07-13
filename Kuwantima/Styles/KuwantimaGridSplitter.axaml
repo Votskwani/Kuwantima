@@ -416,4 +416,30 @@
 		<Setter Property="Width" Value="3"/>
 		<Setter Property="Height" Value="50"/>
 	</Style>
+
+	<!-- ═══════════════════════════════════════════════════════════════════════ -->
+	<!-- DISABLED — one selector, every variant                                  -->
+	<!--                                                                          -->
+	<!-- Declared LAST on purpose. Avalonia resolves competing setters by         -->
+	<!-- document order, not selector specificity, so this single selector wins   -->
+	<!-- over the resize cursor that all six variant base styles set above.       -->
+	<!-- Verified against a live control by                                       -->
+	<!-- InvariantTests.Disabled_splitter_drops_its_resize_cursor_and_dims —      -->
+	<!-- move this block higher up the file and that test goes red.               -->
+	<!--                                                                          -->
+	<!-- Opacity is doing the real work. A splitter has no label, glyph or        -->
+	<!-- content — the cursor and the dimming ARE its whole affordance — so       -->
+	<!-- without this, a disabled splitter is indistinguishable from a live one   -->
+	<!-- that simply is not being hovered.                                        -->
+	<!--                                                                          -->
+	<!-- No Foreground pin: nothing renders through Foreground here (rails, pill  -->
+	<!-- and chevrons are Background/Stroke), so there is no text for Fluent to   -->
+	<!-- dim on top of ours. The hover and press glow needs no neutralising       -->
+	<!-- either — Avalonia does not set :pointerover on a disabled control        -->
+	<!-- (unlike WPF's IsMouseOver), so those ~30 selectors never fire.           -->
+	<!-- ═══════════════════════════════════════════════════════════════════════ -->
+	<Style Selector="GridSplitter.Kuwantima:disabled">
+		<Setter Property="Opacity" Value="0.5"/>
+		<Setter Property="Cursor" Value="Arrow"/>
+	</Style>
 </Styles>
