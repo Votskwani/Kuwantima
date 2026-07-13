@@ -23,6 +23,7 @@ When adding or changing controls/features, keep ALL of these in sync:
 6. **Documents page** — add to the controls table in `DocumentsPage.axaml`
 7. **README.md** — add to the Controls table
 8. **Control count** — update count in README intro, `.csproj` Description, and KuwantimaPrimaryTheme header
+9. **Handouts** — if the control is worth teaching, add it to `docs/` (see Handouts below)
 
 ### New Variant Checklist
 1. **Style selectors** — add within the control's existing style file
@@ -30,6 +31,7 @@ When adding or changing controls/features, keep ALL of these in sync:
 3. **Sandbox page** — demo the variant
 4. **Documents page** — add to Variants column in controls table
 5. **README.md** — add to Controls table Variants column and Variant Examples if notable
+6. **Handouts** — if the variant changes what a lesson teaches, revise `docs/` (see Handouts below)
 
 ### New Theme Resource Checklist
 1. **Define in both themes** — Light AND Dark dictionaries in `KuwantimaThemeResources.axaml`
@@ -69,8 +71,24 @@ These were replaced by Fluent equivalents. Use the Fluent key instead:
 - `dotnet build --no-dependencies` + grep `error CS` to verify code when DLL locked
 - `dotnet pack Kuwantima/Kuwantima.csproj -c Release` to build NuGet package
 
+## Handouts (`docs/`)
+Teaching material, distributed as standalone files — copied to USB, printed, emailed
+individually. Not repo-internal docs, and not linked from the README.
+- `01-your-toolkit.html` — lesson 1
+- `02-your-first-project.html` — lesson 2
+- `teacher-guide.html` — instructor companion
+
+Conventions:
+- **Self-contained** — CSS stays inlined in each file even though ~75% is shared between
+  them. A linked stylesheet breaks the moment one handout travels alone. Accept the
+  duplication; if you restyle, edit all three.
+- **Version-agnostic** — no version numbers or control counts in the prose, so they don't
+  go stale on every release. Keep it that way.
+- **Palette** — same story as the library: MidnightBlue on AliceBlue, Inter, 750px column.
+
 ## File Conventions
 - Theme files: `Kuwantima/Theme/`
 - Style files: `Kuwantima/Styles/Kuwantima{Control}.axaml`
 - Sandbox pages: `Kuwantima.Sandbox/Views/Pages/{Name}Page.axaml`
+- Handouts: `docs/*.html`
 - No unit tests — sandbox IS the test harness (visual correctness, not assertion-based)
