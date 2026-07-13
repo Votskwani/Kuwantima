@@ -39,6 +39,25 @@
                       LogicalName="KuwantimaThemeResources.axaml" />
   </ItemGroup>
 
+  <!-- Tier 2 (InvariantTests) parses the shipped style files themselves, for the same reason:
+       the markup does not survive into the assembly, so the source has to be linked in.
+
+       The wildcard is deliberate. A new Kuwantima{Control}.axaml is embedded — and therefore
+       swept into every invariant Theory — the moment it is created. It cannot quietly skip the
+       suite, and InvariantTests.Every_style_file_is_classified fails until someone states, in
+       code, whether the new control is interactive and whether it needs a disabled pin. -->
+  <ItemGroup>
+    <EmbeddedResource Include="..\Kuwantima\Styles\*.axaml"
+                      LogicalName="Styles/%(Filename)%(Extension)" />
+    <EmbeddedResource Include="..\Kuwantima\Theme\KuwantimaPrimaryTheme.axaml"
+                      LogicalName="Theme/KuwantimaPrimaryTheme.axaml" />
+
+    <!-- The two places outside the theme that publish a control count. Both are checked against
+         the number of style files that actually exist. -->
+    <EmbeddedResource Include="..\README.md" LogicalName="README.md" />
+    <EmbeddedResource Include="..\Kuwantima\Kuwantima.csproj" LogicalName="Kuwantima.csproj" />
+  </ItemGroup>
+
   <ItemGroup>
     <Using Include="Xunit" />
   </ItemGroup>
