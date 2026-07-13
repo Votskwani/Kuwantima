@@ -20,6 +20,11 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
+      # Gate the release on the theme-integrity suite. A broken theme, an asymmetric
+      # Light/Dark dictionary, or a control that no longer templates must not reach NuGet.
+      - name: Test
+        run: dotnet test Kuwantima.Tests/Kuwantima.Tests.csproj -c Release
+
       - name: Build
         run: dotnet build Kuwantima/Kuwantima.csproj -c Release
 
