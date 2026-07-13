@@ -181,6 +181,9 @@
 		<!-- Disabled -->
 		<Style Selector="^:disabled">
 			<Setter Property="Opacity" Value="0.5"/>
+			<!-- The Expander header is text. Without this pin, Fluent's disabled brush lands
+			     on top of the Opacity above and the header dims twice. -->
+			<Setter Property="Foreground" Value="{DynamicResource SystemBaseHighColor}"/>
 		</Style>
 
 		<Style Selector="^:disabled /template/ Border#HeaderBorder">

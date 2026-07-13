@@ -19,7 +19,7 @@
                 </StackPanel>
                 <TextBlock Text="A glass-glow design system for Avalonia UI."
                            FontSize="14" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
-                <TextBlock Text="One StyleInclude, 16 styled controls, automatic light/dark theming."
+                <TextBlock Text="One StyleInclude, 15 styled controls, automatic light/dark theming."
                            FontSize="13" Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
             </StackPanel>
 
@@ -215,7 +215,7 @@
                             </StackPanel>
                             <StackPanel Spacing="3" Margin="12,0,0,0">
                                 <TextBlock FontSize="11" Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                           Text="16 styled controls with Kuwantima class-based styling"/>
+                                           Text="15 styled controls with Kuwantima class-based styling"/>
                                 <TextBlock FontSize="11" Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                            Text="Classic variants for CheckBox and RadioButton"/>
                                 <TextBlock FontSize="11" Foreground="{DynamicResource TextFillColorSecondaryBrush}"

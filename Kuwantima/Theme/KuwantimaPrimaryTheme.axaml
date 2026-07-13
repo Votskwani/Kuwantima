@@ -13,7 +13,7 @@
 	         • Removed obsolete BindingPlugins / DataAnnotationsValidationPlugin workaround
 
 	  1.0.0  2025-03-11  Initial release
-	         • 16 styled controls (Button, CheckBox, ComboBox, Expander,
+	         • 15 styled controls (Button, CheckBox, ComboBox, Expander,
 	           GlassBorder, GridSplitter, ListBox, MenuToggleButton,
 	           ProgressBar, RadioButton, Slider, TabControl, TextBox,
 	           ToggleButton, ToolTip) + StreamIcons
@@ -30,7 +30,7 @@
 
 	LOAD ORDER (order matters — later entries can override earlier ones):
 	  1. Merged resources  — icons + KuwantimaThemeResources (custom brushes)
-	  2. Control styles    — Kuwantima-classed templates for 16 controls
+	  2. Control styles    — Kuwantima-classed templates for 15 controls
 	  3. Fluent palette    — ColorPaletteResources that tint the entire Fluent
 	                         base with MidnightBlue / AliceBlue
 	  4. Global defaults   — PathIcon sizing

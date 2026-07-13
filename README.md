@@ -1,7 +1,7 @@
 # Kuwantima
 
 A glass-glow design system for [Avalonia UI](https://avaloniaui.net/).
-One `StyleInclude`, 16 styled controls, automatic light/dark theming.
+One `StyleInclude`, 15 styled controls, automatic light/dark theming.
 
 <!-- TODO: Add screenshot of sandbox (light + dark side-by-side) -->
 

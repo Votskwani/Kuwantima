@@ -9,7 +9,7 @@
     <PackageId>Kuwantima</PackageId>
     <Version>1.1.0</Version>
     <Authors>Cole Larson</Authors>
-    <Description>A glass-glow design system for Avalonia UI. 16 styled controls, automatic light/dark theming, Fluent palette integration.</Description>
+    <Description>A glass-glow design system for Avalonia UI. 15 styled controls, automatic light/dark theming, Fluent palette integration.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageProjectUrl>https://github.com/Votskwani/Kuwantima</PackageProjectUrl>
