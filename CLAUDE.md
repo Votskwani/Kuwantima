@@ -12,18 +12,28 @@ Single entry point: `<StyleInclude Source="avares://Kuwantima/Theme/KuwantimaPri
 - Git tags should match: `git tag v{version}`
 
 ## Completeness Invariants
-When adding or changing controls/features, keep ALL of these in sync:
+Items 2, 3, 4, and 8 below are **enforced by `Kuwantima.Tests`** — you cannot forget them, the
+suite goes red. The rest are still on you. Run `dotnet test` before you commit.
 
 ### New Control Checklist
 1. **Style file** — `Kuwantima/Styles/Kuwantima{Control}.axaml` with `Design.PreviewWith` for both themes
-2. **StyleInclude** — register in `KuwantimaPrimaryTheme.axaml` (section 2: Control Styles)
-3. **Disabled state** — pin Foreground, Cursor="Arrow", Opacity to prevent Fluent double-dimming
-4. **Interactive controls** — set `Cursor="Hand"` on base style
-5. **Sandbox page** — demo the control in the appropriate sandbox page
-6. **Documents page** — add to the controls table in `DocumentsPage.axaml`
-7. **README.md** — add to the Controls table
-8. **Control count** — update count in README intro, `.csproj` Description, and KuwantimaPrimaryTheme header
-9. **Handouts** — if the control is worth teaching, add it to `docs/` (see Handouts below)
+2. **StyleInclude** — register in `KuwantimaPrimaryTheme.axaml` (section 2: Control Styles) — *tested*
+3. **Disabled state** — pin Foreground, Cursor="Arrow", Opacity to prevent Fluent double-dimming — *tested*
+4. **Interactive controls** — set `Cursor="Hand"` on base style — *tested*
+5. **Test subject** — add an entry to the `Subjects` table in `Kuwantima.Tests/InvariantTests.cs`.
+   The suite embeds `Styles/*.axaml` by wildcard, so a new file is swept in automatically and the
+   suite **fails until you classify it** — is it interactive, does it need a disabled pin? If it is
+   exempt from an invariant, write the *reason* in the exemption string. An exemption invented to
+   turn a red test green is a weakening; an exemption the invariant genuinely allows is not.
+6. **Sandbox page** — demo the control in the appropriate sandbox page
+7. **Documents page** — add to the controls table in `DocumentsPage.axaml`
+8. **README.md** — add to the Controls table
+9. **Control count** — update in README intro, `.csproj` Description, and KuwantimaPrimaryTheme
+   header (2 places) — *tested*. **The count is CONTROLS, not style files.** There are 16 style
+   files but only **15 controls**: `KuwantimaStreamIcons.axaml` is a `ResourceDictionary` of icon
+   geometry, registered via `ResourceInclude`, and is not a control. Miscounting it is exactly the
+   off-by-one that shipped in v1.0.0 and survived until the suite caught it.
+10. **Handouts** — if the control is worth teaching, add it to `docs/` (see Handouts below)
 
 ### New Variant Checklist
 1. **Style selectors** — add within the control's existing style file
@@ -90,9 +100,35 @@ Conventions:
   in the file.
 - **Palette** — same story as the library: MidnightBlue on AliceBlue, Inter, 750px column.
 
+## Testing (`Kuwantima.Tests`)
+`dotnet test Kuwantima.Tests/Kuwantima.Tests.csproj` — ~1s. Runs in CI on every push, and gates the
+NuGet publish: a red suite cannot ship.
+
+There are no *unit* tests, because there are no units — the library is pure XAML, zero C#. What the
+suite covers instead:
+- **Tier 1 `ThemeIntegrityTests`** — the theme loads from its single public StyleInclude; Light and
+  Dark declare exactly the same resource keys; every key resolves under both variants; controls
+  template and lay out under both.
+- **Tier 2 `InvariantTests`** — the completeness invariants above, executed. Registration, the
+  Cursor="Hand" rule, the disabled pins, the retired-key ban, the control count.
+
+Rules that keep it honest:
+- **Parse, never grep.** Facts come from `XDocument` over the AXAML tree. Text matching produces
+  false positives on comments — this repo documents its own retired keys in comments, and
+  `KuwantimaGlassBorder` is simultaneously a retired *key* and a live *filename*.
+- **Keys and files are read from source, not hardcoded.** Add a brush or a style file and it is
+  under test immediately, with no edit to the suite.
+- **Exemptions carry their reason in code.** See the `Subjects` table.
+- **Never weaken a test to make it green.** A red test on a real violation is the suite working.
+
+Deliberately NOT built: pixel/golden-image snapshots. Blur and antialiasing vary across rasterizers
+and CI machines, so they would false-fail constantly, and every intentional design tweak would
+invalidate every baseline. The sandbox remains the harness for *visual* correctness — glass, glow,
+spacing, the orange checked border. Tests cover the mechanical layer; eyes cover the aesthetic one.
+
 ## File Conventions
 - Theme files: `Kuwantima/Theme/`
 - Style files: `Kuwantima/Styles/Kuwantima{Control}.axaml`
 - Sandbox pages: `Kuwantima.Sandbox/Views/Pages/{Name}Page.axaml`
 - Handouts: `docs/*.html`
-- No unit tests — sandbox IS the test harness (visual correctness, not assertion-based)
+- Tests: `Kuwantima.Tests/` — see Testing above
