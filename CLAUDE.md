@@ -114,6 +114,33 @@ These were replaced by Fluent equivalents. Use the Fluent key instead:
 - ~~KuwantimaGlassBorder / KuwantimaGlassBorderHover~~ — removed (unused)
 - ~~KuwantimaShadowNormal / Hover / Accent~~ — removed (orphaned)
 
+## Downstream: Tunatya / Navoti
+Kuwantima **replaces** Navoti in `../Tunatya`. It does not compose with it — they are the same
+design system at two points in time (same architecture, same class convention, 15 controls vs
+Navoti's 12). The Retired Resources list above is, literally, a changelog of what Navoti still has.
+
+- **Never run both.** Each ships its own `<fluent:FluentTheme>` and overrides the same three
+  `SystemFillColor*` keys. Avalonia resolves by document order, so one silently loses — no error.
+- **The retirement list is a migration burden, not just history.** 27 live references in Tunatya
+  point at `KuwantimaGlassBorder` / `KuwantimaGlassBorderHover` — keys retired here as *"unused."*
+  They were unused **in Kuwantima**. Before retiring anything else, grep Tunatya first.
+- **Kuwantima is NOT a strict superset.** Navoti has `NavotiOverlayBackground` /
+  `NavotiOverlayTextBrush`; there is no Kuwantima equivalent. Decide deliberately whether to add them.
+- Migration plan: `Tunatya/NAVOTI-TO-KUWANTIMA.md`
+
+## A verification trap this repo has set twice
+Both of these shipped, and both survived a check that *felt* rigorous:
+
+- **The control count.** README, `.csproj`, the theme header and the Documents page all said 16.
+  Four sources, unanimous — and all wrong, because all four restate a single origin. Checking them
+  against each other **confirmed** the error. The truth was `ls Kuwantima/Styles/` minus StreamIcons.
+- **The retired resources.** They were "unused" — measured within Kuwantima only. 27 references were
+  live in Tunatya the whole time.
+
+**Agreement between sources that share an origin is not verification.** Go to ground truth: run
+`dotnet test`, write a throwaway `[AvaloniaFact]`, list the directory, grep the *consumer*. Not to a
+restatement, however many of them agree.
+
 ## Color Philosophy
 - **Cool anchor**: MidnightBlue (#191970) / AliceBlue (#F0F8FF)
 - **Warm accent**: Orange (#FF8C00 light / #FFA500 dark) — checked/selected borders
