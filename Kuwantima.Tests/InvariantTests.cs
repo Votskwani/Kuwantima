@@ -584,6 +584,34 @@ public class InvariantTests
         Assert.Equal(0.5d, disabledSplitter.Opacity, 3);
     }
 
+    /// <summary>
+    /// The splitter's disabled styling is only worth anything if it fires the way consumers actually
+    /// disable things — by disabling a whole PANE, not by reaching in and disabling the splitter itself.
+    /// That works because :disabled tracks IsEffectivelyEnabled, which inherits down the tree: note that
+    /// the splitter's own IsEnabled stays true here. If Avalonia ever scoped the pseudo-class to the
+    /// element's own IsEnabled instead, our disabled block would silently stop firing in the common case
+    /// while every other test in this file still passed.
+    /// </summary>
+    [AvaloniaFact]
+    public void Disabled_styling_reaches_a_splitter_inside_a_disabled_ancestor()
+    {
+        var splitter = new GridSplitter();
+        splitter.Classes.Add("Kuwantima");
+
+        var pane = new Grid { IsEnabled = false };
+        pane.Children.Add(splitter);
+
+        var window = new Window { Content = pane, Width = 300, Height = 300 };
+        window.Show();
+        Dispatcher.UIThread.RunJobs();
+
+        Assert.True(splitter.IsEnabled, "Precondition: the splitter itself is never disabled — the PANE is.");
+        Assert.False(splitter.IsEffectivelyEnabled);
+
+        Assert.Equal(new Cursor(StandardCursorType.Arrow).ToString(), splitter.Cursor?.ToString());
+        Assert.Equal(0.5d, splitter.Opacity, 3);
+    }
+
     // ───────────────────────────────────────────────────────────────────────────────
     // Retired resources
     // ───────────────────────────────────────────────────────────────────────────────
