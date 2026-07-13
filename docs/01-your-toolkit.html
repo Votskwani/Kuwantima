@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuwantima — 01 Your Toolkit</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: #F0F8FF;
+            color: #191970;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .page {
+            max-width: 750px;
+            margin: 0 auto;
+            padding: 48px 48px;
+        }
+
+        /* Cover / Header */
+        .cover {
+            text-align: center;
+            padding: 48px 0 36px;
+            border-bottom: 3px solid #191970;
+            margin-bottom: 36px;
+        }
+
+        .cover h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #191970;
+            letter-spacing: -0.5px;
+        }
+
+        .cover .subtitle {
+            font-size: 16px;
+            color: #0078D4;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        .cover .tagline {
+            font-size: 13px;
+            color: #666;
+            margin-top: 12px;
+        }
+
+        /* Chapter headers */
+        .chapter {
+            margin-top: 40px;
+            margin-bottom: 24px;
+            page-break-before: auto;
+        }
+
+        .chapter-number {
+            display: inline-block;
+            background: #191970;
+            color: #F0F8FF;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        .chapter h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #191970;
+            border-bottom: 2px solid #FF8C00;
+            padding-bottom: 8px;
+        }
+
+        .chapter-intro {
+            font-size: 14px;
+            color: #555;
+            margin-top: 8px;
+            margin-bottom: 20px;
+        }
+
+        /* Section headers */
+        h3 {
+            font-size: 17px;
+            font-weight: 600;
+            color: #191970;
+            margin-top: 28px;
+            margin-bottom: 12px;
+        }
+
+        /* Steps */
+        .step {
+            background: white;
+            border: 1px solid #dce4ef;
+            border-left: 4px solid #0078D4;
+            border-radius: 6px;
+            padding: 16px 20px;
+            margin-bottom: 14px;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: #0078D4;
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+            width: 24px;
+            height: 24px;
+            line-height: 24px;
+            text-align: center;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .step-title {
+            font-weight: 600;
+            font-size: 15px;
+            color: #191970;
+            display: inline;
+        }
+
+        .step p, .step ul {
+            margin-top: 8px;
+            margin-left: 34px;
+        }
+
+        .step ul {
+            padding-left: 18px;
+        }
+
+        .step li {
+            margin-bottom: 4px;
+        }
+
+        /* Tip / Note boxes */
+        .tip {
+            background: #FFF8EE;
+            border: 1px solid #FFD49A;
+            border-left: 4px solid #FF8C00;
+            border-radius: 6px;
+            padding: 14px 18px;
+            margin: 16px 0;
+            font-size: 13px;
+        }
+
+        .tip-label {
+            font-weight: 700;
+            color: #FF8C00;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .warning {
+            background: #FFF0F0;
+            border: 1px solid #FFB0B0;
+            border-left: 4px solid #D44;
+            border-radius: 6px;
+            padding: 14px 18px;
+            margin: 16px 0;
+            font-size: 13px;
+        }
+
+        .warning-label {
+            font-weight: 700;
+            color: #D44;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Screenshots / placeholder */
+        .screenshot {
+            background: #E8EFF7;
+            border: 2px dashed #B0C4DE;
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
+            color: #6688AA;
+            font-size: 13px;
+            font-style: italic;
+            margin: 12px 0;
+        }
+
+        /* Inline code */
+        code {
+            background: #E8EFF7;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Cascadia Code', 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            color: #191970;
+        }
+
+        /* Links */
+        a {
+            color: #0078D4;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        a:hover { text-decoration: underline; }
+
+        /* URL display for print */
+        .url {
+            display: block;
+            background: #E8EFF7;
+            border: 1px solid #dce4ef;
+            border-radius: 4px;
+            padding: 8px 14px;
+            margin: 8px 0 8px 34px;
+            font-family: 'Cascadia Code', 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            color: #0078D4;
+            word-break: break-all;
+        }
+
+        /* Checklist */
+        .checklist {
+            list-style: none;
+            padding-left: 34px;
+            margin-top: 8px;
+        }
+
+        .checklist li {
+            position: relative;
+            padding-left: 28px;
+            margin-bottom: 6px;
+        }
+
+        .checklist li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 3px;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #0078D4;
+            border-radius: 3px;
+        }
+
+        /* Table of contents */
+        .toc {
+            background: white;
+            border: 1px solid #dce4ef;
+            border-radius: 8px;
+            padding: 20px 24px;
+            margin-bottom: 32px;
+        }
+
+        .toc h3 {
+            margin-top: 0;
+            font-size: 14px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .toc ol {
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+
+        .toc li {
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .toc li span {
+            color: #666;
+            font-weight: 400;
+            font-size: 13px;
+        }
+
+        /* Divider */
+        hr {
+            border: none;
+            border-top: 1px solid #dce4ef;
+            margin: 32px 0;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            margin-top: 48px;
+            padding-top: 20px;
+            border-top: 1px solid #dce4ef;
+        }
+
+        /* Print styles */
+        @media print {
+            body { background: white; }
+            .page { padding: 24px 36px; }
+            .step { break-inside: avoid; }
+            .chapter { break-before: page; }
+            .chapter:first-of-type { break-before: auto; }
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+
+    <!-- DEDICATION -->
+    <div style="text-align: center; margin-bottom: 36px; padding: 24px; background: white; border: 1px solid #dce4ef; border-radius: 8px;">
+        <p style="font-size: 16px; font-style: italic; color: #191970;">To Kayla,</p>
+        <p style="font-size: 14px; color: #555; margin-top: 8px;">Best wishes on your journey.</p>
+        <p style="font-size: 13px; color: #666; margin-top: 4px;">— Cole</p>
+        <p style="font-size: 12px; color: #999; margin-top: 12px; font-style: italic;">Every expert was once a beginner. The tools below are the same ones the professionals use — the only difference is you're seeing them for the first time, and that's the best part.</p>
+    </div>
+
+    <!-- COVER -->
+    <div class="cover">
+        <h1>Your Toolkit</h1>
+        <div class="subtitle">Kuwantima Design System</div>
+        <div class="tagline">Everything you need to start building, from zero to first commit.</div>
+    </div>
+
+    <!-- TABLE OF CONTENTS -->
+    <div class="toc">
+        <h3>In This Guide</h3>
+        <ol>
+            <li>Set Up Claude Max <span>— your AI assistant, first and always</span></li>
+            <li>Set Up GitHub <span>— create an account and install Git</span></li>
+            <li>Install Visual Studio <span>— download, install, pick your workloads</span></li>
+            <li>Add Claude to Visual Studio <span>— install Claude Code CLI and the VS extension</span></li>
+        </ol>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- CHAPTER 1: CLAUDE MAX -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div class="chapter">
+        <span class="chapter-number">Chapter 1</span>
+        <h2>Set Up Claude Max</h2>
+        <p class="chapter-intro">Before anything else, let's get you an AI assistant. Claude will help you through the rest of this guide — and everything after it.</p>
+    </div>
+
+    <h3>Create Your Anthropic Account</h3>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Go to the Claude website</span>
+        <div class="url">https://claude.ai</div>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Click "Sign up"</span>
+        <p>You can sign up with:</p>
+        <ul>
+            <li>Your email address (you'll need to verify it)</li>
+            <li>Your Google account</li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Complete the sign-up</span>
+        <p>Follow the prompts to set your name and agree to the terms. You'll land on the Claude chat interface — this is the free tier.</p>
+    </div>
+
+    <h3>Subscribe to Claude Max</h3>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Open the upgrade page</span>
+        <p>Click on your name or profile icon in the bottom-left corner, then click <strong>"Upgrade to Pro"</strong> (or look for an "Upgrade" button on the main page).</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">5</span>
+        <span class="step-title">Choose the Max plan</span>
+        <p>Claude Max is <strong>$100/month</strong>. This gives you:</p>
+        <ul>
+            <li>Much higher usage limits for chat</li>
+            <li>Access to the most capable Claude models</li>
+            <li>Access to <strong>Claude Code</strong> — the extension we'll add to Visual Studio later</li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <span class="step-number">6</span>
+        <span class="step-title">Enter payment details</span>
+        <p>Enter your credit or debit card information and confirm the subscription.</p>
+    </div>
+
+    <div class="step" style="border-left-color: #FF8C00;">
+        <span class="step-number">7</span>
+        <span class="step-title">Keep claude.ai open — it's your setup assistant now</span>
+        <p>You're already signed in at <strong><a href="https://claude.ai">claude.ai</a></strong> — keep this browser tab open. For the rest of this guide, <strong>if anything goes wrong or you're not sure about a step, just ask Claude right here.</strong></p>
+        <p>Try it now:</p>
+        <p><code>Hi Claude, I'm setting up my development environment for an Avalonia UI project called Kuwantima. I'm about to install GitHub, Git, Visual Studio, and Node.js. Can you help me if I run into any issues along the way?</code></p>
+        <p>Claude will be ready and waiting. Think of this tab as your safety net for everything that follows.</p>
+    </div>
+
+    <div class="tip">
+        <span class="tip-label">What you're paying for</span><br>
+        Think of Claude as a knowledgeable coding partner sitting next to you — it can explain unfamiliar code, help debug problems, write boilerplate, and answer questions about the project. It's especially valuable when you're learning a new codebase. You'll have it in the browser now, and inside Visual Studio by the end of this guide.
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- CHAPTER 2: GITHUB -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div class="chapter">
+        <span class="chapter-number">Chapter 2</span>
+        <h2>Set Up GitHub</h2>
+        <p class="chapter-intro">GitHub is where the project code lives. You'll need an account to get your own copy of the project, and Git installed on your computer to work with it.</p>
+    </div>
+
+    <h3>Create a GitHub Account</h3>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Go to the GitHub sign-up page</span>
+        <div class="url">https://github.com/signup</div>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Create your account</span>
+        <p>Enter your email address, create a password, and choose a username. This username will be visible on your projects, so pick something you're comfortable with.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Verify your email</span>
+        <p>GitHub will send a verification email. Open it and click the link to confirm your account.</p>
+    </div>
+
+    <h3>Install Git</h3>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Download Git for Windows</span>
+        <div class="url">https://git-scm.com/downloads</div>
+        <p>Click <strong>Windows</strong> and download the installer.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">5</span>
+        <span class="step-title">Run the installer</span>
+        <p>Double-click the downloaded file. <strong>Accept all the defaults</strong> — just keep clicking Next until it finishes. The default settings are fine for everything.</p>
+    </div>
+
+    <h3>Set Your Identity</h3>
+
+    <div class="step">
+        <span class="step-number">6</span>
+        <span class="step-title">Open a terminal</span>
+        <p>Press the <strong>Windows key</strong>, type <strong>cmd</strong>, and press Enter to open Command Prompt.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">7</span>
+        <span class="step-title">Tell Git who you are</span>
+        <p>Type these two commands, one at a time, using your own name and the email you used for GitHub:</p>
+        <div class="url">git config --global user.name "Your Name"</div>
+        <div class="url">git config --global user.email "your@email.com"</div>
+        <p>This attaches your name to your work — it's how Git labels who made each change.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">8</span>
+        <span class="step-title">Verify it worked</span>
+        <p>Type this command:</p>
+        <div class="url">git --version</div>
+        <p>You should see a version number like <code>git version 2.47.0</code>. If you see "command not found", restart your terminal and try again.</p>
+    </div>
+
+    <div class="tip">
+        <span class="tip-label">Stuck?</span><br>
+        Ask Claude in your browser tab! Paste the error message and say what step you're on. Claude has helped thousands of people set up Git.
+    </div>
+
+    <div class="tip">
+        <span class="tip-label">Good to know</span><br>
+        GitHub is <strong>free</strong> for public and private projects. No subscription needed.
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- CHAPTER 3: VISUAL STUDIO -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div class="chapter">
+        <span class="chapter-number">Chapter 3</span>
+        <h2>Install Visual Studio Community</h2>
+        <p class="chapter-intro">Visual Studio Community is a free, full-featured IDE from Microsoft. It's where you'll write code, run the app, and manage your project.</p>
+    </div>
+
+    <h3>Download the Installer</h3>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Open the Visual Studio download page</span>
+        <div class="url">https://visualstudio.microsoft.com/vs/community/</div>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Click "Download Community"</span>
+        <p>A small installer file will download (about 2 MB). It's called something like <code>VisualStudioSetup.exe</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Run the installer</span>
+        <p>Double-click the downloaded file. If Windows asks "Do you want to allow this app to make changes?", click <strong>Yes</strong>.</p>
+    </div>
+
+    <h3>Choose Your Workloads</h3>
+
+    <p>The installer shows a screen of "workloads" — bundles of tools for different types of development. Select these three:</p>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Select ".NET Desktop Development"</span>
+        <p>This is the foundation. It includes everything you need to build desktop apps with Avalonia UI — which is what the Kuwantima project uses.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">5</span>
+        <span class="step-title">Select ".NET Multi-platform App UI Development"</span>
+        <p>This adds mobile development support (Android and iOS). We'll use this later with Avalonia Mobile to bring designs to phones and tablets.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">6</span>
+        <span class="step-title">Select "ASP.NET and Web Development"</span>
+        <p>This adds web development tools including <strong>Blazor</strong> — Microsoft's framework for building interactive web apps with C#. Blazor will be your first web project, so having this ready from the start saves you a trip back to the installer later.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">7</span>
+        <span class="step-title">Click "Install"</span>
+        <p>With three workloads selected, this will download several gigabytes of tools. It takes 15-40 minutes depending on your internet speed. You can use your computer while it installs.</p>
+    </div>
+
+    <div class="tip">
+        <span class="tip-label">Tip</span><br>
+        If the download seems stuck, it's normal — the progress bar sometimes pauses on large components. Give it time.
+    </div>
+
+    <div class="tip">
+        <span class="tip-label">Why three workloads?</span><br>
+        Each workload prepares you for a different platform:<br>
+        <strong>Desktop</strong> = Windows apps (Kuwantima lives here)<br>
+        <strong>Mobile</strong> = Android/iOS apps (where we're headed next)<br>
+        <strong>Web</strong> = Blazor web apps (your first solo project path)<br>
+        All three use C# and .NET, so the skills transfer between them.
+    </div>
+
+    <h3>First Launch</h3>
+
+    <div class="step">
+        <span class="step-number">8</span>
+        <span class="step-title">Open Visual Studio</span>
+        <p>When installation finishes, click <strong>Launch</strong>. Visual Studio will ask you to sign in with a Microsoft account. You can:</p>
+        <ul>
+            <li>Sign in with an existing Microsoft/Outlook/Hotmail account</li>
+            <li>Create a free Microsoft account</li>
+            <li>Click "Not now, maybe later" to skip (you'll need to sign in within 30 days)</li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <span class="step-number">9</span>
+        <span class="step-title">Pick a color theme</span>
+        <p>Visual Studio asks you to pick a theme (Dark, Blue, or Light). Pick whatever feels comfortable — you can change this later in <strong>Tools &gt; Options &gt; Environment &gt; General</strong>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">10</span>
+        <span class="step-title">Verify it works</span>
+        <p>You should see the Visual Studio Start Window with options like "Clone a repository", "Open a project or solution", etc. If you see this, you're all set!</p>
+    </div>
+
+    <h3>Install the Avalonia Extension</h3>
+
+    <p>Avalonia is the UI framework Kuwantima is built on. This extension adds project templates, a visual previewer, and IntelliSense for Avalonia AXAML files.</p>
+
+    <div class="step">
+        <span class="step-number">11</span>
+        <span class="step-title">Open the Extensions menu</span>
+        <p>In Visual Studio, go to <strong>Extensions &gt; Manage Extensions</strong>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">12</span>
+        <span class="step-title">Search for "Avalonia"</span>
+        <p>In the search box, type <strong>Avalonia</strong>. Look for <strong>"Avalonia for Visual Studio"</strong> by AvaloniaUI.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">13</span>
+        <span class="step-title">Download and restart</span>
+        <p>Click <strong>Download</strong>, then close and reopen Visual Studio to complete the installation.</p>
+    </div>
+
+    <div class="tip">
+        <span class="tip-label">Good to know</span><br>
+        Visual Studio Community is <strong>completely free</strong> for individual developers, students, and open-source projects. No trial period, no limitations for our use.
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- CHAPTER 4: CLAUDE IN VISUAL STUDIO -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div class="chapter">
+        <span class="chapter-number">Chapter 4</span>
+        <h2>Add Claude to Visual Studio</h2>
+        <p class="chapter-intro">Now we'll install the Claude extension so you can use it directly inside Visual Studio while you work.</p>
+    </div>
+
+    <h3>Install Claude Code CLI</h3>
+
+    <p>The Claude extension for Visual Studio is built on top of Claude Code, a command-line tool that needs to be installed first.</p>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Install Node.js</span>
+        <p>Claude Code requires Node.js to run. Download the LTS version from:</p>
+        <div class="url">https://nodejs.org</div>
+        <p>Run the installer and accept the defaults. When it finishes, restart your terminal.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Install Claude Code</span>
+        <p>Open Command Prompt and run:</p>
+        <div class="url">npm install -g @anthropic-ai/claude-code</div>
+        <p>This installs the Claude Code CLI globally on your machine.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Verify it installed</span>
+        <p>Run this command:</p>
+        <div class="url">claude --version</div>
+        <p>You should see a version number. If you get "command not found", close and reopen your terminal.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Sign in to Claude</span>
+        <p>Run:</p>
+        <div class="url">claude</div>
+        <p>The first time you run it, it will open your browser to sign in. Log in with the same account you subscribed with in Chapter 1. Once authenticated, the browser will confirm success and you can return to your terminal.</p>
+    </div>
+
+    <h3>Install the Visual Studio Extension</h3>
+
+    <p>Now we'll add the extension that brings Claude into Visual Studio's interface. This is a community extension called <strong>Claude Code Extension</strong> by dliedke — it's the most popular and mature Claude integration for Visual Studio, with over 72,000 installs.</p>
+
+    <div class="step">
+        <span class="step-number">5</span>
+        <span class="step-title">Open Visual Studio</span>
+        <p>Launch Visual Studio if it isn't open already.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">6</span>
+        <span class="step-title">Open the Extensions menu</span>
+        <p>In the top menu bar, click <strong>Extensions</strong>, then click <strong>Manage Extensions</strong>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">7</span>
+        <span class="step-title">Search for "Claude Code Extension"</span>
+        <p>In the search box on the right, type <strong>"Claude Code"</strong>. Look for <strong>"Claude Code Extension"</strong> by <strong>dliedke</strong>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">8</span>
+        <span class="step-title">Click "Download"</span>
+        <p>Click the <strong>Download</strong> button. Visual Studio will tell you the extension will be installed after you close and reopen it.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">9</span>
+        <span class="step-title">Restart Visual Studio</span>
+        <p>Close Visual Studio completely, then reopen it. The extension will finish installing during startup.</p>
+    </div>
+
+    <h3>Verify Everything Works</h3>
+
+    <div class="step">
+        <span class="step-number">10</span>
+        <span class="step-title">Open the Claude panel</span>
+        <p>Go to <strong>View</strong> in the top menu bar. Look for <strong>"Claude Code"</strong> and click it. A Claude panel will appear, usually on the right side of the screen.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">11</span>
+        <span class="step-title">Test it out</span>
+        <p>In the Claude panel, type:</p>
+        <p><code>Hi, what can you help me with?</code></p>
+        <p>If Claude responds, you're all set! The extension uses your Claude Code CLI login from step 4, so no separate sign-in is needed.</p>
+    </div>
+
+    <div class="tip">
+        <span class="tip-label">If the panel says "Claude Code not found"</span><br>
+        This means the CLI from steps 1-3 isn't on your system PATH. Close Visual Studio, open a new terminal, run <code>claude --version</code> to confirm it works there, then reopen Visual Studio.
+    </div>
+
+    <h3>How to Use Claude in Your Work</h3>
+
+    <p>Claude is your always-available coding partner. Here are the most useful things it can do:</p>
+
+    <div class="step">
+        <span class="step-title">Ask questions about the project</span>
+        <p style="margin-left: 0;">Open a file, then ask Claude things like "What does this file do?" or "How does the theme system work?" — Claude can see the files in your project.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-title">Get help with errors</span>
+        <p style="margin-left: 0;">If you see a red error squiggle or a build error, ask Claude "What does this error mean?" and paste the error message. It will explain the problem and suggest a fix.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-title">Learn as you go</span>
+        <p style="margin-left: 0;">When you encounter unfamiliar code, ask Claude to explain it. For example: "What is a DataTemplate?" or "Why does this use DynamicResource instead of StaticResource?"</p>
+    </div>
+
+    <div class="step">
+        <span class="step-title">Get unstuck</span>
+        <p style="margin-left: 0;">Any time you hit a wall — something won't build, a style isn't applying, you're not sure what to do next — just describe what's happening to Claude. It can read your project files and give you specific, step-by-step guidance.</p>
+    </div>
+
+    <div class="tip">
+        <span class="tip-label">Best practice</span><br>
+        Think of Claude as a conversation partner, not a search engine. The more context you give it ("I'm trying to change the button color but I'm not sure which file to edit"), the better its answers will be.
+    </div>
+
+    <h3>Things to Try Asking Claude</h3>
+
+    <p>Once you've set up the project (next guide), here are some great first questions to ask Claude in the Visual Studio panel:</p>
+
+    <div class="step">
+        <span class="step-title">Understanding the project</span>
+        <ul style="margin-left: 0; margin-top: 8px;">
+            <li><code>Can you give me an overview of how this project is structured?</code></li>
+            <li><code>What files would I change to modify a button's appearance?</code></li>
+            <li><code>How do the light and dark themes work?</code></li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <span class="step-title">Learning C# and AXAML</span>
+        <ul style="margin-left: 0; margin-top: 8px;">
+            <li><code>I'm new to C# — can you explain what this code does in simple terms?</code></li>
+            <li><code>What is AXAML and how does it relate to the C# code?</code></li>
+            <li><code>What does "binding" mean in this context?</code></li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <span class="step-title">Getting started with Blazor</span>
+        <ul style="margin-left: 0; margin-top: 8px;">
+            <li><code>I want to create my first Blazor project — can you walk me through it?</code></li>
+            <li><code>What's the difference between Blazor Server and Blazor WebAssembly?</code></li>
+            <li><code>How do I add a new page to a Blazor app?</code></li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <span class="step-title">When you're stuck</span>
+        <ul style="margin-left: 0; margin-top: 8px;">
+            <li><code>The build failed with this error — what does it mean? [paste error]</code></li>
+            <li><code>I changed a color but nothing happened — what am I missing?</code></li>
+            <li><code>I'm not sure what to work on next — what would you suggest?</code></li>
+        </ul>
+    </div>
+
+    <div class="tip">
+        <span class="tip-label">Remember</span><br>
+        There are no bad questions. Claude has infinite patience and never judges. If something doesn't make sense, ask it to explain differently — try <code>"Can you explain that in simpler terms?"</code> or <code>"Can you show me an example?"</code>
+    </div>
+
+    <div class="tip">
+        <span class="tip-label">Two Claudes are better than one</span><br>
+        Keep <strong><a href="https://claude.ai">claude.ai</a></strong> open in a browser tab as a second Claude. Use the one in Visual Studio for project questions (it can see your code) and the browser one for general learning — "what is AXAML?", "explain this error message", or "how do CSS-like selectors work in Avalonia?" The browser version is great for longer back-and-forth conversations when you're exploring a concept.
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- WHAT'S NEXT -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <hr>
+
+    <h3>You're Ready!</h3>
+
+    <p>With GitHub, Visual Studio, and Claude set up, you have everything you need to start working on Kuwantima. Your next step is the <strong><a href="02-your-first-project.html">Your First Project guide</a></strong>, which walks you through forking the project and making your first change.</p>
+
+    <p>And remember — from this point forward, <strong>Claude is right there in Visual Studio with you</strong>. Any time you're unsure about something in the Your First Project guide or beyond, just ask Claude. It can see your project and give you help specific to exactly what you're working on.</p>
+
+    <div class="tip">
+        <span class="tip-label">Setup checklist</span><br>
+        <ul class="checklist">
+            <li>Claude Max subscription active at claude.ai</li>
+            <li>GitHub account created and Git installed</li>
+            <li>Visual Studio Community installed with Desktop, Mobile, and Web workloads</li>
+            <li>Avalonia extension installed</li>
+            <li>Node.js and Claude Code CLI installed</li>
+            <li>Claude Code Extension installed in Visual Studio</li>
+            <li>Ready for the Your First Project guide!</li>
+        </ul>
+    </div>
+
+    <!-- PERSONAL NOTE -->
+    <div style="text-align: center; margin-top: 40px; padding: 24px; background: white; border: 1px solid #dce4ef; border-radius: 8px;">
+        <p style="font-size: 14px; color: #191970; font-style: italic;">Love,<br>Cole</p>
+        <p style="font-size: 12px; color: #999; margin-top: 12px; font-style: italic;">& Claude — who helped build this guide and will be right there with you when you open it. Looking forward to seeing what you create, Kayla.</p>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        Kuwantima — 01 Your Toolkit &mdash; prepared for the Kuwantima project<br>
+        <a href="https://github.com/Votskwani/Kuwantima">github.com/Votskwani/Kuwantima</a>
+    </div>
+
+</div>
+</body>
+</html>

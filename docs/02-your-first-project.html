@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuwantima — 02 Your First Project</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: #F0F8FF;
+            color: #191970;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .page {
+            max-width: 750px;
+            margin: 0 auto;
+            padding: 48px 48px;
+        }
+
+        /* Cover / Header */
+        .cover {
+            text-align: center;
+            padding: 48px 0 36px;
+            border-bottom: 3px solid #191970;
+            margin-bottom: 36px;
+        }
+
+        .cover h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #191970;
+            letter-spacing: -0.5px;
+        }
+
+        .cover .subtitle {
+            font-size: 16px;
+            color: #0078D4;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        .cover .tagline {
+            font-size: 13px;
+            color: #666;
+            margin-top: 12px;
+        }
+
+        .cover .prereq {
+            font-size: 13px;
+            color: #999;
+            margin-top: 16px;
+        }
+
+        .cover .prereq a {
+            color: #0078D4;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* Chapter headers */
+        .chapter {
+            margin-top: 40px;
+            margin-bottom: 24px;
+            page-break-before: auto;
+        }
+
+        .chapter-number {
+            display: inline-block;
+            background: #191970;
+            color: #F0F8FF;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        .chapter h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #191970;
+            border-bottom: 2px solid #FF8C00;
+            padding-bottom: 8px;
+        }
+
+        .chapter-intro {
+            font-size: 14px;
+            color: #555;
+            margin-top: 8px;
+            margin-bottom: 20px;
+        }
+
+        /* Section headers */
+        h3 {
+            font-size: 17px;
+            font-weight: 600;
+            color: #191970;
+            margin-top: 28px;
+            margin-bottom: 12px;
+        }
+
+        /* Steps */
+        .step {
+            background: white;
+            border: 1px solid #dce4ef;
+            border-left: 4px solid #0078D4;
+            border-radius: 6px;
+            padding: 16px 20px;
+            margin-bottom: 14px;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: #0078D4;
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+            width: 24px;
+            height: 24px;
+            line-height: 24px;
+            text-align: center;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .step-title {
+            font-weight: 600;
+            font-size: 15px;
+            color: #191970;
+            display: inline;
+        }
+
+        .step p, .step ul {
+            margin-top: 8px;
+            margin-left: 34px;
+        }
+
+        .step ul {
+            padding-left: 18px;
+        }
+
+        .step li {
+            margin-bottom: 4px;
+        }
+
+        /* Tip / Note boxes */
+        .tip {
+            background: #FFF8EE;
+            border: 1px solid #FFD49A;
+            border-left: 4px solid #FF8C00;
+            border-radius: 6px;
+            padding: 14px 18px;
+            margin: 16px 0;
+            font-size: 13px;
+        }
+
+        .tip-label {
+            font-weight: 700;
+            color: #FF8C00;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Inline code */
+        code {
+            background: #E8EFF7;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Cascadia Code', 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            color: #191970;
+        }
+
+        /* Code blocks */
+        pre {
+            background: #1E1E2E;
+            color: #CDD6F4;
+            padding: 16px 20px;
+            border-radius: 6px;
+            font-family: 'Cascadia Code', 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            overflow-x: auto;
+            margin: 8px 0 8px 34px;
+        }
+
+        /* URL display */
+        .url {
+            display: block;
+            background: #E8EFF7;
+            border: 1px solid #dce4ef;
+            border-radius: 4px;
+            padding: 8px 14px;
+            margin: 8px 0 8px 34px;
+            font-family: 'Cascadia Code', 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            color: #0078D4;
+            word-break: break-all;
+        }
+
+        /* Links */
+        a {
+            color: #0078D4;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        a:hover { text-decoration: underline; }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            font-size: 13px;
+        }
+
+        th {
+            background: #191970;
+            color: #F0F8FF;
+            text-align: left;
+            padding: 10px 14px;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 8px 14px;
+            border-bottom: 1px solid #dce4ef;
+        }
+
+        tr:nth-child(even) td {
+            background: #F7FAFF;
+        }
+
+        /* Structure diagram */
+        .diagram {
+            background: #1E1E2E;
+            color: #CDD6F4;
+            padding: 20px 24px;
+            border-radius: 6px;
+            font-family: 'Cascadia Code', 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            margin: 12px 0;
+        }
+
+        .diagram .comment {
+            color: #6C7086;
+        }
+
+        /* Divider */
+        hr {
+            border: none;
+            border-top: 1px solid #dce4ef;
+            margin: 32px 0;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            margin-top: 48px;
+            padding-top: 20px;
+            border-top: 1px solid #dce4ef;
+        }
+
+        /* Print styles */
+        @media print {
+            body { background: white; }
+            .page { padding: 24px 36px; }
+            .step { break-inside: avoid; }
+            .chapter { break-before: page; }
+            .chapter:first-of-type { break-before: auto; }
+            pre, .diagram { background: #F0F0F0 !important; color: #191970 !important; }
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+
+    <!-- COVER -->
+    <div class="cover">
+        <h1>Your First Project</h1>
+        <div class="subtitle">Kuwantima Design System</div>
+        <div class="tagline">Fork the project, run it, change something, push it. Your first commit in under 30 minutes.</div>
+        <div class="prereq">Prerequisite: complete <a href="01-your-toolkit.html">01 Your Toolkit</a> first.</div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- STEP 1: FORK -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div class="chapter">
+        <span class="chapter-number">Step 1</span>
+        <h2>Fork the Project</h2>
+        <p class="chapter-intro">"Forking" creates your own independent copy of the project on GitHub. The original is completely unaffected by anything you do — think of it as photocopying a book so you can write in the margins.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Go to the Kuwantima repository</span>
+        <div class="url">https://github.com/Votskwani/Kuwantima</div>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Click the "Fork" button</span>
+        <p>It's in the top right corner of the page.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Click "Create fork"</span>
+        <p>On the next page, leave all the defaults and click <strong>Create fork</strong>.</p>
+    </div>
+
+    <p>You now have your own copy at <code>github.com/YOUR-USERNAME/Kuwantima</code>.</p>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- STEP 2: CLONE -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div class="chapter">
+        <span class="chapter-number">Step 2</span>
+        <h2>Download It to Your Computer</h2>
+        <p class="chapter-intro">Now we'll "clone" your fork — that means downloading all the project files so you can work on them locally.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Copy your fork's URL</span>
+        <p>On your fork's GitHub page, click the green <strong>Code</strong> button and copy the HTTPS URL.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Open a terminal and clone</span>
+        <p>Open Command Prompt and run (replace <code>YOUR-USERNAME</code> with your GitHub username):</p>
+        <pre>git clone https://github.com/YOUR-USERNAME/Kuwantima.git
+cd Kuwantima</pre>
+    </div>
+
+    <p>You now have all the project files on your computer.</p>
+
+    <div class="tip">
+        <span class="tip-label">Ask Claude</span><br>
+        If you get a "permission denied" or authentication error, open the Claude panel in Visual Studio (or <a href="https://claude.ai">claude.ai</a> in your browser) and paste the error message. Claude can walk you through setting up Git credentials.
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- STEP 3: OPEN AND RUN -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div class="chapter">
+        <span class="chapter-number">Step 3</span>
+        <h2>Open and Run It</h2>
+        <p class="chapter-intro">Let's make sure everything works before changing anything.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Open the solution in Visual Studio</span>
+        <p>In Visual Studio, go to <strong>File &gt; Open &gt; Project/Solution</strong> and navigate to the folder you just cloned. Open the file called <code>Kuwantima.slnx</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Set the startup project</span>
+        <p>In the Solution Explorer panel (usually on the right), right-click <strong>Kuwantima.Sandbox</strong> and choose <strong>Set as Startup Project</strong>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Run it</span>
+        <p>Press <strong>F5</strong> (or click the green play button at the top). A window will open showing the design system — buttons, toggles, sliders, all styled with the glass-glow theme.</p>
+    </div>
+
+    <p>Click around and explore! Try toggling between light and dark mode with the theme switch. Close the window when you're done.</p>
+
+    <div class="tip">
+        <span class="tip-label">If the build fails</span><br>
+        Don't panic — ask Claude! Open the Claude panel in Visual Studio and say: <code>"The build failed — here's the error"</code> and paste the error from the Output or Error List window. Claude can see your project and will tell you exactly what to fix.
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- STEP 4: MAKE A CHANGE -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div class="chapter">
+        <span class="chapter-number">Step 4</span>
+        <h2>Make Your First Change</h2>
+        <p class="chapter-intro">Let's change a color so you can see the edit-run cycle in action.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Open the theme resources file</span>
+        <p>In Solution Explorer, navigate to:<br>
+        <strong>Kuwantima &gt; Theme &gt; KuwantimaThemeResources.axaml</strong></p>
+        <p>Double-click to open it.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Find KuwantimaAccentBorder</span>
+        <p>Press <strong>Ctrl+F</strong> to open Find, and search for <code>KuwantimaAccentBorder</code>. This controls the glow color on selected items.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Change the color</span>
+        <p>Change the hex color value to something you like. Try one of these:</p>
+        <ul>
+            <li><code>#FF6A0DAD</code> — purple</li>
+            <li><code>#FF00CED1</code> — teal</li>
+            <li><code>#FFDC143C</code> — crimson</li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Save and run</span>
+        <p>Press <strong>Ctrl+S</strong> to save, then <strong>F5</strong> to run. See your change! Toggle between light and dark mode to see it in both themes.</p>
+    </div>
+
+    <div class="tip">
+        <span class="tip-label">Ask Claude</span><br>
+        Want to know what other colors you can change? Ask Claude in the VS panel: <code>"What are all the custom colors defined in KuwantimaThemeResources.axaml and what does each one control?"</code>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- STEP 5: COMMIT AND PUSH -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div class="chapter">
+        <span class="chapter-number">Step 5</span>
+        <h2>Save Your Change to GitHub</h2>
+        <p class="chapter-intro">When you're happy with a change, you "commit" it (save a snapshot) and "push" it (upload to GitHub).</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Open a terminal</span>
+        <p>In Visual Studio, go to <strong>View &gt; Terminal</strong> to open a terminal panel at the bottom. Make sure you're in the Kuwantima folder.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Stage, commit, and push</span>
+        <p>Type these three commands, one at a time:</p>
+        <pre>git add .
+git commit -m "Change accent color"
+git push</pre>
+    </div>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Verify on GitHub</span>
+        <p>Go to your fork on GitHub and refresh the page — you'll see your commit!</p>
+    </div>
+
+    <p><strong>What just happened:</strong></p>
+    <ul style="margin-left: 18px; margin-top: 8px;">
+        <li><code>git add .</code> — selects all changed files</li>
+        <li><code>git commit -m "..."</code> — saves a snapshot with a short description</li>
+        <li><code>git push</code> — uploads it to your GitHub fork</li>
+    </ul>
+
+    <div class="tip">
+        <span class="tip-label">Ask Claude</span><br>
+        If git asks for credentials or gives an error on push, paste the message into Claude (in VS or in the browser). It will walk you through authentication setup step by step.
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- STEP 6: MAKE IT YOURS -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div class="chapter">
+        <span class="chapter-number">Step 6</span>
+        <h2>Make It Yours</h2>
+        <p class="chapter-intro">You've forked Kuwantima and made your first change. Now it's time to think about making this design system truly your own — starting with giving it a name.</p>
+    </div>
+
+    <h3>The Name Behind the Project</h3>
+
+    <p>Every project in this family carries a <strong>Hopi</strong> name. The Hopi are an indigenous people of northeastern Arizona whose language, culture, and worldview are deeply interwoven with the land, the ceremonies, and the journey of life.</p>
+
+    <p>Understanding the naming story helps you appreciate what you're building on — and inspires what you'll name your own work.</p>
+
+    <div class="step" style="border-left-color: #FF8C00;">
+        <span class="step-title" style="color: #FF8C00;">Kuwantima</span> — <em>Beautiful Surroundings / All the Colors of the Rainbow</em>
+        <p>From <strong>kuwan-</strong> (bright, vibrant, varied colors) + <strong>-tima</strong> (area, space, surroundings). It evokes a landscape where a full spectrum of colors is visible all around — the painted desert, ceremonial regalia, sacred corn in blue, yellow, red, and white. A name that represents harmony, beauty, and the diversity of life.</p>
+        <p>This is what the design system aspires to be: a rich palette of visual controls that brings color and life to an application.</p>
+    </div>
+
+    <div class="step" style="border-left-color: #FF8C00;">
+        <span class="step-title" style="color: #FF8C00;">Votskwani</span> — <em>The Straight Path</em>
+        <p>The GitHub organization name. In the Hopi worldview, the "straight path" is both physical and spiritual — it represents integrity, clear direction, and the one-hearted approach to life. Walking the straight path means honesty, reliability, and staying true to purpose without distraction or compromise.</p>
+        <p>This frames how the project is maintained: with clear intent, open contribution, and no hidden agendas.</p>
+    </div>
+
+    <div class="step" style="border-left-color: #FF8C00;">
+        <span class="step-title" style="color: #FF8C00;">Tunatya</span> — <em>Vision / The Bridge</em>
+        <p>The parent project that Kuwantima will be integrated into. Tunatya means vision, goal, or aspiration — the act of looking toward something. It's also described as "the bridge between us — exists only while both sides hold it." Tunatya is the larger vision; Kuwantima is its visual expression.</p>
+    </div>
+
+    <div class="step" style="border-left-color: #FF8C00;">
+        <span class="step-title" style="color: #FF8C00;">Navoti</span> — <em>Wisdom Seated in Harmony</em>
+        <p>The name of the design system family. Navoti means knowledge or wisdom — but not knowledge as accumulated facts. You don't <em>collect</em> navoti. You <em>arrive</em> at it. It's awareness seated in rightness.</p>
+    </div>
+
+    <div class="step" style="border-left-color: #FF8C00;">
+        <span class="step-title" style="color: #FF8C00;">Sumi'nangwa</span> — <em>Working Together with Common Purpose</em>
+        <p>The name for the collaboration itself. Not labor divided — labor shared. The effort exists in the joining, not in the portions. This is what we're doing right now.</p>
+    </div>
+
+    <div class="tip">
+        <span class="tip-label">In Hopi culture</span><br>
+        Names are not just labels. They are bestowed by a "naming mother" from a different clan during initiation, and they reflect the clan of the person giving the name. They carry intention, connection to the natural world, and a vision for the person's path. When you name your project, you're continuing that spirit — choosing a name that carries meaning for what you're building.
+    </div>
+
+    <h3>Choosing Your Own Name</h3>
+
+    <p>When you're ready to make this fork truly yours, you'll want to give it a name that means something to you. It could be:</p>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Think about what your design system represents</span>
+        <p>What colors, what feeling, what story? Kuwantima is "all the colors of the rainbow" — what is yours?</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Ask Claude for help</span>
+        <p>Claude can help you brainstorm names. Try asking in the VS panel or at <a href="https://claude.ai">claude.ai</a>:</p>
+        <p><code>"I'm naming a UI design system. The visual style is [describe your vision]. Can you help me brainstorm names that feel meaningful?"</code></p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Rename it when you're ready</span>
+        <p>When you've chosen a name, ask Claude to help you rename the project:</p>
+        <p><code>"I want to rename this project from Kuwantima to [your name]. Can you help me update all the namespaces, file names, and references?"</code></p>
+        <p>Claude can see your entire project and will walk you through every file that needs to change. Don't rename anything manually — let Claude handle the tedious parts so nothing gets missed.</p>
+    </div>
+
+    <div class="tip">
+        <span class="tip-label">No rush</span><br>
+        You don't have to rename anything right away. Work with it as "Kuwantima" for as long as you like. The name will come when the project starts to feel like yours.
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- STEP 7: KEEP GOING -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div class="chapter">
+        <span class="chapter-number">Step 7</span>
+        <h2>Keep Going</h2>
+        <p class="chapter-intro">You've made your first change and pushed it. Here's where to look when you want to do more.</p>
+    </div>
+
+    <h3>Where to Find Things</h3>
+
+    <table>
+        <tr>
+            <th>I want to...</th>
+            <th>Look in...</th>
+        </tr>
+        <tr>
+            <td>Change colors and themes</td>
+            <td><code>Kuwantima/Theme/KuwantimaThemeResources.axaml</code></td>
+        </tr>
+        <tr>
+            <td>Change how a button looks</td>
+            <td><code>Kuwantima/Styles/KuwantimaButton.axaml</code></td>
+        </tr>
+        <tr>
+            <td>Change how a checkbox looks</td>
+            <td><code>Kuwantima/Styles/KuwantimaCheckBox.axaml</code></td>
+        </tr>
+        <tr>
+            <td>Change any control's style</td>
+            <td><code>Kuwantima/Styles/Kuwantima{ControlName}.axaml</code></td>
+        </tr>
+        <tr>
+            <td>Add a demo page to the sandbox</td>
+            <td><code>Kuwantima.Sandbox/Views/Pages/</code></td>
+        </tr>
+    </table>
+
+    <p>The sandbox app is your playground — every time you change a style, run it to see the result. There are no tests to run; <strong>if it looks right, it is right</strong>.</p>
+
+    <h3>Useful Git Commands</h3>
+
+    <p>You only need a handful of commands for day-to-day work:</p>
+
+    <table>
+        <tr>
+            <th>Command</th>
+            <th>What it does</th>
+        </tr>
+        <tr>
+            <td><code>git status</code></td>
+            <td>Shows what files you've changed</td>
+        </tr>
+        <tr>
+            <td><code>git add .</code></td>
+            <td>Stages all changes for commit</td>
+        </tr>
+        <tr>
+            <td><code>git commit -m "message"</code></td>
+            <td>Saves a snapshot</td>
+        </tr>
+        <tr>
+            <td><code>git push</code></td>
+            <td>Uploads to GitHub</td>
+        </tr>
+        <tr>
+            <td><code>git pull</code></td>
+            <td>Downloads latest changes from GitHub</td>
+        </tr>
+        <tr>
+            <td><code>git log --oneline</code></td>
+            <td>Shows recent commit history</td>
+        </tr>
+    </table>
+
+    <h3>Project Structure at a Glance</h3>
+
+    <div class="diagram">
+Kuwantima/
+  Theme/             <span class="comment">-- colors, brushes, theme definitions</span>
+  Styles/            <span class="comment">-- how each control looks</span>
+Kuwantima.Sandbox/   <span class="comment">-- the demo app you run to see your changes</span>
+  Views/Pages/       <span class="comment">-- each page in the sandbox</span>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- TROUBLESHOOTING -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <hr>
+
+    <h3>Troubleshooting</h3>
+
+    <div class="step">
+        <span class="step-title">"DLL is locked" or build fails after running the sandbox</span>
+        <p style="margin-left: 0;">Close the sandbox window before trying to build again. The running app locks the files.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-title">Git asks for my password every time</span>
+        <p style="margin-left: 0;">Run this once to save your credentials:</p>
+        <pre style="margin-left: 0;">git config --global credential.helper store</pre>
+        <p style="margin-left: 0;">Or install <a href="https://cli.github.com/">GitHub CLI</a> and run <code>gh auth login</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-title">I broke something and want to start over</span>
+        <p style="margin-left: 0;">You can always delete your local folder, go to your fork on GitHub, delete it, and re-fork from the original. Clean slate, no harm done.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-title">I want to get updates from the original project</span>
+        <pre style="margin-left: 0;">git remote add upstream https://github.com/Votskwani/Kuwantima.git
+git pull upstream master</pre>
+        <p style="margin-left: 0;">This pulls in any new changes from the original Kuwantima repo.</p>
+    </div>
+
+    <div class="tip">
+        <span class="tip-label">When in doubt, ask Claude</span><br>
+        For any problem not listed here, just describe what happened to Claude — either in the Visual Studio panel or at <a href="https://claude.ai">claude.ai</a>. Paste the error message, explain what you were trying to do, and Claude will help you fix it. There is no problem too small to ask about.
+    </div>
+
+    <hr>
+
+    <h3>You Did It!</h3>
+
+    <p>You've forked a project, cloned it, run it, made a change, and pushed it to GitHub. That's a real development workflow — the same loop professional developers use every day. Everything from here is just doing more of the same: edit, run, commit, push.</p>
+
+    <p>And remember — <strong>Claude is always with you</strong>. In Visual Studio, in the browser, any time you need a hand.</p>
+
+    <p style="margin-top: 16px; font-size: 13px; color: #666;">
+        <a href="01-your-toolkit.html">&larr; Back to Your Toolkit</a>
+    </p>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        Kuwantima — 02 Your First Project &mdash; prepared for the Kuwantima project<br>
+        <a href="https://github.com/Votskwani/Kuwantima">github.com/Votskwani/Kuwantima</a>
+    </div>
+
+</div>
+
+    <h3>License</h3>
+
+    <p>Kuwantima is MIT licensed — you're free to use, modify, and distribute it. Just keep the LICENSE file in your repo.</p>
+
+</body>
+</html>

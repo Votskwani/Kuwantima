@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuwantima — Teacher Guide</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: #F0F8FF;
+            color: #191970;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .page {
+            max-width: 750px;
+            margin: 0 auto;
+            padding: 48px 48px;
+        }
+
+        /* Cover / Header */
+        .cover {
+            text-align: center;
+            padding: 48px 0 36px;
+            border-bottom: 3px solid #191970;
+            margin-bottom: 36px;
+        }
+
+        .cover h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #191970;
+            letter-spacing: -0.5px;
+        }
+
+        .cover .subtitle {
+            font-size: 16px;
+            color: #0078D4;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        .cover .tagline {
+            font-size: 13px;
+            color: #666;
+            margin-top: 12px;
+        }
+
+        /* Chapter headers */
+        .chapter {
+            margin-top: 40px;
+            margin-bottom: 24px;
+            page-break-before: auto;
+        }
+
+        .chapter-number {
+            display: inline-block;
+            background: #191970;
+            color: #F0F8FF;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        .chapter h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #191970;
+            border-bottom: 2px solid #FF8C00;
+            padding-bottom: 8px;
+        }
+
+        .chapter-intro {
+            font-size: 14px;
+            color: #555;
+            margin-top: 8px;
+            margin-bottom: 20px;
+        }
+
+        /* Section headers */
+        h3 {
+            font-size: 17px;
+            font-weight: 600;
+            color: #191970;
+            margin-top: 28px;
+            margin-bottom: 12px;
+        }
+
+        /* Steps */
+        .step {
+            background: white;
+            border: 1px solid #dce4ef;
+            border-left: 4px solid #0078D4;
+            border-radius: 6px;
+            padding: 16px 20px;
+            margin-bottom: 14px;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: #0078D4;
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+            width: 24px;
+            height: 24px;
+            line-height: 24px;
+            text-align: center;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .step-title {
+            font-weight: 600;
+            font-size: 15px;
+            color: #191970;
+            display: inline;
+        }
+
+        .step p, .step ul {
+            margin-top: 8px;
+            margin-left: 34px;
+        }
+
+        .step ul {
+            padding-left: 18px;
+        }
+
+        .step li {
+            margin-bottom: 4px;
+        }
+
+        /* Tip / Note boxes */
+        .tip {
+            background: #FFF8EE;
+            border: 1px solid #FFD49A;
+            border-left: 4px solid #FF8C00;
+            border-radius: 6px;
+            padding: 14px 18px;
+            margin: 16px 0;
+            font-size: 13px;
+        }
+
+        .tip-label {
+            font-weight: 700;
+            color: #FF8C00;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .warning {
+            background: #FFF0F0;
+            border: 1px solid #FFB0B0;
+            border-left: 4px solid #D44;
+            border-radius: 6px;
+            padding: 14px 18px;
+            margin: 16px 0;
+            font-size: 13px;
+        }
+
+        .warning-label {
+            font-weight: 700;
+            color: #D44;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Inline code */
+        code {
+            background: #E8EFF7;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Cascadia Code', 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            color: #191970;
+        }
+
+        /* Block code */
+        pre {
+            background: #191970;
+            color: #F0F8FF;
+            padding: 14px 18px;
+            border-radius: 6px;
+            font-family: 'Cascadia Code', 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            margin: 10px 0 10px 34px;
+            overflow-x: auto;
+            line-height: 1.5;
+        }
+
+        /* Links */
+        a {
+            color: #0078D4;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        a:hover { text-decoration: underline; }
+
+        /* URL display for print */
+        .url {
+            display: block;
+            background: #E8EFF7;
+            border: 1px solid #dce4ef;
+            border-radius: 4px;
+            padding: 8px 14px;
+            margin: 8px 0 8px 34px;
+            font-family: 'Cascadia Code', 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            color: #0078D4;
+            word-break: break-all;
+        }
+
+        /* Checklist */
+        .checklist {
+            list-style: none;
+            padding-left: 34px;
+            margin-top: 8px;
+        }
+
+        .checklist li {
+            position: relative;
+            padding-left: 28px;
+            margin-bottom: 6px;
+        }
+
+        .checklist li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 3px;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #0078D4;
+            border-radius: 3px;
+        }
+
+        /* Table of contents */
+        .toc {
+            background: white;
+            border: 1px solid #dce4ef;
+            border-radius: 8px;
+            padding: 20px 24px;
+            margin-bottom: 32px;
+        }
+
+        .toc h3 {
+            margin-top: 0;
+            font-size: 14px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .toc ol {
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+
+        .toc li {
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .toc li span {
+            color: #666;
+            font-weight: 400;
+            font-size: 13px;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 14px 0;
+            font-size: 13px;
+            background: white;
+            border: 1px solid #dce4ef;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        th {
+            background: #E8EFF7;
+            color: #191970;
+            text-align: left;
+            padding: 10px 14px;
+            font-weight: 600;
+            border-bottom: 1px solid #dce4ef;
+        }
+
+        td {
+            padding: 10px 14px;
+            border-bottom: 1px solid #F0F4FA;
+            vertical-align: top;
+        }
+
+        tr:last-child td { border-bottom: none; }
+
+        /* Lesson-plan style callouts */
+        .lesson-note {
+            background: white;
+            border: 1px solid #dce4ef;
+            border-left: 4px solid #191970;
+            border-radius: 6px;
+            padding: 14px 18px;
+            margin: 14px 0;
+            font-size: 13px;
+        }
+
+        .lesson-note-label {
+            font-weight: 700;
+            color: #191970;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Divider */
+        hr {
+            border: none;
+            border-top: 1px solid #dce4ef;
+            margin: 32px 0;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            margin-top: 48px;
+            padding-top: 20px;
+            border-top: 1px solid #dce4ef;
+        }
+
+        /* Print styles */
+        @media print {
+            body { background: white; }
+            .page { padding: 24px 36px; }
+            .step { break-inside: avoid; }
+            .chapter { break-before: page; }
+            .chapter:first-of-type { break-before: auto; }
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+
+    <!-- COVER -->
+    <div class="cover">
+        <h1>Teacher Guide</h1>
+        <div class="subtitle">Kuwantima Design System</div>
+        <div class="tagline">Your syllabus for walking someone through their first fork, clone, edit, and push.</div>
+    </div>
+
+    <!-- PURPOSE -->
+    <div class="lesson-note">
+        <span class="lesson-note-label">For the teacher</span>
+        <p style="margin-top: 6px;">This guide is for you — the person sitting next to someone who is brand new to GitHub, Git, and .NET. The companion docs (<code>01-your-toolkit.html</code> and <code>02-your-first-project.html</code>) are what your student reads. This is your lesson plan: pre-flight checks, the order to walk through, and the stumbles to anticipate.</p>
+    </div>
+
+    <!-- TABLE OF CONTENTS -->
+    <div class="toc">
+        <h3>In This Guide</h3>
+        <ol>
+            <li>Before You Sit Down <span>— confirm their install is ready</span></li>
+            <li>Fork on GitHub <span>— create their independent copy</span></li>
+            <li>Clone to Their Computer <span>— download and open the repo</span></li>
+            <li>Run the Sandbox <span>— prove it works before touching anything</span></li>
+            <li>Their First Edit <span>— change a color, see the result</span></li>
+            <li>First Commit and Push <span>— save and upload to GitHub</span></li>
+            <li>Customization Paths <span>— where to send them next</span></li>
+            <li>Tone Tips <span>— teaching posture and safety nets</span></li>
+        </ol>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- CHAPTER 1: BEFORE YOU SIT DOWN -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div class="chapter">
+        <span class="chapter-number">Chapter 1</span>
+        <h2>Before You Sit Down</h2>
+        <p class="chapter-intro">Confirm their environment is ready before starting the walkthrough. Debugging installs mid-lesson kills momentum.</p>
+    </div>
+
+    <h3>The Four Prerequisites</h3>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Git</span>
+        <div class="url">https://git-scm.com/downloads</div>
+        <p>Windows installer defaults are fine.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">.NET 10 SDK</span>
+        <div class="url">https://dotnet.microsoft.com/download</div>
+    </div>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">A code editor</span>
+        <p>Visual Studio Community is what <code>01-your-toolkit.html</code> walks them through. VS Code or Rider also work if they prefer.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">A GitHub account</span>
+        <div class="url">https://github.com/signup</div>
+    </div>
+
+    <h3>Verify Their Setup</h3>
+
+    <p>Have them open a terminal and run these two commands:</p>
+
+    <pre>git --version
+dotnet --version</pre>
+
+    <p>Both should print a version number. If either says <em>command not found</em>, the install isn't on their PATH yet.</p>
+
+    <div class="tip">
+        <span class="tip-label">Quick fix</span><br>
+        Restart the terminal first — PATH changes don't propagate to already-open windows. If still broken, reinstall with the "Add to PATH" option checked.
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- CHAPTER 2: FORK -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div class="chapter">
+        <span class="chapter-number">Chapter 2</span>
+        <h2>Fork on GitHub</h2>
+        <p class="chapter-intro">Walk them through creating their own independent copy of the repo on GitHub.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Open the Kuwantima repo</span>
+        <div class="url">https://github.com/Votskwani/Kuwantima</div>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Click the Fork button (top right)</span>
+    </div>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Leave the defaults</span>
+        <p>On the "Create a new fork" page, the defaults are fine. They can rename the repo later if they want.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Click Create fork</span>
+        <p>They now have their own copy at <code>github.com/THEIR-USERNAME/Kuwantima</code>.</p>
+    </div>
+
+    <div class="lesson-note">
+        <span class="lesson-note-label">What to explain</span>
+        <p style="margin-top: 6px;">A fork is a full, independent copy. Nothing they do affects your original. They own it completely — rename it, delete it, wreck it, doesn't matter. This is the safety net that makes every other step low-stakes.</p>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- CHAPTER 3: CLONE -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div class="chapter">
+        <span class="chapter-number">Chapter 3</span>
+        <h2>Clone to Their Computer</h2>
+        <p class="chapter-intro">Download their fork locally so they can open it in their editor.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Copy their fork's HTTPS URL</span>
+        <p>On their fork's GitHub page, click the green <strong>Code</strong> button and copy the HTTPS URL.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Clone and enter the folder</span>
+        <pre>git clone https://github.com/THEIR-USERNAME/Kuwantima.git
+cd Kuwantima</pre>
+    </div>
+
+    <div class="warning">
+        <span class="warning-label">Watch for this</span><br>
+        If they accidentally clone <em>your</em> URL (<code>Votskwani/Kuwantima</code>) instead of their fork, <code>git push</code> will fail later with "permission denied." If that happens, re-clone from their fork's URL.
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- CHAPTER 4: RUN THE SANDBOX -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div class="chapter">
+        <span class="chapter-number">Chapter 4</span>
+        <h2>Run the Sandbox</h2>
+        <p class="chapter-intro">Prove everything works before changing anything. This is the moment they see that the project is real and running on their machine.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Run from the project root</span>
+        <pre>dotnet run --project Kuwantima.Sandbox</pre>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Let them click around</span>
+        <p>The sandbox window should open. Walk them through the pages — Buttons, Inputs, Toggles, Feedback, Containers, Theme Preview, Documents. Toggle light/dark. This is their visual test harness.</p>
+    </div>
+
+    <div class="lesson-note">
+        <span class="lesson-note-label">The loop to name out loud</span>
+        <p style="margin-top: 6px;">Every change they make follows the same rhythm: <strong>edit → save → close → run → see</strong>. Naming the loop now gives them a mental model they'll use every day.</p>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- CHAPTER 5: FIRST EDIT -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div class="chapter">
+        <span class="chapter-number">Chapter 5</span>
+        <h2>Their First Edit</h2>
+        <p class="chapter-intro">Pick something visible and low-risk. The goal is confidence, not complexity.</p>
+    </div>
+
+    <h3>Good First Targets</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Target</th>
+                <th>Where</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Accent color</td>
+                <td><code>Kuwantima/Theme/KuwantimaThemeResources.axaml</code> — find <code>KuwantimaAccentBorder</code> and swap the hex</td>
+            </tr>
+            <tr>
+                <td>Glow color</td>
+                <td>Same file — find <code>KuwantimaGlowBrush</code> and try a different hue</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>The Edit Loop</h3>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Open the file in their editor</span>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Change one color value</span>
+    </div>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Save the file</span>
+    </div>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Close the sandbox window</span>
+        <p>This matters — the running sandbox locks DLLs, so you must close it before rebuilding.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">5</span>
+        <span class="step-title">Run the sandbox again</span>
+        <pre>dotnet run --project Kuwantima.Sandbox</pre>
+    </div>
+
+    <div class="tip">
+        <span class="tip-label">Teaching moment</span><br>
+        The "close before rebuild" step is the most common first stumble. Call it out explicitly the first time, and they'll never forget it.
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- CHAPTER 6: FIRST COMMIT AND PUSH -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div class="chapter">
+        <span class="chapter-number">Chapter 6</span>
+        <h2>First Commit and Push</h2>
+        <p class="chapter-intro">Save the change to their fork on GitHub. This is the milestone moment.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Stage, commit, and push</span>
+        <pre>git add .
+git commit -m "Change accent color to purple"
+git push</pre>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Refresh their fork on GitHub</span>
+        <p>Their commit will appear on the page. <strong>This is a real milestone — acknowledge it.</strong> They just completed the full professional development loop.</p>
+    </div>
+
+    <h3>What Each Command Does</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Command</th>
+                <th>What it does</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>git add .</code></td>
+                <td>Stages all changed files (selects what to include)</td>
+            </tr>
+            <tr>
+                <td><code>git commit -m "..."</code></td>
+                <td>Saves a snapshot with a short description</td>
+            </tr>
+            <tr>
+                <td><code>git push</code></td>
+                <td>Uploads the commit to their GitHub fork</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="tip">
+        <span class="tip-label">If Git asks for credentials every time</span><br>
+        Set up a credential helper so they don't have to re-authenticate:
+        <pre style="margin-left: 0;">git config --global credential.helper store</pre>
+        Or install <a href="https://cli.github.com/">GitHub CLI</a> and run <code>gh auth login</code>.
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- CHAPTER 7: CUSTOMIZATION PATHS -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div class="chapter">
+        <span class="chapter-number">Chapter 7</span>
+        <h2>Customization Paths</h2>
+        <p class="chapter-intro">Once the loop clicks, here's where to send them next.</p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Goal</th>
+                <th>Where to look</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Change all colors</td>
+                <td><code>Kuwantima/Theme/KuwantimaThemeResources.axaml</code></td>
+            </tr>
+            <tr>
+                <td>Modify a control style</td>
+                <td><code>Kuwantima/Styles/Kuwantima{Control}.axaml</code></td>
+            </tr>
+            <tr>
+                <td>Add a new sandbox page</td>
+                <td>Follow the checklist in <code>CLAUDE.md</code></td>
+            </tr>
+            <tr>
+                <td>Rename the project</td>
+                <td>Repo settings on GitHub + namespaces in code</td>
+            </tr>
+            <tr>
+                <td>Publish as their own NuGet package</td>
+                <td>Update <code>.csproj</code> metadata + set up their own API key</td>
+            </tr>
+            <tr>
+                <td>Pull in your latest updates later</td>
+                <td><pre style="margin-left: 0;">git remote add upstream https://github.com/Votskwani/Kuwantima.git
+git pull upstream master</pre></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- CHAPTER 8: TONE TIPS -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div class="chapter">
+        <span class="chapter-number">Chapter 8</span>
+        <h2>Tone Tips</h2>
+        <p class="chapter-intro">The walkthrough goes better when you hold the posture of a guide, not a driver.</p>
+    </div>
+
+    <div class="lesson-note">
+        <span class="lesson-note-label">Let them drive the keyboard</span>
+        <p style="margin-top: 6px;">Resist the urge to reach over and type. Muscle memory only builds through their own hands.</p>
+    </div>
+
+    <div class="lesson-note">
+        <span class="lesson-note-label">Celebrate the first successful push</span>
+        <p style="margin-top: 6px;">It's a real milestone — the moment their work lives on GitHub for the first time. Mark it.</p>
+    </div>
+
+    <div class="lesson-note">
+        <span class="lesson-note-label">Treat breakage as learning</span>
+        <p style="margin-top: 6px;">Error messages are information, not failure. The habit of reading them calmly is one of the most valuable things you can model.</p>
+    </div>
+
+    <div class="lesson-note">
+        <span class="lesson-note-label">"You can always re-fork"</span>
+        <p style="margin-top: 6px;">The ultimate safety net for a beginner: delete the local folder, delete the fork on GitHub, fork again from the original. Clean slate, no harm done. Say this out loud — it takes all the fear out of experimenting.</p>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- COMMON STUMBLES -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <hr>
+
+    <h3>Common Stumbles Reference</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Problem</th>
+                <th>Fix</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>"Permission denied" on push</td>
+                <td>They cloned your repo, not their fork. Re-clone from their fork URL.</td>
+            </tr>
+            <tr>
+                <td>"DLL is locked" on build</td>
+                <td>Close the sandbox window before rebuilding.</td>
+            </tr>
+            <tr>
+                <td>Git asks for credentials every time</td>
+                <td><code>git config --global credential.helper store</code> or use GitHub CLI.</td>
+            </tr>
+            <tr>
+                <td>They accidentally edit <code>master</code></td>
+                <td>Fine — they own the fork. No protection rules needed for solo work.</td>
+            </tr>
+            <tr>
+                <td>They want your latest updates</td>
+                <td>Add upstream remote and <code>git pull upstream master</code> (see Chapter 7).</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- SESSION CHECKLIST -->
+    <hr>
+
+    <h3>Session Checklist</h3>
+
+    <div class="tip">
+        <span class="tip-label">Use this during the walkthrough</span><br>
+        <ul class="checklist">
+            <li>Prerequisites verified (<code>git --version</code> + <code>dotnet --version</code> both print)</li>
+            <li>Fork created on GitHub</li>
+            <li>Fork cloned locally</li>
+            <li>Sandbox runs and they've clicked through the pages</li>
+            <li>First color edit made and visible in the sandbox</li>
+            <li>First commit pushed and visible on GitHub</li>
+            <li>Pointed at customization paths for next steps</li>
+        </ul>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        Kuwantima — Teacher Guide<br>
+        <a href="https://github.com/Votskwani/Kuwantima">github.com/Votskwani/Kuwantima</a>
+    </div>
+
+</div>
+</body>
+</html>
