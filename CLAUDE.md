@@ -50,7 +50,8 @@ When adding or changing controls/features, keep ALL of these in sync:
 1. **Kuwantima.csproj** — update `<Version>` (this is the source of truth)
 2. **KuwantimaPrimaryTheme.axaml** — add new entry to VERSION HISTORY in header comment
 3. **Documents page** — add new version entry to Version History section
-4. **Git tag** — `git tag v{version}` after commit
+4. **Handout stamps** — update `doc-version` in the footer of all three `docs/*.html`
+5. **Git tag** — `git tag v{version}` after commit
 
 ## Retired Resources — Do Not Reintroduce
 These were replaced by Fluent equivalents. Use the Fluent key instead:
@@ -82,8 +83,11 @@ Conventions:
 - **Self-contained** — CSS stays inlined in each file even though ~75% is shared between
   them. A linked stylesheet breaks the moment one handout travels alone. Accept the
   duplication; if you restyle, edit all three.
-- **Version-agnostic** — no version numbers or control counts in the prose, so they don't
-  go stale on every release. Keep it that way.
+- **Version-agnostic prose, one version stamp** — the body text names no version or control
+  count, so a release doesn't stale it. Each file carries exactly one stamp, in the footer
+  (`<span class="doc-version">Written for Kuwantima vX.Y.Z</span>`), so a handout sitting on
+  a USB stick still says which release it belongs to. Keep the stamp the only version string
+  in the file.
 - **Palette** — same story as the library: MidnightBlue on AliceBlue, Inter, 750px column.
 
 ## File Conventions
