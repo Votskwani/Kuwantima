@@ -4,5 +4,6 @@
     <File Path="README.md" />
   </Folder>
   <Project Path="Kuwantima.Sandbox/Kuwantima.Sandbox.csproj" />
+  <Project Path="Kuwantima.Tests/Kuwantima.Tests.csproj" />
   <Project Path="Kuwantima/Kuwantima.csproj" />
 </Solution>

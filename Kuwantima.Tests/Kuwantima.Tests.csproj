@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <!-- Keep these in lockstep with Kuwantima.csproj. A version skew here would
+       test a different Avalonia than the one the library ships against. -->
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="12.0.1" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.0.1" />
+    <PackageReference Include="Avalonia.Headless" Version="12.0.1" />
+    <PackageReference Include="Avalonia.Headless.XUnit" Version="12.0.1" />
+  </ItemGroup>
+
+  <!-- xunit v3, not v2: Avalonia.Headless.XUnit 12.x is built against v3 and pulls
+       xunit.v3.extensibility.core transitively. Keeping the v2 `xunit` package that
+       `dotnet new xunit` scaffolds makes MemberDataAttribute ambiguous (CS0433). -->
+  <ItemGroup>
+    <PackageReference Include="xunit.v3" Version="3.2.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="coverlet.collector" Version="6.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Kuwantima\Kuwantima.csproj" />
+  </ItemGroup>
+
+  <!-- Avalonia's XAML compiler turns .axaml into IL and strips the raw markup: the built
+       Kuwantima assembly exposes exactly one avares asset (!AvaloniaResourceXamlInfo), so
+       the dictionary cannot be read back at runtime. Link the source file in instead — the
+       test then reads the real dictionary and picks up new keys with no edit here. -->
+  <ItemGroup>
+    <EmbeddedResource Include="..\Kuwantima\Theme\KuwantimaThemeResources.axaml"
+                      LogicalName="KuwantimaThemeResources.axaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+</Project>
