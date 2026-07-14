@@ -7,8 +7,9 @@
 # Before running, ensure you have:
 #   1. Updated VERSION HISTORY in KuwantimaPrimaryTheme.axaml
 #   2. Added version entry in DocumentsPage.axaml
-#   3. Updated CLAUDE.md if checklists changed
-#   4. Made all feature/fix changes
+#   3. Updated the doc-version stamp in all three docs/*.html handouts
+#   4. Updated CLAUDE.md if checklists changed
+#   5. Made all feature/fix changes
 #
 # This script will:
 #   1. Update <Version> in Kuwantima.csproj
@@ -46,6 +47,7 @@ echo ""
 echo "Pre-flight checklist:"
 echo "  [ ] VERSION HISTORY updated in KuwantimaPrimaryTheme.axaml?"
 echo "  [ ] Version entry added in DocumentsPage.axaml?"
+echo "  [ ] doc-version stamp bumped in all three docs/*.html handouts?"
 echo "  [ ] README.md updated if needed?"
 echo ""
 read -p "Continue? (y/n) " -n 1 -r
@@ -68,7 +70,7 @@ cd "$REPO_ROOT"
 git add -A
 git commit -m "Release Kuwantima v$VERSION
 
-Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
+Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>"
 echo "  → Committed"
 
 # ── Step 3: Tag ──────────────────────────────────────────────────
