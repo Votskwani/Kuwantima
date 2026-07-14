@@ -14,7 +14,7 @@
             <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
                 <StackPanel Spacing="8" Margin="16">
                     <TextBlock Text="Toggle Buttons" FontWeight="SemiBold" FontSize="14"
-                               Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                               Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
                     <ToggleButton Classes="Kuwantima" Content="Toggle Off" IsChecked="False"
                                   ToolTip.Tip='&lt;ToggleButton Classes="Kuwantima" Content="Toggle Off"/&gt;'/>
                     <ToggleButton Classes="Kuwantima" Content="Toggle On" IsChecked="{Binding IsToggled}"
@@ -31,7 +31,7 @@
             <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto">
                 <StackPanel Spacing="8" Margin="16">
                     <TextBlock Text="Checkboxes" FontWeight="SemiBold" FontSize="14"
-                               Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                               Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
                     <CheckBox Classes="Kuwantima" Content="Unchecked" IsChecked="False"
                               ToolTip.Tip='&lt;CheckBox Classes="Kuwantima"/&gt;'/>
                     <CheckBox Classes="Kuwantima" Content="Checked" IsChecked="{Binding IsChecked}"
@@ -42,7 +42,7 @@
                               ToolTip.Tip='&lt;CheckBox Classes="Kuwantima" IsEnabled="False"/&gt;'/>
 
                     <TextBlock Text="Classic Checkboxes" FontWeight="SemiBold" FontSize="14" Margin="0,8,0,0"
-                               Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                               Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
                     <CheckBox Classes="Kuwantima Classic" Content="Unchecked" IsChecked="False"
                               ToolTip.Tip='&lt;CheckBox Classes="Kuwantima Classic"/&gt;'/>
                     <CheckBox Classes="Kuwantima Classic" Content="Checked" IsChecked="{Binding IsChecked}"
@@ -65,7 +65,7 @@
             <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
                 <StackPanel Spacing="8" Margin="16">
                     <TextBlock Text="Radio Buttons" FontWeight="SemiBold" FontSize="14"
-                               Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                               Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
                     <RadioButton Classes="Kuwantima" Content="Option A" GroupName="Demo" IsChecked="True"
                                  ToolTip.Tip='&lt;RadioButton Classes="Kuwantima" GroupName="G1"/&gt;'/>
                     <RadioButton Classes="Kuwantima" Content="Option B" GroupName="Demo"
@@ -76,7 +76,7 @@
                                  ToolTip.Tip='&lt;RadioButton Classes="Kuwantima" IsEnabled="False"/&gt;'/>
 
                     <TextBlock Text="Classic Radio Buttons" FontWeight="SemiBold" FontSize="14" Margin="0,8,0,0"
-                               Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                               Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
                     <RadioButton Classes="Kuwantima Classic" Content="Option A" GroupName="ClassicDemo" IsChecked="True"
                                  ToolTip.Tip='&lt;RadioButton Classes="Kuwantima Classic" GroupName="G1"/&gt;'/>
                     <RadioButton Classes="Kuwantima Classic" Content="Option B" GroupName="ClassicDemo"
@@ -95,7 +95,7 @@
             <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto">
                 <StackPanel Spacing="8" Margin="16">
                     <TextBlock Text="Menu Toggle Buttons" FontWeight="SemiBold" FontSize="14"
-                               Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                               Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
                     <StackPanel Spacing="4">
                         <ToggleButton Classes="KuwantimaMenu Expanded"
                                       Tag="{StaticResource Icon.Expand}"

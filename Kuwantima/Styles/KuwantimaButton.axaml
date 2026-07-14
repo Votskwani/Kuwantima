@@ -88,7 +88,7 @@
 		<!-- Pressed -->
 		<Style Selector="^:pressed">
 			<Setter Property="Background" Value="{DynamicResource SystemControlBackgroundAccentBrush}"/>
-			<Setter Property="Foreground" Value="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
+			<Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}"/>
 		</Style>
 
 		<!-- Disabled: pin Background/Foreground to prevent Fluent's disabled brushes from double-dimming -->
@@ -104,7 +104,7 @@
 	<!-- ═══ ACCENT: Button.Kuwantima.Accent ═══ -->
 	<Style Selector="Button.Kuwantima.Accent">
 		<Setter Property="Background" Value="{DynamicResource SystemControlBackgroundAccentBrush}"/>
-		<Setter Property="Foreground" Value="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
+		<Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}"/>
 		<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaAccentOrangeBrush}"/>
 
 		<Style Selector="^:pointerover">
@@ -117,7 +117,7 @@
 
 		<Style Selector="^:disabled">
 			<Setter Property="Background" Value="{DynamicResource SystemControlBackgroundAccentBrush}"/>
-			<Setter Property="Foreground" Value="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
+			<Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}"/>
 		</Style>
 	</Style>
 

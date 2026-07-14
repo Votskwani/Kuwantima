@@ -5,6 +5,15 @@
 	App.axaml is all that's needed to apply the full theme:
 
 	VERSION HISTORY:
+	  1.2.0  2026-07-14  Avalonia 12.1.0
+	         • Avalonia 12.0.1 → 12.1.0 — restores the XAML previewer (12.0.0 dropped the
+	           Design.PreviewWith(Control) overload, so every style file's preview errored)
+	         • Removed the dead Avalonia.Diagnostics reference from the sandbox
+	         • Migrated the accent / secondary / tertiary text brushes off the WinUI FillColor keys
+	           Avalonia 12's Fluent no longer ships (they resolved to nothing since 1.1.0)
+	         • Pinned AccentButtonForeground — accent-on-accent text now passes WCAG AA on every state
+	         • Added Invariant_5: every consumed resource key must resolve under both themes
+
 	  1.1.0  2026-04-14  Avalonia 12 upgrade
 	         • Avalonia 11.3.11 → 12.0.1
 	         • Avalonia.Themes.Fluent 11.3.11 → 12.0.1
@@ -49,11 +58,21 @@
 	FLUENT INTEGRATION:
 	  Several Kuwantima brushes were replaced by their Fluent equivalents so
 	  they automatically track system accent and high-contrast changes:
-	    KuwantimaAccentForeground  → TextOnAccentFillColorPrimaryBrush
-	    KuwantimaSecondaryTextBrush → TextFillColorSecondaryBrush
-	    KuwantimaSubtitleTextBrush  → TextFillColorTertiaryBrush
+	    KuwantimaAccentForeground   → AccentButtonForeground
+	    KuwantimaSecondaryTextBrush → SystemControlForegroundBaseMediumHighBrush
+	    KuwantimaSubtitleTextBrush  → SystemControlForegroundBaseMediumBrush
 	  These can be reclaimed by redefining the Fluent keys in
 	  KuwantimaThemeResources.axaml if you need to diverge.
+
+	  Those targets are NOT the ones this comment named until v1.2.0. It pointed at
+	  TextOnAccentFillColorPrimaryBrush / TextFillColor{Secondary,Tertiary}Brush —
+	  WinUI "FillColor" keys that Avalonia 11's Fluent shipped and Avalonia 12's does
+	  not. An unresolvable DynamicResource is silent: no throw, no build error, the
+	  setter simply never applies. So from v1.1.0 (the Avalonia 12 upgrade) until
+	  v1.2.0 every accent control rendered black-on-blue and nothing reported it.
+	  InvariantTests.Invariant_5_every_consumed_resource_key_resolves now fails if any
+	  key this library consumes stops resolving. Do not swap these for a key you have
+	  not probed — Application.Current.TryGetResource, in a throwaway [AvaloniaFact].
 -->
 <Styles xmlns="https://github.com/avaloniaui"
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"

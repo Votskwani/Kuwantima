@@ -98,7 +98,7 @@
 
 		<!-- 2. Checked -->
 		<Style Selector="^:checked">
-			<Setter Property="Foreground" Value="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
+			<Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}"/>
 			<Setter Property="Background" Value="{DynamicResource SystemControlBackgroundAccentBrush}"/>
 			<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaAccentOrangeBrush}"/>
 
@@ -107,7 +107,7 @@
 			</Style>
 
 			<Style Selector="^ /template/ Ellipse#StatusCircle">
-				<Setter Property="Fill" Value="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
+				<Setter Property="Fill" Value="{DynamicResource AccentButtonForeground}"/>
 			</Style>
 		</Style>
 

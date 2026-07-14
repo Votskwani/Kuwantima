@@ -58,7 +58,7 @@
 
 		<!-- Placeholder text color -->
 		<Style Selector="^ /template/ TextBlock#PART_Placeholder">
-			<Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}"/>
+			<Setter Property="Foreground" Value="{DynamicResource TextControlPlaceholderForeground}"/>
 		</Style>
 
 		<!-- Override Fluent template part: border element -->

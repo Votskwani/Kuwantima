@@ -108,11 +108,29 @@ suite goes red. The rest are still on you. Run `dotnet test` before you commit.
 
 ## Retired Resources — Do Not Reintroduce
 These were replaced by Fluent equivalents. Use the Fluent key instead:
-- ~~KuwantimaAccentForeground~~ → `TextOnAccentFillColorPrimaryBrush`
-- ~~KuwantimaSecondaryTextBrush~~ → `TextFillColorSecondaryBrush`
-- ~~KuwantimaSubtitleTextBrush~~ → `TextFillColorTertiaryBrush`
+- ~~KuwantimaAccentForeground~~ → `AccentButtonForeground`
+- ~~KuwantimaSecondaryTextBrush~~ → `SystemControlForegroundBaseMediumHighBrush`
+- ~~KuwantimaSubtitleTextBrush~~ → `SystemControlForegroundBaseMediumBrush`
 - ~~KuwantimaGlassBorder / KuwantimaGlassBorderHover~~ — removed (unused)
 - ~~KuwantimaShadowNormal / Hover / Accent~~ — removed (orphaned)
+
+**This table was wrong from v1.1.0 to v1.2.0, and that is the third time this repo's
+verification trap has fired.** It sent the first three to `TextOnAccentFillColorPrimaryBrush` /
+`TextFillColorSecondaryBrush` / `TextFillColorTertiaryBrush` — WinUI "FillColor" keys that Avalonia
+**11**'s Fluent shipped and Avalonia **12**'s does not. Avalonia 12 dropped the whole family
+(`TextFillColor*`, `TextOnAccentFillColor*`, `ControlFillColor*`, `AccentFillColor*`).
+
+An unresolvable `DynamicResource` is **silent** — no throw, no build error; the setter just never
+applies and the property keeps its default. So from the v1.1.0 Avalonia-12 upgrade onward, 20
+references across 8 style files did nothing: every accent control rendered black-on-blue, and every
+checkmark and radio dot (`Stroke`/`Fill`, not just `Foreground`) rendered dark on its accent chip.
+Contrast happened to stay above AA, which is why eyes never caught it.
+
+Now enforced by `InvariantTests.Invariant_5_every_consumed_resource_key_resolves` — every key the
+library *consumes* must resolve under both variants. The suite previously only checked keys the theme
+*defines*, which is why this ran for two releases. **Before substituting a framework key, probe it**
+(`Application.Current.TryGetResource` in a throwaway `[AvaloniaFact]`). Do not trust this table, the
+theme header, or the style files agreeing with each other — they are one origin, restated.
 
 ## Downstream: Tunatya / Navoti
 Kuwantima **replaces** Navoti in `../Tunatya`. It does not compose with it — they are the same
@@ -128,24 +146,66 @@ Navoti's 12). The Retired Resources list above is, literally, a changelog of wha
   `NavotiOverlayTextBrush`; there is no Kuwantima equivalent. Decide deliberately whether to add them.
 - Migration plan: `Tunatya/NAVOTI-TO-KUWANTIMA.md`
 
-## A verification trap this repo has set twice
-Both of these shipped, and both survived a check that *felt* rigorous:
+## A verification trap this repo has set three times
+Each of these shipped (or nearly), and each survived a check that *felt* rigorous:
 
 - **The control count.** README, `.csproj`, the theme header and the Documents page all said 16.
   Four sources, unanimous — and all wrong, because all four restate a single origin. Checking them
   against each other **confirmed** the error. The truth was `ls Kuwantima/Styles/` minus StreamIcons.
 - **The retired resources.** They were "unused" — measured within Kuwantima only. 27 references were
   live in Tunatya the whole time.
+- **The retired keys' replacements.** The Retired Resources table, the theme header and the migration
+  note all agreed the old brushes mapped to `TextOnAccentFillColorPrimaryBrush` /
+  `TextFillColor*Brush`. Unanimous — and all dead, because Avalonia 12's Fluent dropped that whole
+  family and none of the three sources had asked the framework. Silent for two releases (see
+  Retired Resources above and the accent-text note below).
 
 **Agreement between sources that share an origin is not verification.** Go to ground truth: run
-`dotnet test`, write a throwaway `[AvaloniaFact]`, list the directory, grep the *consumer*. Not to a
-restatement, however many of them agree.
+`dotnet test`, write a throwaway `[AvaloniaFact]`, list the directory, grep the *consumer*, resolve
+the key against the live theme. Not to a restatement, however many of them agree.
 
 ## Color Philosophy
 - **Cool anchor**: MidnightBlue (#191970) / AliceBlue (#F0F8FF)
 - **Warm accent**: Orange (#FF8C00 light / #FFA500 dark) — checked/selected borders
 - **System accent**: #0078D4 (Fluent blue) — filled accent backgrounds
 - Do not introduce colors outside this story without intention
+
+### Accent-on text is pinned DARK, and that is deliberate. Don't "fix" it to white.
+`AccentButtonForeground` is overridden to **Black** in both theme dictionaries
+(`KuwantimaThemeResources.axaml`). That looks wrong for an accent button — light-on-accent is the
+convention — so here is why, measured on `Button.Kuwantima.Accent` (2026-07-14):
+
+The accent button paints **three** backgrounds, and the foreground is set once on the base style, so
+one colour must survive all three. Contrast of each candidate:
+
+| State | Background | White | Black |
+|---|---|---|---|
+| default | `#0078D4` dark blue | 4.53 ✓ | 4.64 ✓ |
+| `:pointerover` | `SystemAccentColorLight3` **pale** blue | **1.53 ✗** | 13.72 ✓ |
+| `:pressed` | orange | **2.33 ✗** | 9–10.6 ✓ |
+
+**Only a dark foreground clears AA on all three states.** White is crisp on the default blue and
+near-invisible on the pale-blue hover and orange press. So Black is not a compromise on quality — it
+is the *only* single value that is accessible everywhere, given these state backgrounds.
+
+Black is also exactly what the button rendered before v1.2.0: the key it referenced
+(`TextOnAccentFillColorPrimaryBrush`) was dead, and an unresolved `Foreground` falls back to Black.
+So the pin **changes no pixels** — it makes the accidental value intentional, resolvable, and
+AA-verified. It also colours the checkmark / radio-dot glyphs, which sit on the same accent chips.
+
+**The trap, recorded because it nearly shipped:** the dead key's Black fallback *passed* AA on all
+states (4.64 / 13.72 / 9). Migrating it to Fluent's `AccentButtonForeground` (white/AliceBlue) made
+the default state crisp but silently dropped hover to 1.53 and press to 2.33 — a contrast regression
+that `Invariant_5` does **not** catch, because the key resolves fine; it is just unreadable.
+Resolution is not readability. This was found by a throwaway `[AvaloniaFact]` that measured every
+foreground against every state background — not by looking at the default state, which looked fixed.
+
+**Deferred to v1.3.0 (the theme-responsive accent redesign):** making the default crisp again means
+either state-aware foregrounds (light default, dark hover/press) or reworking the pale-blue hover and
+orange press backgrounds so light text lives on them. When that lands, encode the contrast contract as
+a permanent invariant (every accent-button state ≥ 4.5:1, both variants) — the mechanical guard that
+would have caught this class of regression, added once the backgrounds are final. Until then: **do not
+swap this to white.**
 
 ## Avalonia Gotchas
 Four framework behaviours that are load-bearing for style authoring here. All four were **verified

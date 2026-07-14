@@ -17,7 +17,7 @@
                         <!-- Buttons -->
                         <StackPanel Spacing="8">
                             <TextBlock Text="Buttons" FontWeight="SemiBold" FontSize="14"
-                                       Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
                             <StackPanel Orientation="Horizontal" Spacing="8">
                                 <Button Classes="Kuwantima Accent" Content="Accent"/>
                                 <Button Classes="Kuwantima" Content="Standard"/>
@@ -27,7 +27,7 @@
                         <!-- Toggles -->
                         <StackPanel Spacing="8">
                             <TextBlock Text="Toggles" FontWeight="SemiBold" FontSize="14"
-                                       Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
                             <StackPanel Orientation="Horizontal" Spacing="8">
                                 <CheckBox Classes="Kuwantima" Content="Check" IsChecked="True"/>
                                 <CheckBox Classes="Kuwantima Classic" Content="Classic" IsChecked="True"/>
@@ -42,7 +42,7 @@
                         <!-- Inputs -->
                         <StackPanel Spacing="8">
                             <TextBlock Text="Inputs" FontWeight="SemiBold" FontSize="14"
-                                       Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
                             <TextBox Classes="Kuwantima" PlaceholderText="Enter text..." Text="Sample input"/>
                             <ComboBox Classes="Kuwantima" SelectedIndex="0" HorizontalAlignment="Stretch">
                                 <ComboBoxItem>Option A</ComboBoxItem>
@@ -53,7 +53,7 @@
                         <!-- Feedback -->
                         <StackPanel Spacing="8">
                             <TextBlock Text="Feedback" FontWeight="SemiBold" FontSize="14"
-                                       Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
                             <Slider Classes="Kuwantima" Value="65" Minimum="0" Maximum="100"/>
                             <ProgressBar Classes="Kuwantima" Value="75" Minimum="0" Maximum="100"/>
                         </StackPanel>
@@ -61,7 +61,7 @@
                         <!-- Containers -->
                         <StackPanel Spacing="8">
                             <TextBlock Text="Containers" FontWeight="SemiBold" FontSize="14"
-                                       Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
                             <Expander Classes="Kuwantima" Header="Expander" IsExpanded="True">
                                 <StackPanel Spacing="4" Margin="4">
                                     <TextBlock Text="Status: Active" FontSize="12"
@@ -83,7 +83,7 @@
                         <!-- Status Colors -->
                         <StackPanel Spacing="8">
                             <TextBlock Text="Status Colors" FontWeight="SemiBold" FontSize="14"
-                                       Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
                             <UniformGrid Columns="3">
                                 <StackPanel Spacing="4" HorizontalAlignment="Center">
                                     <Ellipse Width="32" Height="32" Fill="{DynamicResource SystemFillColorSuccessBrush}"/>
@@ -103,12 +103,12 @@
                         <!-- Glass Panel -->
                         <StackPanel Spacing="8">
                             <TextBlock Text="Glass Panel" FontWeight="SemiBold" FontSize="14"
-                                       Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
                             <Border Classes="KuwantimaGlass" Padding="12">
                                 <StackPanel Spacing="4">
                                     <TextBlock Text="Nested glass panel" FontWeight="SemiBold" FontSize="13"/>
                                     <TextBlock Text="Glass layers stack with increasing depth" FontSize="12"
-                                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                                               Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"/>
                                 </StackPanel>
                             </Border>
                         </StackPanel>
@@ -132,7 +132,7 @@
                         <!-- Buttons -->
                         <StackPanel Spacing="8">
                             <TextBlock Text="Buttons" FontWeight="SemiBold" FontSize="14"
-                                       Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
                             <StackPanel Orientation="Horizontal" Spacing="8">
                                 <Button Classes="Kuwantima Accent" Content="Accent"/>
                                 <Button Classes="Kuwantima" Content="Standard"/>
@@ -142,7 +142,7 @@
                         <!-- Toggles -->
                         <StackPanel Spacing="8">
                             <TextBlock Text="Toggles" FontWeight="SemiBold" FontSize="14"
-                                       Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
                             <StackPanel Orientation="Horizontal" Spacing="8">
                                 <CheckBox Classes="Kuwantima" Content="Check" IsChecked="True"/>
                                 <CheckBox Classes="Kuwantima Classic" Content="Classic" IsChecked="True"/>
@@ -157,7 +157,7 @@
                         <!-- Inputs -->
                         <StackPanel Spacing="8">
                             <TextBlock Text="Inputs" FontWeight="SemiBold" FontSize="14"
-                                       Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
                             <TextBox Classes="Kuwantima" PlaceholderText="Enter text..." Text="Sample input"/>
                             <ComboBox Classes="Kuwantima" SelectedIndex="0" HorizontalAlignment="Stretch">
                                 <ComboBoxItem>Option A</ComboBoxItem>
@@ -168,7 +168,7 @@
                         <!-- Feedback -->
                         <StackPanel Spacing="8">
                             <TextBlock Text="Feedback" FontWeight="SemiBold" FontSize="14"
-                                       Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
                             <Slider Classes="Kuwantima" Value="65" Minimum="0" Maximum="100"/>
                             <ProgressBar Classes="Kuwantima" Value="75" Minimum="0" Maximum="100"/>
                         </StackPanel>
@@ -176,7 +176,7 @@
                         <!-- Containers -->
                         <StackPanel Spacing="8">
                             <TextBlock Text="Containers" FontWeight="SemiBold" FontSize="14"
-                                       Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
                             <Expander Classes="Kuwantima" Header="Expander" IsExpanded="True">
                                 <StackPanel Spacing="4" Margin="4">
                                     <TextBlock Text="Status: Active" FontSize="12"
@@ -198,7 +198,7 @@
                         <!-- Status Colors -->
                         <StackPanel Spacing="8">
                             <TextBlock Text="Status Colors" FontWeight="SemiBold" FontSize="14"
-                                       Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
                             <UniformGrid Columns="3">
                                 <StackPanel Spacing="4" HorizontalAlignment="Center">
                                     <Ellipse Width="32" Height="32" Fill="{DynamicResource SystemFillColorSuccessBrush}"/>
@@ -218,12 +218,12 @@
                         <!-- Glass Panel -->
                         <StackPanel Spacing="8">
                             <TextBlock Text="Glass Panel" FontWeight="SemiBold" FontSize="14"
-                                       Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
                             <Border Classes="KuwantimaGlass" Padding="12">
                                 <StackPanel Spacing="4">
                                     <TextBlock Text="Nested glass panel" FontWeight="SemiBold" FontSize="13"/>
                                     <TextBlock Text="Glass layers stack with increasing depth" FontSize="12"
-                                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                                               Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"/>
                                 </StackPanel>
                             </Border>
                         </StackPanel>

@@ -15,12 +15,12 @@
                                Foreground="{DynamicResource SystemAccentColor}"/>
                     <TextBlock Text="{Binding KuwantimaVersion, StringFormat='v{0}'}"
                                FontSize="14" VerticalAlignment="Bottom" Margin="0,0,0,4"
-                               Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                               Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
                 </StackPanel>
                 <TextBlock Text="A glass-glow design system for Avalonia UI."
-                           FontSize="14" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                           FontSize="14" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"/>
                 <TextBlock Text="One StyleInclude, 15 styled controls, automatic light/dark theming."
-                           FontSize="13" Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                           FontSize="13" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
             </StackPanel>
 
             <!-- License button -->
@@ -53,14 +53,14 @@
             <StackPanel Spacing="8">
                 <TextBlock Text="Quick Start" FontWeight="SemiBold" FontSize="18"/>
                 <TextBlock Text="Add a project reference, then in your App.axaml:" FontSize="13"
-                           Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                           Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"/>
                 <Border Classes="KuwantimaGlass" Padding="12" CornerRadius="6">
                     <SelectableTextBlock FontFamily="Cascadia Code,Consolas,Courier New" FontSize="12"
                                          Foreground="{DynamicResource SystemAccentColor}"
                                          Text="&lt;StyleInclude Source=&quot;avares://Kuwantima/Theme/KuwantimaPrimaryTheme.axaml&quot;/&gt;"/>
                 </Border>
                 <TextBlock Text="Apply Kuwantima styling to individual controls:" FontSize="13" Margin="0,8,0,0"
-                           Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                           Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"/>
                 <Border Classes="KuwantimaGlass" Padding="12" CornerRadius="6">
                     <SelectableTextBlock FontFamily="Cascadia Code,Consolas,Courier New" FontSize="12" xml:space="preserve"
                                          Text="&lt;Button Classes=&quot;Kuwantima&quot; Content=&quot;Click me&quot;/&gt;&#x0a;&lt;CheckBox Classes=&quot;Kuwantima&quot; Content=&quot;Accept terms&quot;/&gt;&#x0a;&lt;TextBox Classes=&quot;Kuwantima&quot; PlaceholderText=&quot;Search...&quot;/&gt;"/>
@@ -135,7 +135,7 @@
             <StackPanel Spacing="8">
                 <TextBlock Text="Theming" FontWeight="SemiBold" FontSize="18"/>
                 <TextBlock Text="Kuwantima's color story is built on three layers:" FontSize="13"
-                           Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                           Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"/>
 
                 <Border Classes="KuwantimaGlass" Padding="16" CornerRadius="6">
                     <StackPanel Spacing="10">
@@ -145,7 +145,7 @@
                             <StackPanel>
                                 <TextBlock Text="Cool Anchor" FontWeight="SemiBold" FontSize="12"/>
                                 <TextBlock Text="MidnightBlue / AliceBlue — tints all Fluent tokens" FontSize="11"
-                                           Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                                           Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"/>
                             </StackPanel>
                         </StackPanel>
                         <!-- Warm accent -->
@@ -154,7 +154,7 @@
                             <StackPanel>
                                 <TextBlock Text="Warm Accent" FontWeight="SemiBold" FontSize="12"/>
                                 <TextBlock Text="Orange — checked/selected borders, contrasts against cool blue" FontSize="11"
-                                           Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                                           Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"/>
                             </StackPanel>
                         </StackPanel>
                         <!-- System accent -->
@@ -163,7 +163,7 @@
                             <StackPanel>
                                 <TextBlock Text="System Accent" FontWeight="SemiBold" FontSize="12"/>
                                 <TextBlock Text="Fluent Blue — filled accent backgrounds (buttons, selections)" FontSize="11"
-                                           Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                                           Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"/>
                             </StackPanel>
                         </StackPanel>
                     </StackPanel>
@@ -175,27 +175,50 @@
                 <TextBlock Text="Version History" FontWeight="SemiBold" FontSize="18"/>
                 <Border Classes="KuwantimaGlass" Padding="16" CornerRadius="6">
                     <StackPanel Spacing="12">
+                        <!-- v1.2.0 -->
+                        <StackPanel Spacing="6">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <Border Background="{DynamicResource SystemControlBackgroundAccentBrush}"
+                                        CornerRadius="4" Padding="8,2">
+                                    <TextBlock Text="v1.2.0" FontWeight="Bold" FontSize="12"
+                                               Foreground="{DynamicResource AccentButtonForeground}"/>
+                                </Border>
+                                <TextBlock Text="2026-07-14" FontSize="12" VerticalAlignment="Center"
+                                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                                <TextBlock Text="Avalonia 12.1.0" FontSize="12" VerticalAlignment="Center"
+                                           FontWeight="SemiBold"/>
+                            </StackPanel>
+                            <StackPanel Spacing="3" Margin="12,0,0,0">
+                                <TextBlock FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"
+                                           Text="Avalonia 12.0.1 → 12.1.0 (restores the XAML previewer)"/>
+                                <TextBlock FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"
+                                           Text="Fixed text-color keys dropped by Avalonia 12's Fluent"/>
+                                <TextBlock FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"
+                                           Text="Removed unused Avalonia.Diagnostics reference"/>
+                            </StackPanel>
+                        </StackPanel>
+
                         <!-- v1.1.0 -->
                         <StackPanel Spacing="6">
                             <StackPanel Orientation="Horizontal" Spacing="10">
                                 <Border Background="{DynamicResource SystemControlBackgroundAccentBrush}"
                                         CornerRadius="4" Padding="8,2">
                                     <TextBlock Text="v1.1.0" FontWeight="Bold" FontSize="12"
-                                               Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
+                                               Foreground="{DynamicResource AccentButtonForeground}"/>
                                 </Border>
                                 <TextBlock Text="2026-04-14" FontSize="12" VerticalAlignment="Center"
-                                           Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
                                 <TextBlock Text="Avalonia 12 Upgrade" FontSize="12" VerticalAlignment="Center"
                                            FontWeight="SemiBold"/>
                             </StackPanel>
                             <StackPanel Spacing="3" Margin="12,0,0,0">
-                                <TextBlock FontSize="11" Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                <TextBlock FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"
                                            Text="Avalonia 11.3.11 → 12.0.1"/>
-                                <TextBlock FontSize="11" Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                <TextBlock FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"
                                            Text="CommunityToolkit.Mvvm 8.2.1 → 8.4.2"/>
-                                <TextBlock FontSize="11" Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                <TextBlock FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"
                                            Text="TextBox.Watermark → PlaceholderText (Avalonia 12 rename)"/>
-                                <TextBlock FontSize="11" Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                <TextBlock FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"
                                            Text="Removed obsolete BindingPlugins workaround"/>
                             </StackPanel>
                         </StackPanel>
@@ -206,29 +229,29 @@
                                 <Border Background="{DynamicResource SystemControlBackgroundAccentBrush}"
                                         CornerRadius="4" Padding="8,2">
                                     <TextBlock Text="v1.0.0" FontWeight="Bold" FontSize="12"
-                                               Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
+                                               Foreground="{DynamicResource AccentButtonForeground}"/>
                                 </Border>
                                 <TextBlock Text="2025-03-11" FontSize="12" VerticalAlignment="Center"
-                                           Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
                                 <TextBlock Text="Initial Release" FontSize="12" VerticalAlignment="Center"
                                            FontWeight="SemiBold"/>
                             </StackPanel>
                             <StackPanel Spacing="3" Margin="12,0,0,0">
-                                <TextBlock FontSize="11" Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                <TextBlock FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"
                                            Text="15 styled controls with Kuwantima class-based styling"/>
-                                <TextBlock FontSize="11" Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                <TextBlock FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"
                                            Text="Classic variants for CheckBox and RadioButton"/>
-                                <TextBlock FontSize="11" Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                <TextBlock FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"
                                            Text="Accent variant for Button"/>
-                                <TextBlock FontSize="11" Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                <TextBlock FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"
                                            Text="GridSplitter variants: Pill, Arrow (horizontal + vertical)"/>
-                                <TextBlock FontSize="11" Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                <TextBlock FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"
                                            Text="Full Fluent palette override (28 tokens, Light + Dark)"/>
-                                <TextBlock FontSize="11" Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                <TextBlock FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"
                                            Text="Glass-glow border and shadow system"/>
-                                <TextBlock FontSize="11" Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                <TextBlock FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"
                                            Text="Fluent brush integration (accent foreground, secondary/tertiary text)"/>
-                                <TextBlock FontSize="11" Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                <TextBlock FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"
                                            Text="Tooltip, Splitter, and semantic status theme resources"/>
                             </StackPanel>
                         </StackPanel>
@@ -250,7 +273,7 @@
             <StackPanel Spacing="4">
                 <Separator Height="1" Background="{DynamicResource KuwantimaDarkBorderBrush}" Margin="0,8"/>
                 <TextBlock Text="MIT License" FontSize="12"
-                           Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
             </StackPanel>
 
         </StackPanel>

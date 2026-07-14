@@ -11,7 +11,7 @@
             <!-- Sliders -->
             <StackPanel Spacing="8">
                 <TextBlock Text="Sliders" FontWeight="SemiBold" FontSize="14"
-                           Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
                 <Slider Classes="Kuwantima" Value="{Binding SliderValue}" Minimum="0" Maximum="100"/>
                 <Slider Classes="Kuwantima" Value="30" Minimum="0" Maximum="100"/>
                 <Slider Classes="Kuwantima" Value="75" Minimum="0" Maximum="100" IsEnabled="False"/>
@@ -20,7 +20,7 @@
             <!-- Progress Bars -->
             <StackPanel Spacing="8">
                 <TextBlock Text="Progress Bars" FontWeight="SemiBold" FontSize="14"
-                           Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
                 <ProgressBar Classes="Kuwantima" Value="{Binding ProgressValue}" Minimum="0" Maximum="100"/>
                 <ProgressBar Classes="Kuwantima" Value="80" Minimum="0" Maximum="100"/>
                 <ProgressBar Classes="Kuwantima" Value="100" Minimum="0" Maximum="100"/>
@@ -31,7 +31,7 @@
             <!-- Expanders -->
             <StackPanel Spacing="8">
                 <TextBlock Text="Expanders" FontWeight="SemiBold" FontSize="14"
-                           Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
                 <Expander Classes="Kuwantima" Header="Vehicle Details" IsExpanded="True">
                     <StackPanel Spacing="4" Margin="4">
                         <TextBlock Text="ID: VH-2048" FontSize="12"/>

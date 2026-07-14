@@ -75,7 +75,7 @@
 		<Setter Property="Cursor" Value="Hand"/>
 		<Setter Property="FocusAdorner" Value="{x:Null}"/>
 		<Setter Property="MaxDropDownHeight" Value="320"/>
-		<Setter Property="PlaceholderForeground" Value="{DynamicResource TextFillColorSecondaryBrush}"/>
+		<Setter Property="PlaceholderForeground" Value="{DynamicResource TextControlPlaceholderForeground}"/>
 
 		<Setter Property="Template">
 			<ControlTemplate>
@@ -177,7 +177,7 @@
 			<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaAccentOrangeBrush}"/>
 		</Style>
 		<Style Selector="^:pressed /template/ ContentControl#ContentPresenter">
-			<Setter Property="Foreground" Value="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
+			<Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}"/>
 		</Style>
 
 		<!-- Dropdown open: accent border, chevron rotates to point down -->
@@ -250,7 +250,7 @@
 		<!-- Selected -->
 		<Style Selector="^:selected /template/ ContentPresenter#PART_ContentPresenter">
 			<Setter Property="Background" Value="{DynamicResource SystemControlBackgroundAccentBrush}"/>
-			<Setter Property="Foreground" Value="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
+			<Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}"/>
 			<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaAccentOrangeBrush}"/>
 			<Setter Property="BorderThickness" Value="2,0,0,0"/>
 		</Style>

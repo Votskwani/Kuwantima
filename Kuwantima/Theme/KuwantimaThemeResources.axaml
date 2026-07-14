@@ -11,10 +11,13 @@
 	  Kuwantima{Category}{Variant}  e.g. KuwantimaGlassGlowBorderHover
 
 	RETIRED KEYS (replaced by Fluent equivalents — see KuwantimaPrimaryTheme):
-	  KuwantimaAccentForeground   → TextOnAccentFillColorPrimaryBrush
-	  KuwantimaSecondaryTextBrush → TextFillColorSecondaryBrush
-	  KuwantimaSubtitleTextBrush  → TextFillColorTertiaryBrush
+	  KuwantimaAccentForeground   → AccentButtonForeground
+	  KuwantimaSecondaryTextBrush → SystemControlForegroundBaseMediumHighBrush
+	  KuwantimaSubtitleTextBrush  → SystemControlForegroundBaseMediumBrush
 	  To override, redefine the Fluent key in the appropriate ThemeDictionary.
+	  (Until v1.2.0 this table named the WinUI TextFillColor*/TextOnAccentFillColor*
+	   keys. Avalonia 12's Fluent does not ship them — they resolved to nothing, in
+	   silence, for two releases. Probe before you substitute; see PrimaryTheme.)
 
 	RESOURCE CATALOG:
 	┌────────────────────────────────────────┬──────────────────────────────────┐
@@ -81,6 +84,16 @@
 			<SolidColorBrush x:Key="KuwantimaDarkBorderBrush" Color="Transparent"/>
 			<SolidColorBrush x:Key="KuwantimaAccentOrangeBrush" Color="#FF8C00" />
 
+			<!-- Accent-button text. Deliberately DARK, overriding Fluent's light AccentButtonForeground.
+			     The accent button paints THREE backgrounds — dark blue (default), pale blue (:pointerover),
+			     orange (:pressed) — and only a dark foreground clears WCAG AA on all three; white measures
+			     1.53:1 on hover and 2.33:1 on press. This key also colours the checkmark / radio-dot glyphs,
+			     which sit on the same accent chips. Black here is the value the button already rendered before
+			     v1.2.0 (the retired key resolved to nothing and fell back to Black), so this changes no pixels —
+			     it just makes that intentional and AA-verified. Crisp light text + state-aware colour is the
+			     v1.3.0 accent redesign; see CLAUDE.md "Accent-on text". -->
+			<SolidColorBrush x:Key="AccentButtonForeground" Color="Black" />
+
 			<!-- Text — semantic labels (no Fluent equivalent) -->
 			<SolidColorBrush x:Key="KuwantimaSuccessTextBrush" Color="#0E700E" />
 			<SolidColorBrush x:Key="KuwantimaWarningTextBrush" Color="#C23616" />
@@ -121,6 +134,11 @@
 			<SolidColorBrush x:Key="KuwantimaControlHoverBrush" Color="#80D4DFFF"/>
 			<SolidColorBrush x:Key="KuwantimaDarkBorderBrush" Color="#20FFFFFF"/>
 			<SolidColorBrush x:Key="KuwantimaAccentOrangeBrush" Color="#FFA500" />
+
+			<!-- Accent-button text — dark by design; see the Light dictionary and CLAUDE.md. Same value in
+			     both variants because the accent backgrounds it sits on (blue / pale blue / orange) are
+			     themselves theme-invariant, so a theme-varying foreground would buy nothing. -->
+			<SolidColorBrush x:Key="AccentButtonForeground" Color="Black" />
 
 			<!-- Text — semantic labels (no Fluent equivalent) -->
 			<SolidColorBrush x:Key="KuwantimaSuccessTextBrush" Color="#6CCB5F" />

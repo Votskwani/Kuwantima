@@ -135,7 +135,7 @@
 		<!-- Selected -->
 		<Style Selector="^:selected /template/ ContentPresenter#PART_ContentPresenter">
 			<Setter Property="Background" Value="{DynamicResource SystemControlBackgroundAccentBrush}"/>
-			<Setter Property="Foreground" Value="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
+			<Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}"/>
 			<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaAccentOrangeBrush}"/>
 			<Setter Property="BorderThickness" Value="2,0,0,0"/>
 		</Style>

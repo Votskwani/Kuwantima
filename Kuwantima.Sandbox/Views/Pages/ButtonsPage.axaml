@@ -12,7 +12,7 @@
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel Spacing="8" Margin="8">
                         <TextBlock Text="Standard Buttons" FontWeight="SemiBold" FontSize="14"
-                                   Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                                   Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
                         <Button Classes="Kuwantima" Content="Standard"/>
                         <Button Classes="Kuwantima Accent" Content="Accent"/>
                         <Button Classes="Kuwantima Link" Content="Link Style"/>
@@ -36,7 +36,7 @@
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel Spacing="8" Margin="8">
                         <TextBlock Text="Icon Buttons" FontWeight="SemiBold" FontSize="14"
-                                   Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                                   Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
                         <Button Classes="Kuwantima Accent">
                             <StackPanel Orientation="Horizontal" Spacing="8">
                                 <PathIcon Data="{StaticResource Icon.Search}" Width="14" Height="14"/>
@@ -71,7 +71,7 @@
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel Spacing="8" Margin="8">
                         <TextBlock Text="Icon-Only" FontWeight="SemiBold" FontSize="14"
-                                   Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                                   Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
                         <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left">
                             <Button Classes="Kuwantima Minimal" Margin="0,0,8,8"
                                     ToolTip.Tip="Home">
@@ -106,7 +106,7 @@
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel Spacing="8" Margin="8">
                         <TextBlock Text="Tooltips" FontWeight="SemiBold" FontSize="14"
-                                   Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                                   Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
                         <Button Classes="Kuwantima" Content="Hover me"
                                 ToolTip.Tip="This is a Kuwantima styled tooltip"/>
                         <Button Classes="Kuwantima Accent" Content="Or me"

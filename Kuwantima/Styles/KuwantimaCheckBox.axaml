@@ -153,7 +153,7 @@
 
 		<!-- 2. Checked -->
 		<Style Selector="^:checked">
-			<Setter Property="Foreground" Value="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
+			<Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}"/>
 			<Setter Property="Background" Value="{DynamicResource SystemControlBackgroundAccentBrush}"/>
 			<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaAccentOrangeBrush}"/>
 
@@ -162,7 +162,7 @@
 			</Style>
 
 			<Style Selector="^ /template/ Path#CheckGlyph">
-				<Setter Property="Stroke" Value="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
+				<Setter Property="Stroke" Value="{DynamicResource AccentButtonForeground}"/>
 				<Setter Property="Opacity" Value="1"/>
 			</Style>
 		</Style>
@@ -174,7 +174,7 @@
 
 		<!-- 4. Indeterminate -->
 		<Style Selector="^:indeterminate">
-			<Setter Property="Foreground" Value="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
+			<Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}"/>
 			<Setter Property="Background" Value="{DynamicResource SystemControlBackgroundAccentBrush}"/>
 			<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaAccentOrangeBrush}"/>
 
@@ -188,7 +188,7 @@
 			</Style>
 
 			<Style Selector="^ /template/ Border#IndeterminateRing Rectangle">
-				<Setter Property="Fill" Value="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
+				<Setter Property="Fill" Value="{DynamicResource AccentButtonForeground}"/>
 			</Style>
 		</Style>
 
@@ -289,7 +289,7 @@
 				<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaAccentOrangeBrush}"/>
 			</Style>
 			<Style Selector="^ /template/ Path#CheckGlyph">
-				<Setter Property="Stroke" Value="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
+				<Setter Property="Stroke" Value="{DynamicResource AccentButtonForeground}"/>
 				<Setter Property="Opacity" Value="1"/>
 			</Style>
 		</Style>
@@ -313,7 +313,7 @@
 				<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaAccentOrangeBrush}"/>
 			</Style>
 			<Style Selector="^ /template/ Border#IndeterminateBorder Rectangle">
-				<Setter Property="Fill" Value="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
+				<Setter Property="Fill" Value="{DynamicResource AccentButtonForeground}"/>
 			</Style>
 		</Style>
 

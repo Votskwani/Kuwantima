@@ -1,8 +1,10 @@
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Headless.XUnit;
 using Avalonia.Input;
+using Avalonia.Styling;
 using Avalonia.Threading;
 
 namespace Kuwantima.Tests;
@@ -634,18 +636,28 @@ public class InvariantTests
     /// </summary>
     private static string[] ReferencedKeys(XDocument doc)
     {
-        var fromMarkupExtensions = doc.Descendants()
-            .SelectMany(e => e.Attributes())
-            .SelectMany(a => ResourceReference.Matches(a.Value))
-            .Select(m => m.Groups[1].Value.Trim());
-
         var fromDeclarations = doc.Descendants()
             .Select(e => (string?)e.Attribute(Xaml + "Key"))
             .Where(k => k is not null)
             .Select(k => k!);
 
-        return fromMarkupExtensions.Concat(fromDeclarations).Distinct(StringComparer.Ordinal).ToArray();
+        return ConsumedKeys(doc).Concat(fromDeclarations).Distinct(StringComparer.Ordinal).ToArray();
     }
+
+    /// <summary>
+    /// The keys a document CONSUMES — {DynamicResource X} / {StaticResource X} only, with x:Key declarations
+    /// excluded. <see cref="ReferencedKeys"/> deliberately lumps the two together, because DECLARING a retired
+    /// key is as much a violation as using one. The resolution invariant below needs the opposite: a declaration
+    /// is trivially resolvable (it is the definition), so folding declarations in would make the test tautological
+    /// for every key ThemeResources defines.
+    /// </summary>
+    private static string[] ConsumedKeys(XDocument doc) =>
+        doc.Descendants()
+           .SelectMany(e => e.Attributes())
+           .SelectMany(a => ResourceReference.Matches(a.Value))
+           .Select(m => m.Groups[1].Value.Trim())
+           .Distinct(StringComparer.Ordinal)
+           .ToArray();
 
     private static string[] RetiredKeysIn(XDocument doc) =>
         ReferencedKeys(doc).Where(k => Retired.Contains(k, StringComparer.Ordinal))
@@ -671,10 +683,15 @@ public class InvariantTests
             $"{logicalName} references resource key(s) that CLAUDE.md retired: {string.Join(", ", violations)}."
             + Environment.NewLine
             + "These were replaced by Fluent equivalents so the theme tracks system accent and high-contrast "
-            + "changes automatically: KuwantimaAccentForeground → TextOnAccentFillColorPrimaryBrush, "
-            + "KuwantimaSecondaryTextBrush → TextFillColorSecondaryBrush, KuwantimaSubtitleTextBrush → "
-            + "TextFillColorTertiaryBrush. The GlassBorder and Shadow keys were removed outright. A retired key "
-            + "resolves to nothing, so the property silently falls back to its default.");
+            + "changes automatically: KuwantimaAccentForeground → AccentButtonForeground, "
+            + "KuwantimaSecondaryTextBrush → SystemControlForegroundBaseMediumHighBrush, KuwantimaSubtitleTextBrush "
+            + "→ SystemControlForegroundBaseMediumBrush. The GlassBorder and Shadow keys were removed outright. "
+            + "A retired key resolves to nothing, so the property silently falls back to its default."
+            + Environment.NewLine
+            + "Those three replacements are not the ones this message named until v1.2.0: it sent authors to the "
+            + "WinUI TextFillColor*/TextOnAccentFillColor* keys, which Avalonia 12's Fluent does not ship. This "
+            + "test enforced a migration onto keys that resolved to nothing — the exact failure it warns about, "
+            + "in its own last sentence. Invariant_5_every_consumed_resource_key_resolves now catches that.");
     }
 
     [AvaloniaFact]
@@ -785,5 +802,74 @@ public class InvariantTests
             : lines.Skip(header + 2)                      // skip the header row and the |---|---| separator
                    .TakeWhile(l => l.StartsWith('|'))
                    .Count();
+    }
+
+    // ───────────────────────────────────────────────────────────────────────────────
+    // Invariant 5 — every key the library CONSUMES actually resolves
+    // ───────────────────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// ThemeIntegrityTests proves every key the theme DEFINES resolves under both variants. Nothing proved the
+    /// same of the keys it CONSUMES — and the gap shipped a real bug for two releases.
+    ///
+    /// Avalonia 12's Fluent theme does not carry the WinUI "FillColor" resource family that Avalonia 11 did:
+    /// TextFillColor*, TextOnAccentFillColor*, ControlFillColor* and AccentFillColor* are all absent. Kuwantima
+    /// referenced two of them — TextOnAccentFillColorPrimaryBrush in seven style files (the Foreground of every
+    /// accent control, and the Stroke/Fill of every checkmark and radio dot) and TextFillColorSecondaryBrush in
+    /// two more. An unresolvable DynamicResource does not throw and does not fail the build: the setter is simply
+    /// never applied and the property keeps its default. So accent buttons rendered black-on-blue, and no test —
+    /// and no build — said a word.
+    ///
+    /// This closes that hole for the whole class of failure, not just the two keys that caused it. It is the
+    /// mechanical half of CLAUDE.md's rule that agreement between sources sharing an origin is not verification:
+    /// the style files, the theme header and the retired-keys migration note all AGREED on
+    /// TextOnAccentFillColorPrimaryBrush. They were unanimous, and they were wrong, because none of them had
+    /// asked the framework. This test asks the framework.
+    /// </summary>
+    [AvaloniaTheory]
+    [MemberData(nameof(AllShippedMarkup))]
+    public void Invariant_5_every_consumed_resource_key_resolves(string logicalName)
+    {
+        var app = Application.Current
+                  ?? throw new InvalidOperationException("No Application — this must run as an [AvaloniaTheory].");
+
+        var doc = Load(logicalName);
+        var consumed = ConsumedKeys(doc);
+
+        // Non-vacuity guard. A file may legitimately consume NOTHING — KuwantimaThemeResources.axaml is pure
+        // definition, every brush built from a literal colour — so "zero references" is only suspicious in a file
+        // that declares no resources either. Such a file must be markup the parser has stopped understanding.
+        var declaresResources = doc.Descendants().Any(e => e.Attribute(Xaml + "Key") is not null);
+
+        Assert.True(
+            consumed.Length > 0 || declaresResources,
+            $"{logicalName}: the extractor found neither a {{DynamicResource}}/{{StaticResource}} reference nor an "
+            + "x:Key declaration. A shipped .axaml that does neither is not markup this parser still understands — "
+            + "the test has gone vacuous, which is worse than not having it.");
+
+        if (consumed.Length == 0)
+            return;   // definitions-only dictionary: nothing consumed, nothing to resolve.
+
+        var dead = new List<string>();
+        foreach (var key in consumed.OrderBy(k => k, StringComparer.Ordinal))
+        {
+            var inLight = app.TryGetResource(key, ThemeVariant.Light, out var light) && light is not null;
+            var inDark = app.TryGetResource(key, ThemeVariant.Dark, out var dark) && dark is not null;
+
+            if (!inLight || !inDark)
+                dead.Add($"{key} (missing in {(!inLight && !inDark ? "BOTH variants" : !inLight ? "Light" : "Dark")})");
+        }
+
+        Assert.True(
+            dead.Count == 0,
+            $"{logicalName} consumes {dead.Count} resource key(s) that do not resolve:" + Environment.NewLine
+            + string.Join(Environment.NewLine, dead.Select(d => "  • " + d)) + Environment.NewLine + Environment.NewLine
+            + "An unresolvable DynamicResource is SILENT: it does not throw, it does not fail the build, and the "
+            + "property quietly keeps its default value. The control looks subtly wrong and nothing reports it."
+            + Environment.NewLine + Environment.NewLine
+            + "If a key vanished in an Avalonia upgrade, do not guess its replacement — probe for it. A throwaway "
+            + "[AvaloniaFact] calling Application.Current.TryGetResource over your candidates answers it in under a "
+            + "minute. That is how AccentButtonForeground and TextControlPlaceholderForeground were found when "
+            + "Avalonia 12 dropped the WinUI FillColor family.");
     }
 }
