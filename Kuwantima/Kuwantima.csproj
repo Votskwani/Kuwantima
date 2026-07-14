@@ -7,7 +7,7 @@
 
     <!-- NuGet package metadata -->
     <PackageId>Kuwantima</PackageId>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
     <Authors>Cole Larson</Authors>
     <Description>A glass-glow design system for Avalonia UI. 15 styled controls, automatic light/dark theming, Fluent palette integration.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -24,8 +24,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="12.0.1" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.0.1" />
+    <PackageReference Include="Avalonia" Version="12.1.0" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.0" />
   </ItemGroup>
 
 </Project>

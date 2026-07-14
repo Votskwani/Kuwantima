@@ -10,10 +10,10 @@
   <!-- Keep these in lockstep with Kuwantima.csproj. A version skew here would
        test a different Avalonia than the one the library ships against. -->
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="12.0.1" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.0.1" />
-    <PackageReference Include="Avalonia.Headless" Version="12.0.1" />
-    <PackageReference Include="Avalonia.Headless.XUnit" Version="12.0.1" />
+    <PackageReference Include="Avalonia" Version="12.1.0" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.0" />
+    <PackageReference Include="Avalonia.Headless" Version="12.1.0" />
+    <PackageReference Include="Avalonia.Headless.XUnit" Version="12.1.0" />
   </ItemGroup>
 
   <!-- xunit v3, not v2: Avalonia.Headless.XUnit 12.x is built against v3 and pulls
