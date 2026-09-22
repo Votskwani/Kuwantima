@@ -89,8 +89,14 @@ suite goes red. The rest are still on you. Run `dotnet test` before you commit.
 ### New Theme Resource Checklist
 1. **Define in both themes** — Light AND Dark dictionaries in `KuwantimaThemeResources.axaml`
 2. **Resource catalog** — update the table in the `KuwantimaThemeResources.axaml` header comment
-3. **Documents page** — add to Available Theme Resources table if user-facing
-4. **README.md** — add to Available Theme Resources table
+3. **README.md** — add to the Available Theme Resources table. If the key is **Fluent's**, being
+   overridden rather than introduced, it goes in the *Fluent keys Kuwantima overrides* table instead,
+   with the contrast reason — a consumer who re-overrides it needs to know what it was protecting.
+4. **Documents page** — it has no resource table, only the three-layer colour-story card. Update that
+   card only if the *story* changed (a new layer, or a layer's role changed), not for every key.
+5. **Contrast** — if anything readable sits on it, add the (ink, surface) pair to `Invariant_6`
+   (`InvariantTests.Contrast.cs`) and let it measure both variants. Translucent? Give it the backdrop
+   chain so it is composited rather than read as a literal.
 
 ### New Sandbox Page Checklist
 1. **AXAML + code-behind** — `Kuwantima.Sandbox/Views/Pages/{Name}Page.axaml(.cs)`
@@ -255,8 +261,10 @@ it. Widening it to cover a failure that has no agreed fix yet would only produce
 to keep the suite green.
 
 ## Avalonia Gotchas
-Four framework behaviours that are load-bearing for style authoring here. All four were **verified
-headlessly** rather than assumed, because reasoning got at least two of them backwards.
+Framework behaviours that are load-bearing for authoring styles here, and for *measuring* them.
+Every one was **verified headlessly** rather than assumed, because reasoning got several backwards.
+(Deliberately not numbered — a maintained count is the same liability as the control count, and it
+had already gone stale once.)
 
 - **Setters resolve by DOCUMENT ORDER, not selector specificity.** Unlike CSS. A later, *less*
   specific selector overrides an earlier, more specific one. This is why the GridSplitter's
@@ -282,8 +290,28 @@ headlessly** rather than assumed, because reasoning got at least two of them bac
   DO-NOT-DELETE comment. Compiled XAML (`App.axaml`'s `<StyleInclude>`) references the assembly at
   load time and is unaffected, which is why this only ever hit the headless harness.
 
+### Measuring a style is its own set of traps
+The probes are as easy to get wrong as the styles, and a wrong probe is worse than none — it
+produces a confident number. All three of these were hit in one session:
+
+- **A translucent brush has NO contrast of its own. Only the blend does.** Reading the hex of
+  `#80D4DFFF` tells you nothing; composite it source-over onto the surface it actually sits on
+  (the glass panel is usually the worse backdrop, and the one most controls sit on). This is why a
+  3.25:1 hover shipped unnoticed — as a colour literal it looks entirely reasonable.
+- **Transitions poison a property read.** The base Button sets a 0.2s `BrushTransition` on
+  `Background`/`BorderBrush`. Toggle a pseudo-class and read the property back and you get an
+  *interpolated* value, not the style's target — a probe that silently measures a colour the design
+  never specifies. Set `control.Transitions = null` before asserting.
+- **Synthetic mouse events do not produce `:pointerover` on a non-foreground window.** `SetCursorPos`
+  onto a control from a background process leaves it un-hovered, and `SetForegroundWindow` from a
+  background process often fails silently. Screen-scraping a hover state this way produces frames
+  that look like real renders and are not — mid-repaint captures that read as plausible bugs. Force
+  the pseudo-class headlessly (`((IPseudoClasses)c.Classes).Add(":pointerover")`) and read the
+  resolved values; use the sandbox for human judgement, not for automated measurement.
+
 When you next have a question of this kind, **do not reason about it — probe it.** A throwaway
-`[AvaloniaFact]` answers it in under a minute, and the harness already exists.
+`[AvaloniaFact]` answers it in under a minute, and the harness already exists. Then check the probe
+itself: if it disagrees with what you can see, suspect the probe before the framework.
 
 ### The 12.1.3 upgrade, and the shape of the mistake it produced
 Worth keeping, because the evidence was consistent and pointed the wrong way — the same failure mode

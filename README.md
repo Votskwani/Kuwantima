@@ -112,6 +112,7 @@ Custom brushes are defined in `KuwantimaThemeResources.axaml` inside `ThemeDicti
 | `KuwantimaGlassGlow` | Outer glow shadow at rest (BoxShadows) |
 | `KuwantimaGlassGlowHover` | Outer glow shadow on hover (BoxShadows) |
 | `KuwantimaControlHoverBrush` | Background tint on pointer-over |
+| `KuwantimaAccentGlowPressed` | Warm outer glow on accent press (BoxShadows) |
 | `KuwantimaAccentOrangeBrush` | Warm border for checked/selected state |
 | `KuwantimaDarkBorderBrush` | Subtle separator (dark theme only) |
 | `KuwantimaSuccessTextBrush` | Positive-outcome label text |
@@ -123,6 +124,17 @@ Custom brushes are defined in `KuwantimaThemeResources.axaml` inside `ThemeDicti
 | `SystemFillColorSuccessBrush` | Green status indicator |
 | `SystemFillColorAttentionBrush` | Blue status indicator |
 | `SystemFillColorCautionBrush` | Yellow status indicator |
+
+### Fluent keys Kuwantima overrides
+
+These are Avalonia Fluent's own keys, re-pointed so text stays readable on Kuwantima's surfaces.
+Override them yourself only if you also re-check contrast against the backgrounds they land on.
+
+| Key | Kuwantima value | Why |
+|-----|-----------------|-----|
+| `AccentButtonForeground` | White | Ink on accent fills, checkmarks and radio dots. The accent ramp darkens on interaction so one light ink clears WCAG AA on every state (4.53 / 7.32 / 10.50). |
+| `SystemControlForegroundBaseMediumBrush` | `#55557F` / `#C8D4E8` | Fluent's value failed AA on the glass panel and on hovered controls. |
+| `TextControlPlaceholderForeground` | `#55557F` / `#C8D4E8` | Same tone. A hovered empty TextBox puts placeholder text on the hover tint, which Fluent's value did not survive. |
 
 ## Sandbox
 
