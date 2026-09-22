@@ -38,7 +38,7 @@ namespace Kuwantima.Tests;
 /// argued, not asserted. An exemption the invariant genuinely allows is not a weakening. An
 /// exemption invented to turn a red test green would be — so each one carries its reason in code.
 /// </summary>
-public class InvariantTests
+public partial class InvariantTests
 {
     private static readonly XNamespace Av = "https://github.com/avaloniaui";
     private static readonly XNamespace Xaml = "http://schemas.microsoft.com/winfx/2006/xaml";

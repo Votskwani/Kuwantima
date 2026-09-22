@@ -142,7 +142,7 @@
 
 		<!-- Selected + Hover -->
 		<Style Selector="^:selected:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-			<Setter Property="Background" Value="{DynamicResource SystemAccentColorLight3}"/>
+			<Setter Property="Background" Value="{DynamicResource SystemAccentColorDark1}"/>
 		</Style>
 
 		<!-- Disabled -->

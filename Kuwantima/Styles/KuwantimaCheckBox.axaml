@@ -169,7 +169,7 @@
 
 		<!-- 3. Checked + Hover -->
 		<Style Selector="^:checked:pointerover">
-			<Setter Property="Background" Value="{DynamicResource SystemAccentColorLight3}"/>
+			<Setter Property="Background" Value="{DynamicResource SystemAccentColorDark1}"/>
 		</Style>
 
 		<!-- 4. Indeterminate -->
@@ -194,7 +194,7 @@
 
 		<!-- 5. Indeterminate + Hover -->
 		<Style Selector="^:indeterminate:pointerover">
-			<Setter Property="Background" Value="{DynamicResource SystemAccentColorLight3}"/>
+			<Setter Property="Background" Value="{DynamicResource SystemAccentColorDark1}"/>
 		</Style>
 
 		<!-- 6. Disabled: pin Background/Foreground to prevent Fluent's disabled brushes from double-dimming -->
@@ -297,7 +297,7 @@
 		<!-- Checked + Hover -->
 		<Style Selector="^:checked:pointerover">
 			<Style Selector="^ /template/ Border#CheckBorder">
-				<Setter Property="Background" Value="{DynamicResource SystemAccentColorLight3}"/>
+				<Setter Property="Background" Value="{DynamicResource SystemAccentColorDark1}"/>
 			</Style>
 		</Style>
 
@@ -320,7 +320,7 @@
 		<!-- Indeterminate + Hover -->
 		<Style Selector="^:indeterminate:pointerover">
 			<Style Selector="^ /template/ Border#IndeterminateBorder">
-				<Setter Property="Background" Value="{DynamicResource SystemAccentColorLight3}"/>
+				<Setter Property="Background" Value="{DynamicResource SystemAccentColorDark1}"/>
 			</Style>
 		</Style>
 

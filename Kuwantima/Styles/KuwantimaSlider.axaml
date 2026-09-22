@@ -56,7 +56,7 @@
 	</Style>
 
 	<Style Selector="Slider.Kuwantima:pointerover /template/ Thumb">
-		<Setter Property="Background" Value="{DynamicResource SystemAccentColorLight3}"/>
+		<Setter Property="Background" Value="{DynamicResource SystemAccentColorDark1}"/>
 		<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaGlassGlowBorderHover}"/>
 	</Style>
 

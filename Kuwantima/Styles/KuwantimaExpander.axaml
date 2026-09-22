@@ -173,10 +173,12 @@
 			<Setter Property="Foreground" Value="{DynamicResource KuwantimaAccentOrangeBrush}"/>
 		</Style>
 
-		<!-- Expanded + Hover -->
-		<Style Selector="^:expanded:pointerover /template/ Border#HeaderBorder">
-			<Setter Property="Background" Value="{DynamicResource SystemAccentColorLight3}"/>
-		</Style>
+		<!-- Expanded + Hover: deliberately NO background override — same reason as the TabControl's
+		     selected+hover state. The opaque SystemAccentColorLight3 that used to sit here is safe
+		     against the header's dark Light-variant text (9.70:1) but not against its near-white
+		     Dark-variant text (1.43:1), because the text colour inverts per variant and Light3 does
+		     not. Falling through to the translucent KuwantimaControlHoverBrush works in both. -->
+
 
 		<!-- Disabled -->
 		<Style Selector="^:disabled">

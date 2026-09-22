@@ -194,7 +194,7 @@
 
 		<!-- Dropdown open + hover -->
 		<Style Selector="^:dropdownopen:pointerover /template/ Border#Background">
-			<Setter Property="Background" Value="{DynamicResource SystemAccentColorLight3}"/>
+			<Setter Property="Background" Value="{DynamicResource SystemAccentColorDark1}"/>
 		</Style>
 
 		<!-- Focus -->
@@ -257,7 +257,7 @@
 
 		<!-- Selected + hover -->
 		<Style Selector="^:selected:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-			<Setter Property="Background" Value="{DynamicResource SystemAccentColorLight3}"/>
+			<Setter Property="Background" Value="{DynamicResource SystemAccentColorDark1}"/>
 		</Style>
 
 		<!-- Disabled -->

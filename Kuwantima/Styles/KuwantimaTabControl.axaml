@@ -113,10 +113,16 @@
 			<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaAccentOrangeBrush}"/>
 		</Style>
 
-		<!-- Selected + Hover -->
-		<Style Selector="^:selected:pointerover /template/ Border#PART_TabBorder">
-			<Setter Property="Background" Value="{DynamicResource SystemAccentColorLight3}"/>
-		</Style>
+		<!-- Selected + Hover: deliberately NO background override.
+		     This used to paint SystemAccentColorLight3 (opaque pale blue). That is safe in Light,
+		     where the tab's Foreground (SystemBaseHighColor) is near-black — 9.70:1 — but
+		     SystemBaseHighColor INVERTS per variant while Light3 does not, so in Dark it put
+		     near-white text on pale blue at 1.43:1. Falling through to the translucent
+		     KuwantimaControlHoverBrush set by :selected keeps the text legible in both variants.
+		     The tab is unlike the accent-chip controls (CheckBox, ListBox, …): it keeps a pale
+		     background with DARK text and signals selection with the orange border, so it must NOT
+		     be re-ramped to SystemAccentColorDark1 — that would break the Light variant instead. -->
+
 
 		<!-- Disabled: pin to prevent Fluent double-dimming -->
 		<Style Selector="^:disabled">

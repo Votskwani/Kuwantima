@@ -45,6 +45,7 @@
 	│ KuwantimaGlassGlowBorderHover          │ Control border on hover          │
 	│ KuwantimaGlassGlow          (BoxShadow)│ Outer glow at rest               │
 	│ KuwantimaGlassGlowHover     (BoxShadow)│ Outer glow on hover             │
+	│ KuwantimaAccentGlowPressed  (BoxShadow)│ Warm glow on accent press        │
 	├────────────────────────────────────────┼──────────────────────────────────┤
 	│ TOOLTIP                                │                                  │
 	│ KuwantimaTooltipBackground             │ Near-opaque tooltip backdrop     │
@@ -84,15 +85,25 @@
 			<SolidColorBrush x:Key="KuwantimaDarkBorderBrush" Color="Transparent"/>
 			<SolidColorBrush x:Key="KuwantimaAccentOrangeBrush" Color="#FF8C00" />
 
-			<!-- Accent-button text. Deliberately DARK, overriding Fluent's light AccentButtonForeground.
-			     The accent button paints THREE backgrounds — dark blue (default), pale blue (:pointerover),
-			     orange (:pressed) — and only a dark foreground clears WCAG AA on all three; white measures
-			     1.53:1 on hover and 2.33:1 on press. This key also colours the checkmark / radio-dot glyphs,
-			     which sit on the same accent chips. Black here is the value the button already rendered before
-			     v1.2.0 (the retired key resolved to nothing and fell back to Black), so this changes no pixels —
-			     it just makes that intentional and AA-verified. Crisp light text + state-aware colour is the
-			     v1.3.0 accent redesign; see CLAUDE.md "Accent-on text". -->
-			<SolidColorBrush x:Key="AccentButtonForeground" Color="Black" />
+			<!-- Accent-on text and glyphs. WHITE as of v1.3.0 — it was Black in v1.2.0, and the reason
+			     that flipped is worth keeping.
+
+			     v1.2.0's accent ramp ran in BOTH directions from the resting colour: #0078D4 at rest,
+			     LIGHTER (#a3d7ff) on hover, orange on press. No single foreground can span that — white
+			     measured 1.53:1 on the pale hover and 2.33:1 on orange, so the foreground had to be dark,
+			     which left the resting state muted at 4.64:1. Black was a correct answer to the wrong shape.
+
+			     v1.3.0 makes the ramp run one way — darker on interaction (#0078D4 → Dark1 → Dark2) — and
+			     moves orange off the fill and onto the border/glow, where the colour story always had it.
+			     A single light foreground then clears AA everywhere: 4.53 / 7.32 / 10.50, identical under
+			     both variants because the SystemAccentColor* ramp is itself theme-invariant.
+
+			     This key also colours the checkmark, radio dot and selected-item text, which sit on the
+			     same accent chips — so every one of those had to be re-ramped before this could flip.
+			     NOT re-ramped, deliberately: TabControl's selected tab and Expander's expanded header.
+			     They keep a pale background with DARK text and use orange only on the border; darkening
+			     them would have put dark text on navy at ~2:1. They never consumed this key. -->
+			<SolidColorBrush x:Key="AccentButtonForeground" Color="White" />
 
 			<!-- Text — semantic labels (no Fluent equivalent) -->
 			<SolidColorBrush x:Key="KuwantimaSuccessTextBrush" Color="#0E700E" />
@@ -106,6 +117,12 @@
 			<SolidColorBrush x:Key="KuwantimaGlassGlowBorderHover" Color="#4169E1" Opacity="0.7"/>
 			<BoxShadows x:Key="KuwantimaGlassGlow">0 0 6 1 #30191970, 0 0 14 3 #18191970</BoxShadows>
 			<BoxShadows x:Key="KuwantimaGlassGlowHover">0 0 8 2 #60191970, 0 0 20 5 #30191970</BoxShadows>
+
+			<!-- Accent press glow: warm orange, same dual-layer shape as the glass glow.
+			     v1.3.0 moves orange OFF the pressed fill and into the glow — orange cannot carry
+			     light text (2.33:1 white), and CLAUDE.md's colour story always cast it as a
+			     border/edge accent rather than a background. -->
+			<BoxShadows x:Key="KuwantimaAccentGlowPressed">0 0 8 2 #70FF8C00, 0 0 18 5 #40FF8C00</BoxShadows>
 
 			<!-- Tooltip: near-opaque dark backdrop for maximum readability -->
 			<SolidColorBrush x:Key="KuwantimaTooltipBackground" Color="Black" Opacity="0.85"/>
@@ -135,10 +152,11 @@
 			<SolidColorBrush x:Key="KuwantimaDarkBorderBrush" Color="#20FFFFFF"/>
 			<SolidColorBrush x:Key="KuwantimaAccentOrangeBrush" Color="#FFA500" />
 
-			<!-- Accent-button text — dark by design; see the Light dictionary and CLAUDE.md. Same value in
-			     both variants because the accent backgrounds it sits on (blue / pale blue / orange) are
-			     themselves theme-invariant, so a theme-varying foreground would buy nothing. -->
-			<SolidColorBrush x:Key="AccentButtonForeground" Color="Black" />
+			<!-- Accent-on text — light by design as of v1.3.0; see the Light dictionary and CLAUDE.md.
+			     Same value in both variants because the accent backgrounds it sits on are themselves
+			     theme-invariant (measured: the whole SystemAccentColor* ramp is byte-identical under
+			     Light and Dark), so a theme-varying foreground would buy nothing. -->
+			<SolidColorBrush x:Key="AccentButtonForeground" Color="White" />
 
 			<!-- Text — semantic labels (no Fluent equivalent) -->
 			<SolidColorBrush x:Key="KuwantimaSuccessTextBrush" Color="#6CCB5F" />
@@ -152,6 +170,10 @@
 			<SolidColorBrush x:Key="KuwantimaGlassGlowBorderHover" Color="#B0D4FF" Opacity="0.75"/>
 			<BoxShadows x:Key="KuwantimaGlassGlow">0 0 6 1 #35F0F8FF, 0 0 14 3 #20F0F8FF</BoxShadows>
 			<BoxShadows x:Key="KuwantimaGlassGlowHover">0 0 8 2 #70B0D4FF, 0 0 22 6 #40B0D4FF</BoxShadows>
+
+			<!-- Accent press glow — see the Light dictionary. Uses the dark variant's brighter
+			     orange (#FFA500) and a slightly stronger spread, since it sits on a dark ground. -->
+			<BoxShadows x:Key="KuwantimaAccentGlowPressed">0 0 8 2 #80FFA500, 0 0 20 6 #50FFA500</BoxShadows>
 
 			<!-- Tooltip: near-opaque deep-navy backdrop for maximum readability -->
 			<SolidColorBrush x:Key="KuwantimaTooltipBackground" Color="#1E1E2E" Opacity="0.9"/>

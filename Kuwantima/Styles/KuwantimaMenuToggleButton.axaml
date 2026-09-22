@@ -134,7 +134,7 @@
 
 		<!-- 3. Checked + Hover -->
 		<Style Selector="^:checked:pointerover">
-			<Setter Property="Background" Value="{DynamicResource SystemAccentColorLight3}"/>
+			<Setter Property="Background" Value="{DynamicResource SystemAccentColorDark1}"/>
 		</Style>
 
 		<!-- 4. Disabled: pin Background/Foreground to prevent Fluent's disabled brushes from double-dimming -->

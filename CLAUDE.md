@@ -170,42 +170,77 @@ the key against the live theme. Not to a restatement, however many of them agree
 - **System accent**: #0078D4 (Fluent blue) — filled accent backgrounds
 - Do not introduce colors outside this story without intention
 
-### Accent-on text is pinned DARK, and that is deliberate. Don't "fix" it to white.
-`AccentButtonForeground` is overridden to **Black** in both theme dictionaries
-(`KuwantimaThemeResources.axaml`). That looks wrong for an accent button — light-on-accent is the
-convention — so here is why, measured on `Button.Kuwantima.Accent` (2026-07-14):
+### Accent-on text is WHITE, and the ramp is what makes that possible (v1.3.0)
+`AccentButtonForeground` is overridden to **White** in both theme dictionaries
+(`KuwantimaThemeResources.axaml`). It was **Black** in v1.2.0. The flip is not a reversal of
+judgement — the *shape of the problem* changed, and that is the part worth remembering.
 
-The accent button paints **three** backgrounds, and the foreground is set once on the base style, so
-one colour must survive all three. Contrast of each candidate:
+**v1.2.0's ramp ran in two directions at once.** `Button.Kuwantima.Accent` painted `#0078D4` at
+rest, went **lighter** (`SystemAccentColorLight3` `#a3d7ff`) on hover, and went **orange** on press.
+A foreground is set once on the base style, so one colour had to survive all three. No light colour
+can: white measures 1.53 on the pale hover and 2.33 on orange. Black was therefore the *only*
+accessible answer — correct, but an answer to a badly-shaped question. It left the resting state
+muted at 4.64.
 
-| State | Background | White | Black |
-|---|---|---|---|
-| default | `#0078D4` dark blue | 4.53 ✓ | 4.64 ✓ |
-| `:pointerover` | `SystemAccentColorLight3` **pale** blue | **1.53 ✗** | 13.72 ✓ |
-| `:pressed` | orange | **2.33 ✗** | 9–10.6 ✓ |
+**v1.3.0 reshapes the ramp to run one way — darker on interaction — and a single light foreground
+then clears AA everywhere.** Measured, and identical under both variants because the
+`SystemAccentColor*` ramp is itself theme-invariant (only `KuwantimaAccentOrangeBrush` differs):
 
-**Only a dark foreground clears AA on all three states.** White is crisp on the default blue and
-near-invisible on the pale-blue hover and orange press. So Black is not a compromise on quality — it
-is the *only* single value that is accessible everywhere, given these state backgrounds.
+| State | Background | White |
+|---|---|---|
+| rest / checked / selected | `SystemControlBackgroundAccentBrush` `#0078D4` | 4.53 ✓ |
+| `:pointerover` | `SystemAccentColorDark1` `#00589b` | 7.32 ✓ |
+| `:pressed` (Button) | `SystemAccentColorDark2` `#004172` | 10.50 ✓ |
 
-Black is also exactly what the button rendered before v1.2.0: the key it referenced
-(`TextOnAccentFillColorPrimaryBrush`) was dead, and an unresolved `Foreground` falls back to Black.
-So the pin **changes no pixels** — it makes the accidental value intentional, resolvable, and
-AA-verified. It also colours the checkmark / radio-dot glyphs, which sit on the same accent chips.
+**Orange moved off the fill and onto the edge** — border plus a new `KuwantimaAccentGlowPressed`
+BoxShadow on press. That is where the colour philosophy always had it ("warm accent: checked/selected
+**borders**"); using it as a text background was the anomaly, and it is the reason light text was
+impossible before.
 
-**The trap, recorded because it nearly shipped:** the dead key's Black fallback *passed* AA on all
-states (4.64 / 13.72 / 9). Migrating it to Fluent's `AccentButtonForeground` (white/AliceBlue) made
-the default state crisp but silently dropped hover to 1.53 and press to 2.33 — a contrast regression
-that `Invariant_5` does **not** catch, because the key resolves fine; it is just unreadable.
-Resolution is not readability. This was found by a throwaway `[AvaloniaFact]` that measured every
-foreground against every state background — not by looking at the default state, which looked fixed.
+**The 4.53 at rest passes by 0.03.** Accepted deliberately: it is stock Fluent accent with white
+text, the most standard pairing in Windows design, so rejecting it means rejecting Fluent's default.
+But it is the weakest link in the ramp, and any future nudge to the accent colour breaks it first.
 
-**Deferred to v1.3.0 (the theme-responsive accent redesign):** making the default crisp again means
-either state-aware foregrounds (light default, dark hover/press) or reworking the pale-blue hover and
-orange press backgrounds so light text lives on them. When that lands, encode the contrast contract as
-a permanent invariant (every accent-button state ≥ 4.5:1, both variants) — the mechanical guard that
-would have caught this class of regression, added once the backgrounds are final. Until then: **do not
-swap this to white.**
+**13 sites, one key.** The re-ramp had to land on every accent-chip surface *before* the shared key
+could flip, because the same key colours the checkmark `Stroke`, the radio-dot `Fill` and
+selected-item `Foreground`: CheckBox ×4, RadioButton ×2, ComboBox ×2, ListBox, MenuToggleButton,
+ToggleButton, Button, and the Slider thumb (that last one carries no text — re-ramped for ramp
+consistency, not contrast).
+
+**TabControl and Expander are NOT part of the accent family. Do not re-ramp them.** Their
+selected/expanded state keeps a *pale* background with **dark** text and signals state with the
+orange border only — they never consumed `AccentButtonForeground`. Darkening them to `Dark1` would
+put dark text on navy at ~2:1. This is the one place where a mechanical find-and-replace across the
+15 `SystemAccentColorLight3` sites would have broken the two controls that were not broken.
+
+**Known gap, not yet fixed:** those two had a *pre-existing* Dark-variant failure — their
+`SystemBaseHighColor` foreground **inverts per variant** while `Light3` does not, so selected+hover
+rendered near-white on pale blue at **1.43:1**. v1.3.0 drops the override so they fall through to the
+translucent `KuwantimaControlHoverBrush`, which lifts Dark to **3.25–3.78** — better, still under AA.
+The residue is not in those controls: `KuwantimaControlHoverBrush` is `#80D4DFFF` in Dark, a 50%
+*light* wash that lands mid-grey over dark surfaces, so **every** hover in the library sits around
+3.3–3.8 there. Fixing it means lowering that alpha, which changes hover across all controls — a
+deliberate change, not a patch. Measure before touching it: a translucent brush's contrast depends
+on its backdrop, so composite it over the real surface rather than reading the hex.
+
+**The trap this section exists to record.** In v1.2.0 the dead key's Black fallback *passed* AA on
+all states (4.64 / 13.72 / 9). Migrating it to Fluent's white `AccentButtonForeground` made the
+default crisp and silently dropped hover to 1.53 and press to 2.33 — a regression `Invariant_5` does
+**not** catch, because the key resolves fine; it is just unreadable. **Resolution is not
+readability.** Both that and the TabControl inversion were found by throwaway `[AvaloniaFact]`s that
+measured every foreground against every state background *in both variants* — not by looking at the
+default state, which looked fine in each case.
+
+**Now enforced by `InvariantTests.Invariant_6`** (`InvariantTests.Contrast.cs`): every accent ink /
+surface pair measured at ≥ 4.5:1 under *both* variants, resolved per variant rather than assumed to
+carry across. A companion test parses every `Background`/`Fill` setter in the style files and fails if
+the styles paint an accent surface the table does not measure — so a new surface cannot arrive
+unmeasured, and reintroducing `SystemAccentColorLight3` as a fill turns the suite red. Verified to
+bite by injecting that exact regression, not by assuming a green suite means a working test.
+
+It is scoped to the accent family on purpose, and the hover-brush gap above is deliberately outside
+it. Widening it to cover a failure that has no agreed fix yet would only produce an exemption written
+to keep the suite green.
 
 ## Avalonia Gotchas
 Four framework behaviours that are load-bearing for style authoring here. All four were **verified
@@ -266,6 +301,11 @@ suite covers instead:
   template and lay out under both.
 - **Tier 2 `InvariantTests`** — the completeness invariants above, executed. Registration, the
   Cursor="Hand" rule, the disabled pins, the retired-key ban, the control count.
+- **Tier 2 `InvariantTests.Contrast.cs`** — `Invariant_6`, the accent contrast contract: every accent
+  ink/surface pair ≥ 4.5:1, measured under *both* variants from the resolved colours. A companion
+  test parses every `Background`/`Fill` setter and fails if the styles paint an accent surface the
+  table does not measure, so nothing arrives unmeasured. **Resolution is not readability** —
+  `Invariant_5` proves a key resolves and stays green while the result is invisible.
 
 Rules that keep it honest:
 - **Parse, never grep.** Facts come from `XDocument` over the AXAML tree. Text matching produces

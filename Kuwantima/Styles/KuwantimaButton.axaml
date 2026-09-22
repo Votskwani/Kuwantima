@@ -101,18 +101,40 @@
 		</Style>
 	</Style>
 
-	<!-- ═══ ACCENT: Button.Kuwantima.Accent ═══ -->
+	<!-- ═══ ACCENT: Button.Kuwantima.Accent ═══
+	     v1.3.0 — the accent ramp runs in ONE direction (darker on interaction) so a single light
+	     foreground is readable on every state. Measured white contrast, identical under both
+	     variants because the SystemAccentColor* ramp is itself theme-invariant:
+	         default  #0078D4  4.53   hover  Dark1 #00589b  7.32   pressed  Dark2 #004172  10.50
+	     Before v1.3.0 hover LIGHTENED to SystemAccentColorLight3 (#a3d7ff) and pressed went orange —
+	     1.53 and 2.33 against white, which is why the foreground had to be dark. Orange keeps its
+	     role as the warm accent, but on the EDGE (border + press glow), never under text.
+
+	     The 4.53 at rest passes AA by 0.03. That is stock Fluent accent + white text, so the margin
+	     is inherited rather than chosen — but it means the resting state is the weakest link in the
+	     ramp, and any future nudge to the accent colour will break it first. -->
 	<Style Selector="Button.Kuwantima.Accent">
 		<Setter Property="Background" Value="{DynamicResource SystemControlBackgroundAccentBrush}"/>
 		<Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}"/>
 		<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaAccentOrangeBrush}"/>
 
 		<Style Selector="^:pointerover">
-			<Setter Property="Background" Value="{DynamicResource SystemAccentColorLight3}"/>
+			<Setter Property="Background" Value="{DynamicResource SystemAccentColorDark1}"/>
+			<Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}"/>
 		</Style>
 
+		<!-- Pressed: darkest fill + the warm glow. Foreground is repeated on every state rather
+		     than inherited — Button.Kuwantima:pressed above sets Foreground too, and Avalonia
+		     resolves setters by DOCUMENT ORDER, so leaving it out here would be betting on which
+		     block sits lower in the file. Both resolve to the same key today, so the bet would
+		     currently pay; spelling it out keeps a future reorder from breaking it silently. -->
 		<Style Selector="^:pressed">
-			<Setter Property="Background" Value="{DynamicResource KuwantimaAccentOrangeBrush}"/>
+			<Setter Property="Background" Value="{DynamicResource SystemAccentColorDark2}"/>
+			<Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}"/>
+		</Style>
+
+		<Style Selector="^:pressed /template/ ContentPresenter#PART_ContentPresenter">
+			<Setter Property="BoxShadow" Value="{DynamicResource KuwantimaAccentGlowPressed}"/>
 		</Style>
 
 		<Style Selector="^:disabled">
