@@ -38,6 +38,31 @@ public partial class InvariantTests
     /// <summary>One (ink, surface) pair the library actually paints.</summary>
     private sealed record Pair(string Ink, string Surface, string Where);
 
+    /// <summary>
+    /// A translucent surface composited onto the backdrop it actually sits on. A translucent brush
+    /// has NO contrast of its own — only the blend does — which is exactly why KuwantimaControlHoverBrush
+    /// sat at 3.25:1 in Dark unnoticed: as a colour literal it looks perfectly reasonable.
+    /// </summary>
+    private sealed record Layered(string Ink, string Surface, string[] Backdrop, string Where);
+
+    /// <summary>
+    /// Hover surfaces. KuwantimaControlHoverBrush is translucent, so each entry names the stack
+    /// beneath it, outermost first. Both backdrops are checked because the glass panel sits between
+    /// the page and the control on most pages, and it is the worse of the two.
+    /// </summary>
+    private static readonly Layered[] HoverPairs =
+    [
+        new("SystemBaseHighColor", "KuwantimaControlHoverBrush", ["SystemRegionBrush"],
+            "primary text on a hovered control, directly on the page"),
+        new("SystemBaseHighColor", "KuwantimaControlHoverBrush", ["SystemRegionBrush", "KuwantimaGlassBackground"],
+            "primary text on a hovered control inside a glass panel"),
+        new("SystemControlForegroundBaseMediumBrush", "KuwantimaControlHoverBrush", ["SystemRegionBrush", "KuwantimaGlassBackground"],
+            "muted subtitle text on a hovered control inside a glass panel"),
+        new("TextControlPlaceholderForeground", "KuwantimaControlHoverBrush", ["SystemRegionBrush", "KuwantimaGlassBackground"],
+            "TextBox placeholder — PART_Placeholder sits inside PART_BorderElement, whose "
+            + "background becomes the hover brush, so hovering an empty TextBox produces exactly this"),
+    ];
+
     private static readonly Pair[] AccentPairs =
     [
         new("AccentButtonForeground", "SystemControlBackgroundAccentBrush",
@@ -130,6 +155,54 @@ public partial class InvariantTests
             + "all of them — and under BOTH variants, which are not interchangeable: SystemBaseHighColor "
             + "inverts per variant while the SystemAccentColor* ramp is theme-invariant." + Environment.NewLine
             + "Do not resolve this by exempting the pair. Re-ramp the surface, or change the ink.");
+    }
+
+    /// <summary>Source-over composite of a possibly-translucent brush onto an opaque backdrop.</summary>
+    private static Color Over((Color Color, double Opacity) over, Color under)
+    {
+        var a = (over.Color.A / 255.0) * over.Opacity;
+        byte Mix(byte o, byte u) => (byte)Math.Round(o * a + u * (1 - a));
+        return Color.FromRgb(Mix(over.Color.R, under.R), Mix(over.Color.G, under.G), Mix(over.Color.B, under.B));
+    }
+
+    public static IEnumerable<object[]> HoverPairMatrix() =>
+        from pair in HoverPairs
+        from variant in new[] { "Light", "Dark" }
+        select new object[] { pair.Ink, pair.Surface, string.Join(" > ", pair.Backdrop), pair.Where, variant };
+
+    [AvaloniaTheory]
+    [MemberData(nameof(HoverPairMatrix))]
+    public void Invariant_6_ink_clears_AA_on_composited_hover_surfaces(
+        string inkKey, string surfaceKey, string backdropChain, string where, string variantName)
+    {
+        var variant = variantName == "Light" ? ThemeVariant.Light : ThemeVariant.Dark;
+
+        // Build the stack from the page outwards, exactly as the renderer does.
+        Color composited = default;
+        var first = true;
+        foreach (var key in backdropChain.Split(" > "))
+        {
+            var layer = ResolveColor(key, variant);
+            composited = first ? Over((layer.Color, layer.Opacity), Colors.Black) : Over(layer, composited);
+            first = false;
+        }
+
+        var surface = ResolveColor(surfaceKey, variant);
+        composited = Over(surface, composited);
+
+        var ink = ResolveColor(inkKey, variant);
+        var ratio = Contrast(ink.Color, composited);
+
+        Assert.True(
+            ratio >= AA,
+            $"{variantName}: {inkKey} ({ink.Color}) on {surfaceKey} composited over [{backdropChain}] "
+            + $"= {composited}, measuring {ratio:F2}:1 — below WCAG AA of {AA:F1}." + Environment.NewLine
+            + $"  Surface: {where}" + Environment.NewLine + Environment.NewLine
+            + "A translucent brush has no contrast of its own — only the blend does. Reading its hex "
+            + "tells you nothing, which is how the Dark hover brush sat at 3.25:1 across every hovered "
+            + "control in the library without anyone noticing. If you changed the hover brush's alpha "
+            + "or a muted ink, measure the composite over BOTH backdrops: the glass panel is the worse "
+            + "of the two and the one most controls actually sit on.");
     }
 
     /// <summary>

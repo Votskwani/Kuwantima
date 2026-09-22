@@ -36,6 +36,9 @@
 	│ TEXT                                   │                                  │
 	│ KuwantimaSuccessTextBrush              │ Positive-outcome label text      │
 	│ KuwantimaWarningTextBrush              │ Negative-outcome label text      │
+	│ AccentButtonForeground        (Fluent) │ Ink on accent fills + glyphs     │
+	│ SystemControlForegroundBase…   (Fluent)│ Muted subtitle text              │
+	│ TextControlPlaceholderForeg…   (Fluent)│ Placeholder text (TextBox/Combo) │
 	├────────────────────────────────────────┼──────────────────────────────────┤
 	│ GLASS PANEL                            │                                  │
 	│ KuwantimaGlassBackground               │ Panel fill (very low opacity)    │
@@ -105,6 +108,16 @@
 			     them would have put dark text on navy at ~2:1. They never consumed this key. -->
 			<SolidColorBrush x:Key="AccentButtonForeground" Color="White" />
 
+			<!-- Muted text, overriding Fluent. Both keys carry the same value by design — they are
+			     the one tertiary tone (placeholder text in TextBox/ComboBox, and subtitle labels).
+			     Fluent ships #6a6a9e here, which fails AA on the surfaces it actually lands on:
+			     4.07 on the glass panel and 3.77 on a hovered control (hover an empty TextBox and
+			     the placeholder sits on exactly that). #55557F clears every surface — worst 5.25,
+			     on hover-over-glass — while staying 2.12:1 away from primary MidnightBlue, so it
+			     still reads as tertiary rather than collapsing into body text. -->
+			<SolidColorBrush x:Key="SystemControlForegroundBaseMediumBrush" Color="#55557F" />
+			<SolidColorBrush x:Key="TextControlPlaceholderForeground" Color="#55557F" />
+
 			<!-- Text — semantic labels (no Fluent equivalent) -->
 			<SolidColorBrush x:Key="KuwantimaSuccessTextBrush" Color="#0E700E" />
 			<SolidColorBrush x:Key="KuwantimaWarningTextBrush" Color="#C23616" />
@@ -163,6 +176,15 @@
 			     theme-invariant (measured: the whole SystemAccentColor* ramp is byte-identical under
 			     Light and Dark), so a theme-varying foreground would buy nothing. -->
 			<SolidColorBrush x:Key="AccentButtonForeground" Color="White" />
+
+			<!-- Muted text — see the Light dictionary. Fluent's #a0b4d0 measured 3.52 on a hovered
+			     control over glass. #C8D4E8 clears every surface (worst 4.98). Dark has less room
+			     than Light here and the value is deliberately close to primary: the worst surface
+			     is mid-tone (#53555c) and primary is near-white, so AA margin and tonal separation
+			     trade directly against each other. 1.39:1 from primary is the distinction that
+			     remains once the accessibility floor is met. -->
+			<SolidColorBrush x:Key="SystemControlForegroundBaseMediumBrush" Color="#C8D4E8" />
+			<SolidColorBrush x:Key="TextControlPlaceholderForeground" Color="#C8D4E8" />
 
 			<!-- Text — semantic labels (no Fluent equivalent) -->
 			<SolidColorBrush x:Key="KuwantimaSuccessTextBrush" Color="#6CCB5F" />
