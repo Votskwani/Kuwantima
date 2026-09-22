@@ -213,15 +213,27 @@ orange border only — they never consumed `AccentButtonForeground`. Darkening t
 put dark text on navy at ~2:1. This is the one place where a mechanical find-and-replace across the
 15 `SystemAccentColorLight3` sites would have broken the two controls that were not broken.
 
-**Known gap, not yet fixed:** those two had a *pre-existing* Dark-variant failure — their
-`SystemBaseHighColor` foreground **inverts per variant** while `Light3` does not, so selected+hover
-rendered near-white on pale blue at **1.43:1**. v1.3.0 drops the override so they fall through to the
-translucent `KuwantimaControlHoverBrush`, which lifts Dark to **3.25–3.78** — better, still under AA.
-The residue is not in those controls: `KuwantimaControlHoverBrush` is `#80D4DFFF` in Dark, a 50%
-*light* wash that lands mid-grey over dark surfaces, so **every** hover in the library sits around
-3.3–3.8 there. Fixing it means lowering that alpha, which changes hover across all controls — a
-deliberate change, not a patch. Measure before touching it: a translucent brush's contrast depends
-on its backdrop, so composite it over the real surface rather than reading the hex.
+**A pre-existing failure those two also had, now fixed:** their `SystemBaseHighColor` foreground
+**inverts per variant** while `Light3` does not, so selected+hover rendered near-white on pale blue
+at **1.43:1**. v1.3.0 drops the override so they fall through to `KuwantimaControlHoverBrush`.
+
+**And that brush was itself broken in Dark.** It was `#80D4DFFF` — a 50% *light* wash on a dark
+ground, compositing to mid-grey (`#787e8e` over the region, `#848999` over glass) and taking even
+primary text to **3.25:1**, on every hovered control in the library. v1.3.0 sets alpha to `0x33`,
+matching the Light variant: primary **6.94**, secondary **5.11**.
+
+**Still open — and it is the INK, not the brush.** `SystemControlForegroundBaseMediumBrush` and
+`TextControlPlaceholderForeground` (same value, `#6a6a9e` Light / `#a0b4d0` Dark) fail on hover
+surfaces in **both** variants at **every** alpha — Light 3.51–4.13, Dark 3.52–4.68. No hover change
+can fix that; lowering alpha further only trades one variant against the other. This is real, not
+hypothetical: `TextBox`'s `PART_Placeholder` uses that grey and sits *inside* `PART_BorderElement`,
+whose background becomes the hover brush — so hovering an empty TextBox puts placeholder text on it.
+Both keys come from **Fluent, not Kuwantima**, so fixing it means overriding two framework text
+brushes: a visible typography change across the library and sandbox, deliberately not folded into
+the hover fix.
+
+Measure before touching any of this: a translucent brush's contrast depends on its backdrop, so
+composite it over the real surface rather than reading the hex.
 
 **The trap this section exists to record.** In v1.2.0 the dead key's Black fallback *passed* AA on
 all states (4.64 / 13.72 / 9). Migrating it to Fluent's white `AccentButtonForeground` made the

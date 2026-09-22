@@ -148,7 +148,13 @@
 			<SolidColorBrush x:Key="SystemFillColorCautionBrush" Color="#FCE100" />
 
 			<!-- UI interaction brushes -->
-			<SolidColorBrush x:Key="KuwantimaControlHoverBrush" Color="#80D4DFFF"/>
+			<!-- Alpha is 0x33, matching the Light variant. It was 0x80 (50%) until v1.3.0, which is
+			     far too strong a wash on a dark ground: it composited to mid-grey (#787e8e over the
+			     region, #848999 over glass) and took even primary text down to 3.25:1 — below AA, on
+			     every hovered control in the library. 0x33 lifts primary to 6.94 and secondary to
+			     5.11. Measured by compositing over the real backdrop; the hex of a translucent brush
+			     tells you nothing on its own. -->
+			<SolidColorBrush x:Key="KuwantimaControlHoverBrush" Color="#33D4DFFF"/>
 			<SolidColorBrush x:Key="KuwantimaDarkBorderBrush" Color="#20FFFFFF"/>
 			<SolidColorBrush x:Key="KuwantimaAccentOrangeBrush" Color="#FFA500" />
 
