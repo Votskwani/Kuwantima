@@ -261,9 +261,34 @@ headlessly** rather than assumed, because reasoning got at least two of them bac
   Kuwantima package exposes exactly one avares asset: `!AvaloniaResourceXamlInfo`. You cannot
   `AssetLoader.Open()` a style file back at runtime. `Kuwantima.Tests` works around this by linking
   the sources in as `<EmbeddedResource>`.
+- **Kuwantima is a resource-only assembly, and a `ProjectReference` does not LOAD one.** There is no
+  C# in the library, so no consumer can reference a type from it, so nothing triggers the assembly
+  load — the DLL is merely copied next to the binary. Avalonia 12.1.0 probed hard enough to resolve
+  `avares://Kuwantima/...` anyway; **12.1.3 does not**, and the whole suite dies at session start with
+  `XamlLoadException : No precompiled XAML found`. `TestApp.Initialize` fixes it with one
+  `Assembly.Load("Kuwantima")` — a line that reads as dead code and is load-bearing, so it carries a
+  DO-NOT-DELETE comment. Compiled XAML (`App.axaml`'s `<StyleInclude>`) references the assembly at
+  load time and is unaffected, which is why this only ever hit the headless harness.
 
 When you next have a question of this kind, **do not reason about it — probe it.** A throwaway
 `[AvaloniaFact]` answers it in under a minute, and the harness already exists.
+
+### The 12.1.3 upgrade, and the shape of the mistake it produced
+Worth keeping, because the evidence was consistent and pointed the wrong way — the same failure mode
+as the control count, in a new costume.
+
+All 135 tests failed on the bump, with an error naming the theme file. Bisect confirmed 12.1.0 green
+/ 12.1.3 red. Conclusion drawn: *"12.1.3 is broken; the package would ship with nothing in it."*
+Every step of that was sound except the last, which was **inference from an error message treated as
+a verified fact**. The upgrade was nearly abandoned on it.
+
+The one source never consulted was the one that could contradict it: **a real consumer.** Building
+and running `Kuwantima.Sandbox` against 12.1.3 takes a minute and shows the library rendering
+perfectly. The breakage was confined to the test harness the whole time.
+
+**A red test suite tells you something is wrong, not what.** When the suspect is a dependency, run
+the app before blaming the release — an all-red suite plus a plausible error message is exactly as
+seductive, and exactly as unreliable, as four agreeing docs.
 
 ## Build Notes
 - Running sandbox locks DLLs — close app before full rebuild
