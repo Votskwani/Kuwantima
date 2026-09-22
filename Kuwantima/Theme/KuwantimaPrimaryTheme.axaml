@@ -5,6 +5,20 @@
 	App.axaml is all that's needed to apply the full theme:
 
 	VERSION HISTORY:
+	  1.3.0  2026-09-22  The accent re-ramp — light text on accent, and the contrast guard
+	         • Accent ramp now runs ONE way (darker on interaction): #0078D4 → SystemAccentColorDark1
+	           → SystemAccentColorDark2, so a single light ink clears AA on every state (4.53/7.32/10.50)
+	         • AccentButtonForeground flipped Black → White; 12 hover backgrounds re-ramped across
+	           CheckBox, RadioButton, ToggleButton, MenuToggleButton, ComboBox, ListBox and the Slider
+	         • Orange moved off the pressed FILL onto the edge — border plus new KuwantimaAccentGlowPressed
+	         • Fixed the Dark hover brush: a 50% light wash put EVERY hovered control at 3.25:1 (now 6.94)
+	         • Overrode Fluent's muted text keys — they failed AA on glass and on hovered controls
+	         • TabControl / Expander selected+hover fixed: their ink inverts per variant, Light3 does not,
+	           so Dark measured 1.43:1 while Light looked fine at 9.70
+	         • Added Invariant_6: every ink/surface pair ≥ 4.5:1 under BOTH variants, translucent
+	           surfaces composited over their real backdrop
+	         • Avalonia 12.1.0 → 12.1.3 (needs Assembly.Load in the test harness — Kuwantima has no
+	           C#, so nothing otherwise loads the assembly and avares URIs stop resolving)
 	  1.2.0  2026-07-14  Avalonia 12.1.0
 	         • Avalonia 12.0.1 → 12.1.0 — restores the XAML previewer (12.0.0 dropped the
 	           Design.PreviewWith(Control) overload, so every style file's preview errored)
