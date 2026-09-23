@@ -394,9 +394,22 @@ had already gone stale once.)
   **`PreviewerApp` is deliberately EMPTY and must stay that way** — if it loaded
   `KuwantimaPrimaryTheme` you would preview the *shipped* style layered over the one you are
   editing, and your change would appear to do nothing.
-  **These were two independent bugs wearing one symptom.** The previewer could not start (this
-  bullet), and even once started the styles had no resources (next bullet). Fixing either alone
-  leaves the previewer useless, which is why the first fix looked like it had not worked.
+  **These were THREE independent bugs wearing one symptom** — the previewer could not start (this
+  bullet), the styles had no resources once it did (next bullet), and the files carried the wrong
+  build action so VS never offered it (`AvaloniaResource` bullet below). Fixing any one alone leaves
+  the previewer useless, which is why each fix in turn looked like it had not worked.
+- **To READ a previewer error, run the target yourself.** Visual Studio shows a sanitised message in
+  a pane you cannot easily copy from. The same target VS drives prints the real one to stdout:
+
+      dotnet msbuild Kuwantima/Kuwantima.csproj -t:AvaloniaFilePreview \
+        -p:APreviewFile=Styles/KuwantimaButton.axaml -p:Configuration=Debug
+
+  `APreviewFile` is relative to the **project** directory, and exit 124 under `timeout` means the
+  previewer stayed up, i.e. success. This is how `Assembly … doesn't have an entry point` surfaced.
+  It also sidesteps the phantom-file trap (see Testing) because the path is explicit.
+  **Neither source is complete, so check both.** The CLI sees the runtime failure and is blind to
+  VS's item metadata; VS knew the build action was wrong and never said why. Today's blocker was
+  visible only in VS, and the two before it only from the CLI.
 - **A style file previewed ALONE has no theme, and the failure is silent.** This one shipped from
   v1.0.0 until 2026-09-23. A style file is self-contained by design — that is what makes it a style
   file — but its setters reference brushes defined in `KuwantimaThemeResources.axaml` and in Fluent.
@@ -426,6 +439,15 @@ produces a confident number. All three of these were hit in one session:
   `#80D4DFFF` tells you nothing; composite it source-over onto the surface it actually sits on
   (the glass panel is usually the worse backdrop, and the one most controls sit on). This is why a
   3.25:1 hover shipped unnoticed — as a colour literal it looks entirely reasonable.
+- **A probe that cannot fail proves nothing. Check the tool exists before trusting a zero.**
+  `strings <dll> | grep -c PreviewerEntryPoint` returned 0 and was quoted as evidence the previewer
+  C# stays out of the shipped package. There is no `strings` binary in this environment — the zero
+  meant the command never ran. The conclusion happened to be right, which is worse, because a wrong
+  one would have shipped just as quietly. Re-done with `grep -a` **plus a control**: Release has 0
+  of each symbol, Debug has 1 of each. The control is the part that matters — it proves the check
+  can detect the thing when it is there. Same family as the `TryFindResource` slip during the same
+  session, where reading without a `ThemeVariant` on a detached tree reported false misses: *when a
+  probe reports an absence, first prove it can report a presence.*
 - **Transitions poison a property read.** The base Button sets a 0.2s `BrushTransition` on
   `Background`/`BorderBrush`. Toggle a pseudo-class and read the property back and you get an
   *interpolated* value, not the style's target — a probe that silently measures a colour the design
