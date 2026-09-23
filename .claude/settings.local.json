@@ -2,9 +2,25 @@
   "permissions": {
     "allow": [
       "Bash(dotnet build:*)",
+      "Bash(dotnet list *)",
+      "Bash(dotnet package *)",
+      "Bash(dotnet restore *)",
+      "Bash(dotnet --list-sdks)",
+      "Bash(git add:*)",
+      "Bash(git push:*)",
+      "Bash(git tag:*)",
+      "Bash(git diff *)",
+      "Bash(git stash *)",
+      "Bash(git reset *)",
+      "Bash(gh run:*)",
+      "Bash(curl -s https://api.nuget.org/v3-flatcontainer/kuwantima/index.json)",
       "Bash(taskkill:*)",
+      "Bash(MSYS_NO_PATHCONV=1 taskkill:*)",
+      "Bash(tasklist:*)",
+      "Bash(xargs grep:*)",
       "Bash(cmd.exe:*)",
-      "Bash(MSYS_NO_PATHCONV=1 taskkill:*)"
+      "Bash(powershell:*)",
+      "Read(//tmp/**)"
     ]
   }
 }
