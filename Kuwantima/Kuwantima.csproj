@@ -54,8 +54,15 @@ No migration needed - nothing renamed or removed, same single StyleInclude entry
   </PropertyGroup>
 
   <ItemGroup>
-    <AvaloniaResource Include="Styles\**\*.axaml" />
-    <AvaloniaResource Include="Theme\**\*.axaml" />
+    <!-- DO NOT re-add <AvaloniaResource Include="Styles\**\*.axaml" /> here.
+         Avalonia's own props already include every **\*.axaml as AvaloniaXaml with
+         SubType="Designer" (AvaloniaBuildTasks.props, gated only on EnableDefaultItems, which is on
+         by default). Listing them AGAIN as AvaloniaResource gave every style file the build action
+         "AvaloniaResource", which carries no Designer subtype — so Visual Studio refused to preview
+         any of them and reported the build action as wrong. The explicit includes were redundant
+         as well as harmful: AddAvaloniaResources fires when EITHER item type has entries, so the
+         avares:// URIs this package's whole public API depends on come from the AvaloniaXaml items
+         either way. Verified by the suite, which loads the theme through its avares StyleInclude. -->
 
     <!-- Previewer\ holds the ONLY C# in this library, and it never ships. Removing it in Release
          keeps the packaged assembly exactly what it has always been: compiled XAML and nothing
