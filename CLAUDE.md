@@ -380,6 +380,23 @@ had already gone stale once.)
   Kuwantima package exposes exactly one avares asset: `!AvaloniaResourceXamlInfo`. You cannot
   `AssetLoader.Open()` a style file back at runtime. `Kuwantima.Tests` works around this by linking
   the sources in as `<EmbeddedResource>`.
+- **The previewer EXECS the assembly, so a class library cannot host one. This is why there was
+  "no previewer available" on every style file.** Avalonia's previewer does not read a `.axaml`
+  file; `AvaloniaFilePreview` runs `dotnet exec … Avalonia.Designer.HostApp.dll <assembly>.dll` and
+  asks the assembly for an `AppBuilder`. A library has no entry point, so it fails outright with
+  `Assembly … doesn't have an entry point`. Nothing about the markup is involved, which is why this
+  looked inexplicable. Fixed by `Kuwantima/Previewer/PreviewerEntryPoint.cs` plus
+  `<OutputType Condition="'$(Configuration)' == 'Debug'">Exe</OutputType>` — Debug gets an entry
+  point and a `BuildAvaloniaApp`; Release stays a library and the C# is `Compile Remove`d, so the
+  package is untouched (verified by packing both ways and diffing the `.nupkg`). It also needs
+  `GenerateRuntimeConfigurationFiles` and `CopyLocalLockFileAssemblies` in Debug, since the exec
+  passes a runtimeconfig and deps.json that a library does not emit.
+  **`PreviewerApp` is deliberately EMPTY and must stay that way** — if it loaded
+  `KuwantimaPrimaryTheme` you would preview the *shipped* style layered over the one you are
+  editing, and your change would appear to do nothing.
+  **These were two independent bugs wearing one symptom.** The previewer could not start (this
+  bullet), and even once started the styles had no resources (next bullet). Fixing either alone
+  leaves the previewer useless, which is why the first fix looked like it had not worked.
 - **A style file previewed ALONE has no theme, and the failure is silent.** This one shipped from
   v1.0.0 until 2026-09-23. A style file is self-contained by design — that is what makes it a style
   file — but its setters reference brushes defined in `KuwantimaThemeResources.axaml` and in Fluent.

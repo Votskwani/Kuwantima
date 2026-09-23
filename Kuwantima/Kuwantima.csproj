@@ -5,6 +5,31 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
+    <!-- PREVIEWER SUPPORT. These two look like noise on a resource-only library and are not.
+         Avalonia's previewer runs "dotnet exec" against this assembly, passing its
+         runtimeconfig.json and deps.json, to host Avalonia.Designer.HostApp.dll (see
+         AvaloniaBuildTasks.targets, target AvaloniaFilePreview). A class library emits neither a
+         runtimeconfig nor its dependencies into bin/, so there is nothing to exec and the IDE
+         reports "no previewer available" for every file in this project. These make the library
+         locally runnable WITHOUT making it an executable.
+
+         Debug-only, and that condition is load-bearing rather than tidy: when
+         GenerateRuntimeConfigurationFiles is on, NuGet packs the resulting
+         Kuwantima.runtimeconfig.json into lib/net10.0/ alongside the DLL. Verified by packing both
+         ways and diffing the .nupkg. The release path is Release (CLAUDE.md, and publish.yml packs
+         with -c Release), so scoping these to Debug keeps the package byte-for-byte what it was
+         while the previewer still gets what it needs. CopyLocalLockFileAssemblies never affects the
+         package, but is scoped alongside it since it exists for the same reason. -->
+    <GenerateRuntimeConfigurationFiles Condition="'$(Configuration)' == 'Debug'">true</GenerateRuntimeConfigurationFiles>
+    <CopyLocalLockFileAssemblies Condition="'$(Configuration)' == 'Debug'">true</CopyLocalLockFileAssemblies>
+
+    <!-- The decisive one. The designer host execs the assembly holding the compiled XAML and asks
+         it for an AppBuilder; a library has no entry point, so it fails with "Assembly ... doesn't
+         have an entry point" and the IDE says "no previewer available" for EVERY file here.
+         Debug becomes an exe purely to satisfy that. Release stays a library, so the package is
+         untouched — verified by packing both ways and diffing the .nupkg. -->
+    <OutputType Condition="'$(Configuration)' == 'Debug'">Exe</OutputType>
+
     <!-- NuGet package metadata -->
     <PackageId>Kuwantima</PackageId>
     <Version>1.3.0</Version>
@@ -31,12 +56,24 @@ No migration needed - nothing renamed or removed, same single StyleInclude entry
   <ItemGroup>
     <AvaloniaResource Include="Styles\**\*.axaml" />
     <AvaloniaResource Include="Theme\**\*.axaml" />
+
+    <!-- Previewer\ holds the ONLY C# in this library, and it never ships. Removing it in Release
+         keeps the packaged assembly exactly what it has always been: compiled XAML and nothing
+         else. If you are checking the "no C#" claim in CLAUDE.md, this is the exception and it is
+         confined to Debug. -->
+    <Compile Remove="Previewer\**\*.cs" Condition="'$(Configuration)' != 'Debug'" />
     <None Include="..\README.md" Pack="true" PackagePath="" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="12.1.3" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.3" />
+
+    <!-- Previewer only. The designer host needs a windowing backend to render into; without it
+         there is no platform and the preview cannot start. PrivateAssets="all" keeps it out of the
+         .nupkg entirely — a consumer picking up a desktop backend from a styles package would be a
+         real dependency regression, so the pack output is checked (see CLAUDE.md). -->
+    <PackageReference Include="Avalonia.Desktop" Version="12.1.3" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>
