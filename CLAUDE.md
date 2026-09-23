@@ -506,6 +506,16 @@ suite covers instead:
   whole theme*, `Invariant_6` asks *is the result readable*, `Invariant_7` asks *can this file find
   it on its own*. The third question is the one that went unasked from v1.0.0 to 2026-09-23.
 
+**The linked sources are hidden from Solution Explorer on purpose (`Visible="false"`).** They are
+`EmbeddedResource` items pointing at `..\Kuwantima\Styles\*.axaml`, and MSBuild gives each a `Link`,
+so Visual Studio used to display all sixteen **flat at the root of `Kuwantima.Tests`** under their
+real filenames. Opening one there opens the genuine file, so it is indistinguishable from the
+library's copy — except that in *that* project its build action is `EmbeddedResource`, so VS
+correctly refuses to preview it and tells you to set the build action to `AvaloniaXaml`. Changing it
+then drops the item out of the wildcard and the file appears to vanish. This cost a full debugging
+session on 2026-09-23: the previewer was fixed and working in `Kuwantima/Styles/` the whole time.
+Do not remove the `Visible="false"`, and if you add another linked source, hide it too.
+
 Rules that keep it honest:
 - **Parse, never grep.** Facts come from `XDocument` over the AXAML tree. Text matching produces
   false positives on comments — this repo documents its own retired keys in comments, and
