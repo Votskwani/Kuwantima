@@ -238,7 +238,7 @@ Navoti's 12). The Retired Resources list above is, literally, a changelog of wha
   which `Invariant_6` already knows how to measure. Deliberately not pre-specced as a release.
 - Migration plan: `Tunatya/NAVOTI-TO-KUWANTIMA.md`
 
-## A verification trap this repo has set three times
+## A verification trap this repo has set four times
 Each of these shipped (or nearly), and each survived a check that *felt* rigorous:
 
 - **The control count.** README, `.csproj`, the theme header and the Documents page all said 16.
@@ -255,6 +255,23 @@ Each of these shipped (or nearly), and each survived a check that *felt* rigorou
   `TextFillColor*Brush`. Unanimous — and all dead, because Avalonia 12's Fluent dropped that whole
   family and none of the three sources had asked the framework. Silent for two releases (see
   Retired Resources above and the accent-text note below).
+
+- **The v1.4.1 sidebar guide — documentation derived from working code.** The README section was
+  written from `Kuwantima.Sandbox`, which runs correctly, and it described that pattern accurately.
+  It still did not work as printed. `NavPage.IsSelected` was published as a plain auto-property under
+  a comment saying to "raise PropertyChanged from your MVVM framework" — advice the class as given
+  cannot take; the sandbox's real `NavPage` derives from `ViewModelBase` and uses
+  `[ObservableProperty]`. Copied literally it compiles, runs, and leaves the nav highlight on the
+  first page while the content changes underneath — the same silent desync the section boasts of
+  preventing. Alongside it: a `{StaticResource HomeIcon}` that does not exist (and renders blank
+  rather than throwing), an icon-and-label panel in `Content` that the template does not expect, and
+  a C# recipe demanding a `StreamGeometry` with no route to one. Found in one sitting by building a
+  fresh Avalonia app against the published package and running every snippet. **A derivation from
+  working code is a restatement of it, not a test of it.** Prose keeps the shape and drops the parts
+  that carry the load — a base class, an attribute, a key that has to exist. Fixed in v1.4.2.
+  **Documentation that contains code is code: compile it.** The consumer app that catches this is
+  ten minutes of work and is not in the repo — build a throwaway one, the way you would a throwaway
+  `[AvaloniaFact]`.
 
 **Agreement between sources that share an origin is not verification.** Go to ground truth: run
 `dotnet test`, write a throwaway `[AvaloniaFact]`, list the directory, grep the *consumer*, resolve
