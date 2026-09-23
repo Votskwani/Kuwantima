@@ -41,6 +41,12 @@ MAJOR (2.0.0) — the consumer must edit something to keep working:
 MINOR (1.x.0) — new controls/variants, bug fixes, visible behaviour corrections, dependency minors.
 Fixing a bug is not a breaking change even when it is visible.
 
+NOT A RELEASE AT ALL — changes confined to `Kuwantima.Sandbox`, `Kuwantima.Tests` or `docs/`. None
+of them are in the package, so the consumer's migration burden is zero and there is nothing new in
+the DLL. Resist bumping out of habit. **The one exception is `README.md`**, which ships as the
+package's front page (`<PackageReadmeFile>`), so a meaningful documentation improvement *can* justify
+a release on its own — just decide that deliberately rather than by reflex.
+
 ### TargetFramework: stay on `net10.0`. Deliberately.
 Do not "upgrade" to .NET 11 when it ships. Reasons, in order:
 1. **Zero benefit.** The library has no C#. A framework bump buys language features, runtime perf and
@@ -105,8 +111,30 @@ suite goes red. The rest are still on you. Run `dotnet test` before you commit.
 4. **MainWindow content** — add `<pages:{Name}Page IsVisible="{Binding Is{Name}PageVisible}"/>` in Panel
 5. **README.md** — update page count and page list in Sandbox section
 
+**Two of those steps fail SILENTLY, which is why this navigation is slated for rework (v1.4.0).**
+Nothing here is enforced by the suite — the sandbox is not under test — so the failure modes matter:
+- Forget the `OnPropertyChanged` line in step 2 and the nav button highlights correctly while the
+  page never appears. No exception, no binding error. A hand-maintained notification list is the
+  bug; `OnPropertyChanged(string.Empty)` notifies everything and can never go stale.
+- The `CommandParameter` in step 3 is a **magic number** that must match the property's
+  `SelectedPageIndex == N`. Off by one and you silently get the wrong page.
+
+**Also: `Kuwantima.Sandbox/ViewLocator.cs` is dead code, and it would not work if it were live.**
+It is never invoked — `MainWindow` is constructed directly in `App.axaml.cs`, there are no page
+ViewModels, and no view binds a `ContentControl`. Its name mangling also maps
+`…ViewModels.MainWindowViewModel` → `…Views.MainWindowView`, but the class is `…Views.MainWindow`,
+so it would render `Not Found:` if anything did route through it. It is leftover
+`dotnet new avalonia.mvvm` scaffolding. Do not treat it as the page-routing mechanism; it routes
+nothing. v1.4.0 should either make it real (ViewModel-first navigation, which removes both footguns
+above structurally) or delete it.
+
 ### Version Bump Checklist
-1. **Kuwantima.csproj** — update `<Version>` (this is the source of truth)
+1. **Kuwantima.csproj** — update `<Version>` (this is the source of truth) **and rewrite
+   `<PackageReleaseNotes>`**. Those notes render on the nuget.org package page and in Visual
+   Studio's package-details pane — they are the only "what changed" a consumer sees when deciding
+   whether to upgrade, and shipping the previous release's notes is worse than shipping none.
+   (There is no install-time note to use instead: `readme.txt` auto-display and `tools/install.ps1`
+   were `packages.config` features and do **not** run under PackageReference.)
 2. **KuwantimaPrimaryTheme.axaml** — add new entry to VERSION HISTORY in header comment
 3. **Documents page** — add new version entry to Version History section
 4. **Handout stamps** — update `doc-version` in the footer of all three `docs/*.html`
@@ -228,15 +256,21 @@ ground, compositing to mid-grey (`#787e8e` over the region, `#848999` over glass
 primary text to **3.25:1**, on every hovered control in the library. v1.3.0 sets alpha to `0x33`,
 matching the Light variant: primary **6.94**, secondary **5.11**.
 
-**Still open — and it is the INK, not the brush.** `SystemControlForegroundBaseMediumBrush` and
-`TextControlPlaceholderForeground` (same value, `#6a6a9e` Light / `#a0b4d0` Dark) fail on hover
-surfaces in **both** variants at **every** alpha — Light 3.51–4.13, Dark 3.52–4.68. No hover change
-can fix that; lowering alpha further only trades one variant against the other. This is real, not
-hypothetical: `TextBox`'s `PART_Placeholder` uses that grey and sits *inside* `PART_BorderElement`,
-whose background becomes the hover brush — so hovering an empty TextBox puts placeholder text on it.
-Both keys come from **Fluent, not Kuwantima**, so fixing it means overriding two framework text
-brushes: a visible typography change across the library and sandbox, deliberately not folded into
-the hover fix.
+**And the muted INK was broken too — a separate problem wearing the same costume.**
+`SystemControlForegroundBaseMediumBrush` and `TextControlPlaceholderForeground` (one value, shared)
+failed on hover surfaces in **both** variants at **every** alpha — Fluent's `#6a6a9e` / `#a0b4d0`
+measured Light 3.51–4.13, Dark 3.52–4.68. No hover-brush change could fix it; lowering alpha only
+trades one variant against the other. Real, not hypothetical: `TextBox`'s `PART_Placeholder` uses
+that grey and sits *inside* `PART_BorderElement`, whose background becomes the hover brush, so
+hovering an empty TextBox puts placeholder text on exactly the failing pair.
+
+v1.3.0 overrides both — **`#55557F` Light, `#C8D4E8` Dark** — worst case now 5.25 / 4.98. Chosen by
+sweeping candidates against every surface the ink lands on and taking the smallest step that clears
+AA *with margin*, not the first that passes: `#5E5E8C` cleared Light by 0.05, and this repo has been
+bitten twice by margins that thin. Deliberately **not** darkened further — the ink has to stay
+distinguishable from primary or it stops reading as tertiary at all (Light keeps 2.12:1 from
+MidnightBlue, Dark 1.39:1 from AliceBlue). Dark has less room because its worst surface is mid-tone
+while primary is near-white, so AA margin and tonal separation trade directly against each other.
 
 Measure before touching any of this: a translucent brush's contrast depends on its backdrop, so
 composite it over the real surface rather than reading the hex.
@@ -256,9 +290,12 @@ the styles paint an accent surface the table does not measure — so a new surfa
 unmeasured, and reintroducing `SystemAccentColorLight3` as a fill turns the suite red. Verified to
 bite by injecting that exact regression, not by assuming a green suite means a working test.
 
-It is scoped to the accent family on purpose, and the hover-brush gap above is deliberately outside
-it. Widening it to cover a failure that has no agreed fix yet would only produce an exemption written
-to keep the suite green.
+A second theory covers **composited hover surfaces**: each entry names its backdrop chain (page, then
+glass panel) and the test composites source-over exactly as the renderer does, because a translucent
+brush has no contrast of its own. It was deliberately held back until the muted ink was fixed —
+adding it earlier would have meant either a red suite or hand-picking which inks it measured, and
+selecting inks to keep a suite green is the weakening these rules exist to prevent. Once the ink
+landed, every pair passed and no cherry-picking was needed.
 
 ## Avalonia Gotchas
 Framework behaviours that are load-bearing for authoring styles here, and for *measuring* them.
@@ -390,5 +427,8 @@ spacing, the orange checked border. Tests cover the mechanical layer; eyes cover
 - Theme files: `Kuwantima/Theme/`
 - Style files: `Kuwantima/Styles/Kuwantima{Control}.axaml`
 - Sandbox pages: `Kuwantima.Sandbox/Views/Pages/{Name}Page.axaml`
-- Handouts: `docs/*.html`
+- Handouts: `docs/*.html` — standalone, NOT linked from the README (see Handouts above)
 - Tests: `Kuwantima.Tests/` — see Testing above
+- **`README.md` is shipped, not repo-internal.** `<PackageReadmeFile>` packs it, so it renders as
+  the package's front page on nuget.org and in Visual Studio's package details. Write it for a
+  consumer who has never seen the repo. It is the one file where a docs-only change reaches users.

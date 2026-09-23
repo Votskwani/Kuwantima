@@ -15,6 +15,17 @@
     <PackageProjectUrl>https://github.com/Votskwani/Kuwantima</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Votskwani/Kuwantima</RepositoryUrl>
     <PackageTags>avalonia;ui;theme;glass;design-system</PackageTags>
+    <!-- Version-coupled: rewrite this every release. It is on the Version Bump Checklist in
+         CLAUDE.md for that reason - stale release notes are worse than none. -->
+    <PackageReleaseNotes>v1.3.0 - The accent re-ramp.
+
+Accent states now darken on interaction instead of lightening. That lets accent text, checkmarks and radio dots be light and crisp while clearing WCAG AA on every state (4.53 / 7.32 / 10.50). Orange moves off the pressed fill onto the border and a new press glow.
+
+Contrast fixes in both themes: the dark hover tint no longer washes out the text sitting on it, and placeholder and muted label text are now readable on glass panels and on hovered controls.
+
+Upgrades to Avalonia 12.1.3.
+
+No migration needed - nothing renamed or removed, same single StyleInclude entry point, still net10.0. Accent and checked controls do look different: they darken on hover rather than lightening, and their text is light rather than dark.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

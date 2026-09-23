@@ -136,6 +136,39 @@ Override them yourself only if you also re-check contrast against the background
 | `SystemControlForegroundBaseMediumBrush` | `#55557F` / `#C8D4E8` | Fluent's value failed AA on the glass panel and on hovered controls. |
 | `TextControlPlaceholderForeground` | `#55557F` / `#C8D4E8` | Same tone. A hovered empty TextBox puts placeholder text on the hover tint, which Fluent's value did not survive. |
 
+## Sidebar navigation
+
+The sandbox's collapsible sidebar is built from shipped styles — there is no navigation control to
+install. A `ToggleButton` with `Classes="KuwantimaMenu"` is the nav item, and the `Expanded` class
+switches it between icon-only and icon-plus-label so it can follow a `SplitView`'s pane state:
+
+```xml
+<SplitView DisplayMode="CompactInline"
+           CompactPaneLength="56"
+           OpenPaneLength="220"
+           IsPaneOpen="{Binding IsPaneOpen}">
+    <SplitView.Pane>
+        <StackPanel Spacing="6" Margin="8">
+            <ToggleButton Classes="KuwantimaMenu"
+                          Classes.Expanded="{Binding IsPaneOpen}"
+                          IsChecked="{Binding IsHomeSelected}">
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <PathIcon Data="{StaticResource HomeIcon}" Width="18" Height="18"/>
+                    <TextBlock Text="Home" VerticalAlignment="Center"/>
+                </StackPanel>
+            </ToggleButton>
+            <!-- one ToggleButton per page -->
+        </StackPanel>
+    </SplitView.Pane>
+
+    <!-- your page content -->
+</SplitView>
+```
+
+Checked state gets the accent fill and the warm orange border automatically, so the selected page
+reads at a glance. How you bind the buttons to pages is your app's business — the
+`Kuwantima.Sandbox` project is a complete worked example of one approach.
+
 ## Sandbox
 
 The `Kuwantima.Sandbox` project is a live gallery of every control and variant. Run it to preview the full design system:
