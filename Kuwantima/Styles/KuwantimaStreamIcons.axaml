@@ -6,6 +6,21 @@
 
 	<Design.PreviewWith>
 		<ScrollViewer HorizontalScrollBarVisibility="Auto">
+			<!-- PREVIEW ONLY. At runtime the consumer's StyleInclude supplies these; here the
+			     file stands alone, and an unresolvable DynamicResource is SILENT, so without
+			     them every brush setter below is skipped and the preview renders bare. Do NOT
+			     swap in KuwantimaPrimaryTheme: it carries the SHIPPED control styles and would
+			     show you those instead of the edit you are making in this file. -->
+			<ScrollViewer.Styles>
+				<FluentTheme/>
+			</ScrollViewer.Styles>
+			<ScrollViewer.Resources>
+				<ResourceDictionary>
+					<ResourceDictionary.MergedDictionaries>
+						<ResourceInclude Source="avares://Kuwantima/Theme/KuwantimaThemeResources.axaml"/>
+					</ResourceDictionary.MergedDictionaries>
+				</ResourceDictionary>
+			</ScrollViewer.Resources>
 			<!-- Neutral backdrop to make both themes pop -->
 			<Border Padding="30" Background="#808080">
 				<StackPanel Orientation="Horizontal" Spacing="40">

@@ -11,6 +11,7 @@
        test a different Avalonia than the one the library ships against. -->
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="12.1.3" />
+    <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="12.1.3" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.3" />
     <PackageReference Include="Avalonia.Headless" Version="12.1.3" />
     <PackageReference Include="Avalonia.Headless.XUnit" Version="12.1.3" />
@@ -35,8 +36,7 @@
        the dictionary cannot be read back at runtime. Link the source file in instead — the
        test then reads the real dictionary and picks up new keys with no edit here. -->
   <ItemGroup>
-    <EmbeddedResource Include="..\Kuwantima\Theme\KuwantimaThemeResources.axaml"
-                      LogicalName="KuwantimaThemeResources.axaml" />
+    <EmbeddedResource Include="..\Kuwantima\Theme\KuwantimaThemeResources.axaml" LogicalName="KuwantimaThemeResources.axaml" />
   </ItemGroup>
 
   <!-- Tier 2 (InvariantTests) parses the shipped style files themselves, for the same reason:
@@ -47,10 +47,8 @@
        suite, and InvariantTests.Every_style_file_is_classified fails until someone states, in
        code, whether the new control is interactive and whether it needs a disabled pin. -->
   <ItemGroup>
-    <EmbeddedResource Include="..\Kuwantima\Styles\*.axaml"
-                      LogicalName="Styles/%(Filename)%(Extension)" />
-    <EmbeddedResource Include="..\Kuwantima\Theme\KuwantimaPrimaryTheme.axaml"
-                      LogicalName="Theme/KuwantimaPrimaryTheme.axaml" />
+    <EmbeddedResource Include="..\Kuwantima\Styles\*.axaml" LogicalName="Styles/%(Filename)%(Extension)" />
+    <EmbeddedResource Include="..\Kuwantima\Theme\KuwantimaPrimaryTheme.axaml" LogicalName="Theme/KuwantimaPrimaryTheme.axaml" />
 
     <!-- The two places outside the theme that publish a control count. Both are checked against
          the number of style files that actually exist. -->

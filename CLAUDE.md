@@ -65,7 +65,11 @@ Items 2, 3, 4, and 8 below are **enforced by `Kuwantima.Tests`** — you cannot 
 suite goes red. The rest are still on you. Run `dotnet test` before you commit.
 
 ### New Control Checklist
-1. **Style file** — `Kuwantima/Styles/Kuwantima{Control}.axaml` with `Design.PreviewWith` for both themes
+1. **Style file** — `Kuwantima/Styles/Kuwantima{Control}.axaml` with `Design.PreviewWith` for both
+   themes, and **give the preview root the theme** (`<{Root}.Styles><FluentTheme/>` plus a
+   `ResourceInclude` of `KuwantimaThemeResources.axaml`; add `KuwantimaStreamIcons.axaml` too if the
+   preview uses `Icon.*`) — *tested*. Copy the block from any existing style file. Without it the
+   previewer renders the control bare, silently — see the previewer gotcha below.
 2. **StyleInclude** — register in `KuwantimaPrimaryTheme.axaml` (section 2: Control Styles) — *tested*
 3. **Disabled state** — pin Foreground, Cursor="Arrow", Opacity to prevent Fluent double-dimming — *tested*
 4. **Interactive controls** — set `Cursor="Hand"` on base style — *tested*
@@ -376,6 +380,18 @@ had already gone stale once.)
   Kuwantima package exposes exactly one avares asset: `!AvaloniaResourceXamlInfo`. You cannot
   `AssetLoader.Open()` a style file back at runtime. `Kuwantima.Tests` works around this by linking
   the sources in as `<EmbeddedResource>`.
+- **A style file previewed ALONE has no theme, and the failure is silent.** This one shipped from
+  v1.0.0 until 2026-09-23. A style file is self-contained by design — that is what makes it a style
+  file — but its setters reference brushes defined in `KuwantimaThemeResources.axaml` and in Fluent.
+  At runtime the consumer's one `StyleInclude` supplies both at `Application` level. In the
+  previewer **only that file is in scope**, so every one of those lookups failed; measured on
+  `KuwantimaButton.axaml`, 13 of 13 keys unresolvable. And because an unresolvable `DynamicResource`
+  is silent (above), the preview did not error — it rendered bare Fluent controls, which reads as
+  *"the previewer is broken"* rather than *"the resources are not there."* Fix: give the
+  `Design.PreviewWith` **root** a `<FluentTheme/>` and a `ResourceInclude` of the theme resources.
+  **Do not reach for `KuwantimaPrimaryTheme.axaml`** — it is one line and it also resolves
+  everything, but it carries the SHIPPED control styles, so the preview would show you the released
+  style instead of the edit you are making in that file. Now `Invariant_7`.
 - **Kuwantima is a resource-only assembly, and a `ProjectReference` does not LOAD one.** There is no
   C# in the library, so no consumer can reference a type from it, so nothing triggers the assembly
   load — the DLL is merely copied next to the binary. Avalonia 12.1.0 probed hard enough to resolve
@@ -466,6 +482,12 @@ suite covers instead:
   test parses every `Background`/`Fill` setter and fails if the styles paint an accent surface the
   table does not measure, so nothing arrives unmeasured. **Resolution is not readability** —
   `Invariant_5` proves a key resolves and stays green while the result is invisible.
+- **Tier 2 `InvariantTests.Preview.cs`** — `Invariant_7`, the previewer contract: every style file's
+  `Design.PreviewWith` subtree is lifted out, parsed **alone**, and must resolve every resource key
+  the file references, under *both* variants. Needs `Avalonia.Markup.Xaml.Loader` (test-only) to
+  parse markup at runtime. Completes the trio: `Invariant_5` asks *does this key resolve against the
+  whole theme*, `Invariant_6` asks *is the result readable*, `Invariant_7` asks *can this file find
+  it on its own*. The third question is the one that went unasked from v1.0.0 to 2026-09-23.
 
 Rules that keep it honest:
 - **Parse, never grep.** Facts come from `XDocument` over the AXAML tree. Text matching produces

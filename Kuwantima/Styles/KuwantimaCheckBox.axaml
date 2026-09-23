@@ -2,6 +2,21 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 	<Design.PreviewWith>
 		<Border Padding="20">
+			<!-- PREVIEW ONLY. At runtime the consumer's StyleInclude supplies these; here the
+			     file stands alone, and an unresolvable DynamicResource is SILENT, so without
+			     them every brush setter below is skipped and the preview renders bare. Do NOT
+			     swap in KuwantimaPrimaryTheme: it carries the SHIPPED control styles and would
+			     show you those instead of the edit you are making in this file. -->
+			<Border.Styles>
+				<FluentTheme/>
+			</Border.Styles>
+			<Border.Resources>
+				<ResourceDictionary>
+					<ResourceDictionary.MergedDictionaries>
+						<ResourceInclude Source="avares://Kuwantima/Theme/KuwantimaThemeResources.axaml"/>
+					</ResourceDictionary.MergedDictionaries>
+				</ResourceDictionary>
+			</Border.Resources>
 			<Grid ColumnDefinitions="*, *">
 				<!-- LEFT SIDE: LIGHT THEME PREVIEW -->
 				<ThemeVariantScope RequestedThemeVariant="Light" Grid.Column="0">
