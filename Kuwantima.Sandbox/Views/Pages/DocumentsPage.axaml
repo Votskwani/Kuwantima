@@ -175,6 +175,31 @@
                 <TextBlock Text="Version History" FontWeight="SemiBold" FontSize="18"/>
                 <Border Classes="KuwantimaGlass" Padding="16" CornerRadius="6">
                     <StackPanel Spacing="12">
+                        <!-- v1.4.1 -->
+                        <StackPanel Spacing="6">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <Border Background="{DynamicResource SystemControlBackgroundAccentBrush}"
+                                        CornerRadius="4" Padding="8,2">
+                                    <TextBlock Text="v1.4.1" FontWeight="Bold" FontSize="12"
+                                               Foreground="{DynamicResource AccentButtonForeground}"/>
+                                </Border>
+                                <TextBlock Text="2026-09-23" FontSize="12" VerticalAlignment="Center"
+                                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                                <TextBlock Text="Documentation only" FontSize="12" VerticalAlignment="Center"
+                                           FontWeight="SemiBold"/>
+                            </StackPanel>
+                            <StackPanel Spacing="3" Margin="12,0,0,0">
+                                <TextBlock FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"
+                                           Text="README now documents wiring the sidebar to pages"/>
+                                <TextBlock FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"
+                                           Text="One list drives both the nav buttons and the content area"/>
+                                <TextBlock FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"
+                                           Text="Shows where a Dependency Injection Container plugs in, if you use one"/>
+                                <TextBlock FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"
+                                           Text="No selector, setter or resource key changed — documentation only"/>
+                            </StackPanel>
+                        </StackPanel>
+
                         <!-- v1.4.0 -->
                         <StackPanel Spacing="6">
                             <StackPanel Orientation="Horizontal" Spacing="10">

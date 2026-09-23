@@ -32,7 +32,7 @@
 
     <!-- NuGet package metadata -->
     <PackageId>Kuwantima</PackageId>
-    <Version>1.4.0</Version>
+    <Version>1.4.1</Version>
     <Authors>Cole Larson</Authors>
     <Description>A glass-glow design system for Avalonia UI. 15 styled controls, automatic light/dark theming, Fluent palette integration.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -42,17 +42,13 @@
     <PackageTags>avalonia;ui;theme;glass;design-system</PackageTags>
     <!-- Version-coupled: rewrite this every release. It is on the Version Bump Checklist in
          CLAUDE.md for that reason - stale release notes are worse than none. -->
-    <PackageReleaseNotes>v1.4.0 - The previewers work.
+    <PackageReleaseNotes>v1.4.1 - Documentation only.
 
-Opening any control's style file in the IDE previewer now renders the control as it actually looks, in both themes, side by side. It never has before: the previews have been broken since v1.0.0 and failed silently, showing bare unstyled controls with no error.
+No functional change. Not one selector, setter or resource key differs from v1.4.0; the assembly differs only by its embedded version stamp.
 
-This matters if you have cloned or forked the repository to read, learn from or modify the styles. If you only consume the package, nothing you see at runtime changes - Design.PreviewWith content is used by the designer and never instantiated by your app.
+The README now documents how to wire the sidebar to pages, which it previously left to the reader. It covers the pattern itself - one list of pages driving both the navigation buttons and the content area, so adding a page is a single line - and where a Dependency Injection Container plugs in, if you use one. It also explains why that shape, by naming the two mistakes the obvious alternative invites, neither of which produces an exception or a binding error.
 
-Three separate faults had to be fixed, each enough on its own to keep the previewer dark: a style file previewed alone could not resolve the theme brushes its setters reference; the library had no entry point, so the previewer could not start; and the style files carried a build action that stopped Visual Studio offering a preview at all.
-
-Added Invariant_7 to the test suite, which parses each preview in isolation and fails if it cannot resolve every resource key it references, under both theme variants.
-
-No migration needed - nothing renamed, removed or restyled. Same single StyleInclude entry point, same 15 controls, still net10.0, still Avalonia 12.1.3.</PackageReleaseNotes>
+Upgrade only if you want the documentation. If v1.4.0 works for you, nothing here changes it.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
