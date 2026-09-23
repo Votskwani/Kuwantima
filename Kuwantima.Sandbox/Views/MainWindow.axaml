@@ -1,7 +1,7 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:Kuwantima.Sandbox.ViewModels"
-        xmlns:pages="using:Kuwantima.Sandbox.Views.Pages"
+        xmlns:conv="using:Kuwantima.Sandbox.Converters"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
@@ -15,6 +15,10 @@
     <Design.DataContext>
         <vm:MainWindowViewModel/>
     </Design.DataContext>
+
+    <Window.Resources>
+        <conv:ResourceKeyConverter x:Key="ResourceKey"/>
+    </Window.Resources>
 
     <!-- Root glass container -->
     <Border Classes="KuwantimaGlass" Margin="8" Padding="0" ClipToBounds="True">
@@ -73,73 +77,33 @@
                        OpenPaneLength="220"
                        PaneBackground="Transparent">
 
+                <!-- NAV — one button per entry in MainWindowViewModel.Pages -->
                 <SplitView.Pane>
                     <Border Padding="4,8,4,8">
-                        <StackPanel Spacing="4">
-                                <ToggleButton Classes="KuwantimaMenu"
-                                              Classes.Expanded="{Binding IsPaneOpen}"
-                                              Tag="{StaticResource Icon.Home}"
-                                              Content="Buttons"
-                                              IsChecked="{Binding IsButtonsPageVisible, Mode=OneWay}"
-                                              Command="{Binding NavigateToCommand}"
-                                              CommandParameter="0"/>
-                                <ToggleButton Classes="KuwantimaMenu"
-                                              Classes.Expanded="{Binding IsPaneOpen}"
-                                              Tag="{StaticResource Icon.Search}"
-                                              Content="Inputs"
-                                              IsChecked="{Binding IsInputsPageVisible, Mode=OneWay}"
-                                              Command="{Binding NavigateToCommand}"
-                                              CommandParameter="1"/>
-                                <ToggleButton Classes="KuwantimaMenu"
-                                              Classes.Expanded="{Binding IsPaneOpen}"
-                                              Tag="{StaticResource Icon.Sliders}"
-                                              Content="Toggles"
-                                              IsChecked="{Binding IsTogglesPageVisible, Mode=OneWay}"
-                                              Command="{Binding NavigateToCommand}"
-                                              CommandParameter="2"/>
-                                <ToggleButton Classes="KuwantimaMenu"
-                                              Classes.Expanded="{Binding IsPaneOpen}"
-                                              Tag="{StaticResource Icon.Layers}"
-                                              Content="Feedback"
-                                              IsChecked="{Binding IsFeedbackPageVisible, Mode=OneWay}"
-                                              Command="{Binding NavigateToCommand}"
-                                              CommandParameter="3"/>
-                                <ToggleButton Classes="KuwantimaMenu"
-                                              Classes.Expanded="{Binding IsPaneOpen}"
-                                              Tag="{StaticResource Icon.Map}"
-                                              Content="Containers"
-                                              IsChecked="{Binding IsContainersPageVisible, Mode=OneWay}"
-                                              Command="{Binding NavigateToCommand}"
-                                              CommandParameter="4"/>
-                                <ToggleButton Classes="KuwantimaMenu"
-                                              Classes.Expanded="{Binding IsPaneOpen}"
-                                              Tag="{StaticResource Icon.Sun}"
-                                              Content="Theme Preview"
-                                              IsChecked="{Binding IsThemePreviewPageVisible, Mode=OneWay}"
-                                              Command="{Binding NavigateToCommand}"
-                                              CommandParameter="5"/>
-                                <ToggleButton Classes="KuwantimaMenu"
-                                              Classes.Expanded="{Binding IsPaneOpen}"
-                                              Tag="{StaticResource Icon.Copy}"
-                                              Content="Documents"
-                                              IsChecked="{Binding IsDocumentsPageVisible, Mode=OneWay}"
-                                              Command="{Binding NavigateToCommand}"
-                                              CommandParameter="6"/>
-                        </StackPanel>
+                        <ItemsControl ItemsSource="{Binding Pages}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Spacing="4"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:NavPage">
+                                    <ToggleButton Classes="KuwantimaMenu"
+                                                  Classes.Expanded="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).IsPaneOpen}"
+                                                  Tag="{Binding IconKey, Converter={StaticResource ResourceKey}}"
+                                                  Content="{Binding Title}"
+                                                  IsChecked="{Binding IsSelected, Mode=OneWay}"
+                                                  Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).NavigateToCommand}"
+                                                  CommandParameter="{Binding}"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                     </Border>
                 </SplitView.Pane>
 
-                <!-- PAGE CONTENT — all pages stay alive, visibility toggled -->
+                <!-- PAGE CONTENT — built on first visit, then kept (see NavPage.View) -->
                 <SplitView.Content>
-                    <Panel Margin="4">
-                        <pages:ButtonsPage IsVisible="{Binding IsButtonsPageVisible}"/>
-                        <pages:InputsPage IsVisible="{Binding IsInputsPageVisible}"/>
-                        <pages:TogglesPage IsVisible="{Binding IsTogglesPageVisible}"/>
-                        <pages:FeedbackPage IsVisible="{Binding IsFeedbackPageVisible}"/>
-                        <pages:ContainersPage IsVisible="{Binding IsContainersPageVisible}"/>
-                        <pages:ThemePreviewPage IsVisible="{Binding IsThemePreviewPageVisible}"/>
-                        <pages:DocumentsPage IsVisible="{Binding IsDocumentsPageVisible}"/>
-                    </Panel>
+                    <ContentControl Margin="4" Content="{Binding SelectedPage.View}"/>
                 </SplitView.Content>
             </SplitView>
         </Grid>

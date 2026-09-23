@@ -106,18 +106,43 @@ suite goes red. The rest are still on you. Run `dotnet test` before you commit.
 
 ### New Sandbox Page Checklist
 1. **AXAML + code-behind** — `Kuwantima.Sandbox/Views/Pages/{Name}Page.axaml(.cs)`
-2. **ViewModel** — add `Is{Name}PageVisible` property + `OnPropertyChanged` call in `OnSelectedPageIndexChanged`
-3. **MainWindow nav** — add `ToggleButton` in SplitView.Pane with next sequential CommandParameter
-4. **MainWindow content** — add `<pages:{Name}Page IsVisible="{Binding Is{Name}PageVisible}"/>` in Panel
-5. **README.md** — update page count and page list in Sandbox section
+2. **Register it** — one line in `MainWindowViewModel.Pages`:
+   `new NavPage("Title", "Icon.Key", () => new {Name}Page()),`
+3. **README.md** — update page count and page list in Sandbox section
 
-**Two of those steps fail SILENTLY, which is why this navigation is slated for rework.**
-Nothing here is enforced by the suite — the sandbox is not under test — so the failure modes matter:
-- Forget the `OnPropertyChanged` line in step 2 and the nav button highlights correctly while the
-  page never appears. No exception, no binding error. A hand-maintained notification list is the
-  bug; `OnPropertyChanged(string.Empty)` notifies everything and can never go stale.
-- The `CommandParameter` in step 3 is a **magic number** that must match the property's
-  `SelectedPageIndex == N`. Off by one and you silently get the wrong page.
+**That is the whole list, and step 2 is the whole wiring** (reworked 2026-09-23). One
+`ObservableCollection<NavPage>` drives the sidebar *and* the content area: the nav is an
+`ItemsControl` over it, and the content is a single `ContentControl` bound to `SelectedPage.View`.
+A page cannot be half-registered, because there is only one place to register it.
+
+**What this replaced, and why it is worth not drifting back.** The old shape needed the page named in
+four places — an `Is{Name}PageVisible` property, an `OnPropertyChanged` line, a nav `ToggleButton`
+with a `CommandParameter`, and a `<pages:{Name}Page IsVisible=…/>` entry — and two of them failed
+**silently**, in a project the suite does not cover:
+- A missing `OnPropertyChanged` line left the nav button highlighting correctly while the page never
+  appeared. No exception, no binding error. The hand-maintained notification list *was* the bug.
+- `CommandParameter` was a magic number that had to match `SelectedPageIndex == N`. Off by one and
+  you silently got the wrong page.
+
+Both are now structurally impossible rather than merely documented. Nothing enforces this — the
+sandbox still is not under test — so the guard is that there is nothing left to forget.
+
+**Two things that look incidental and are not:**
+- `NavPage.View` is **lazy** (`_view ??= _build()`), not eager. `Design.DataContext` constructs
+  `MainWindowViewModel` in the IDE previewer, and the previewer working is a first-class feature here
+  — eager construction would make the designer build all seven pages to render the shell. Proof it is
+  genuinely lazy: the ViewModel constructs fine in a plain console app with no Avalonia runtime, which
+  eager page construction could not.
+- Icons go through `ResourceKeyConverter` because a `DataTemplate` cannot write
+  `{StaticResource {Binding IconKey}}` — a resource key must be known at parse time. The converter
+  returns **null** for an unknown key rather than throwing, which means a typo'd key silently yields a
+  blank icon and no binding error. Verified once with a throwaway `[AvaloniaFact]` that all seven keys
+  resolve to a `Geometry`, and verified the probe bites by feeding it a bad key. Re-probe if you add one.
+
+**Behaviour change to know about:** pages are no longer all held in a `Panel` with `IsVisible`
+toggled. A page is built on first visit and kept, but navigating away detaches it from the visual
+tree, so transient *control* state (scroll offset, an open Expander) resets on revisit. ViewModel
+state persists. This was a deliberate trade for the single source of truth.
 
 **`Kuwantima.Sandbox/ViewLocator.cs` is GONE (deleted 2026-09-23, e0c2aee) — do not re-add it by
 reflex.** It was `dotnet new avalonia.mvvm` scaffolding that never routed anything: `MainWindow` is
@@ -129,14 +154,18 @@ It was **registered**, not merely present (`<local:ViewLocator/>` in `Applicatio
 the registration and the `xmlns:local` went with it. `ViewModelBase` stays — `MainWindowViewModel`
 derives from it.
 
-**The rework is not versioned, and should not be.** It is confined to `Kuwantima.Sandbox`, so by the
-version rules above it is not a release at all — it lands as commits on master. Do it ViewModel-first
-(a `SelectedPage` object instead of the int index, pages as ViewModels in a collection, one
-`ContentControl`): that removes both footguns above *structurally* rather than by remembering harder,
-which is the only guard available where the suite does not reach. A ViewLocator is the right shape to
-reach for at that point — write a correct one then; do not resurrect the deleted one. The one way this
-work legitimately earns a version: README's *Sidebar navigation* section deliberately stops short of
-the ViewModel wiring today, and README **ships** as the package front page.
+**The rework is done and is deliberately not versioned.** It is confined to `Kuwantima.Sandbox`, so
+by the version rules above it is not a release at all — it landed as commits on master. Note the
+rework did **not** need a ViewLocator: `NavPage` holds the page directly, so there is no
+ViewModel→View name lookup to perform and nothing to reflect over. If you ever do want one, write a
+correct one; do not resurrect the deleted one.
+
+**The one way this work could still earn a version:** README's *Sidebar navigation* section
+deliberately stops short of the ViewModel wiring ("how you bind the buttons to pages is your app's
+business"), because the pattern it would have shown was the one being retired. That reason is now
+gone, and README **ships** as the package front page — so completing that section is a real,
+consumer-facing docs improvement of the kind the version rules say can justify a release on its own.
+Decide it deliberately.
 
 ### Version Bump Checklist
 1. **Kuwantima.csproj** — update `<Version>` (this is the source of truth) **and rewrite
