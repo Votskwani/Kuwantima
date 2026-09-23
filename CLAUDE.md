@@ -111,7 +111,7 @@ suite goes red. The rest are still on you. Run `dotnet test` before you commit.
 4. **MainWindow content** — add `<pages:{Name}Page IsVisible="{Binding Is{Name}PageVisible}"/>` in Panel
 5. **README.md** — update page count and page list in Sandbox section
 
-**Two of those steps fail SILENTLY, which is why this navigation is slated for rework (v1.4.0).**
+**Two of those steps fail SILENTLY, which is why this navigation is slated for rework.**
 Nothing here is enforced by the suite — the sandbox is not under test — so the failure modes matter:
 - Forget the `OnPropertyChanged` line in step 2 and the nav button highlights correctly while the
   page never appears. No exception, no binding error. A hand-maintained notification list is the
@@ -119,14 +119,24 @@ Nothing here is enforced by the suite — the sandbox is not under test — so t
 - The `CommandParameter` in step 3 is a **magic number** that must match the property's
   `SelectedPageIndex == N`. Off by one and you silently get the wrong page.
 
-**Also: `Kuwantima.Sandbox/ViewLocator.cs` is dead code, and it would not work if it were live.**
-It is never invoked — `MainWindow` is constructed directly in `App.axaml.cs`, there are no page
-ViewModels, and no view binds a `ContentControl`. Its name mangling also maps
-`…ViewModels.MainWindowViewModel` → `…Views.MainWindowView`, but the class is `…Views.MainWindow`,
-so it would render `Not Found:` if anything did route through it. It is leftover
-`dotnet new avalonia.mvvm` scaffolding. Do not treat it as the page-routing mechanism; it routes
-nothing. v1.4.0 should either make it real (ViewModel-first navigation, which removes both footguns
-above structurally) or delete it.
+**`Kuwantima.Sandbox/ViewLocator.cs` is GONE (deleted 2026-09-23, e0c2aee) — do not re-add it by
+reflex.** It was `dotnet new avalonia.mvvm` scaffolding that never routed anything: `MainWindow` is
+constructed directly in `App.axaml.cs`, there are no page ViewModels, and no view binds a
+`ContentControl`, so nothing ever presented a `ViewModelBase` for it to match. It was also *wrong* —
+its name mangling maps `…ViewModels.MainWindowViewModel` → `…Views.MainWindowView`, but the class is
+`…Views.MainWindow`, so the one type it could plausibly be asked for would have rendered `Not Found:`.
+It was **registered**, not merely present (`<local:ViewLocator/>` in `Application.DataTemplates`), so
+the registration and the `xmlns:local` went with it. `ViewModelBase` stays — `MainWindowViewModel`
+derives from it.
+
+**The rework is not versioned, and should not be.** It is confined to `Kuwantima.Sandbox`, so by the
+version rules above it is not a release at all — it lands as commits on master. Do it ViewModel-first
+(a `SelectedPage` object instead of the int index, pages as ViewModels in a collection, one
+`ContentControl`): that removes both footguns above *structurally* rather than by remembering harder,
+which is the only guard available where the suite does not reach. A ViewLocator is the right shape to
+reach for at that point — write a correct one then; do not resurrect the deleted one. The one way this
+work legitimately earns a version: README's *Sidebar navigation* section deliberately stops short of
+the ViewModel wiring today, and README **ships** as the package front page.
 
 ### Version Bump Checklist
 1. **Kuwantima.csproj** — update `<Version>` (this is the source of truth) **and rewrite
