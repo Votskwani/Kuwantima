@@ -32,7 +32,7 @@
 
     <!-- NuGet package metadata -->
     <PackageId>Kuwantima</PackageId>
-    <Version>1.4.1</Version>
+    <Version>1.4.2</Version>
     <Authors>Cole Larson</Authors>
     <Description>A glass-glow design system for Avalonia UI. 15 styled controls, automatic light/dark theming, Fluent palette integration.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -42,13 +42,17 @@
     <PackageTags>avalonia;ui;theme;glass;design-system</PackageTags>
     <!-- Version-coupled: rewrite this every release. It is on the Version Bump Checklist in
          CLAUDE.md for that reason - stale release notes are worse than none. -->
-    <PackageReleaseNotes>v1.4.1 - Documentation only.
+    <PackageReleaseNotes>v1.4.2 - Documentation only. Corrects v1.4.1.
 
 No functional change. Not one selector, setter or resource key differs from v1.4.0; the assembly differs only by its embedded version stamp.
 
-The README now documents how to wire the sidebar to pages, which it previously left to the reader. It covers the pattern itself - one list of pages driving both the navigation buttons and the content area, so adding a page is a single line - and where a Dependency Injection Container plugs in, if you use one. It also explains why that shape, by naming the two mistakes the obvious alternative invites, neither of which produces an exception or a binding error.
+The sidebar navigation guide added in v1.4.1 was written from the working sandbox but never compiled, and it did not work as printed. Every snippet in it has now been built and run in a fresh app against this package. Three corrections:
 
-Upgrade only if you want the documentation. If v1.4.0 works for you, nothing here changes it.</PackageReleaseNotes>
+- NavPage.IsSelected is now an ObservableObject property. As printed it was a plain auto-property, which compiles and runs and leaves the navigation highlight stuck on the first page while the content area changes underneath it - no exception, no binding error.
+- The nav button's icon comes from Tag and its label from Content, which the guide now says outright. The previous snippet put an icon-and-label panel in Content, which the control template does not expect.
+- The 13 icon geometries the package ships are documented for the first time, with their keys. The old snippet referenced an icon key that does not exist; a missing key renders nothing rather than failing loudly, so it was invisible.
+
+If you copied the v1.4.1 navigation guide into your app, the first item above is the one to check.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
