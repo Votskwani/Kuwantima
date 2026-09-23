@@ -173,11 +173,26 @@ Navoti's 12). The Retired Resources list above is, literally, a changelog of wha
 
 - **Never run both.** Each ships its own `<fluent:FluentTheme>` and overrides the same three
   `SystemFillColor*` keys. Avalonia resolves by document order, so one silently loses — no error.
-- **The retirement list is a migration burden, not just history.** 27 live references in Tunatya
-  point at `KuwantimaGlassBorder` / `KuwantimaGlassBorderHover` — keys retired here as *"unused."*
-  They were unused **in Kuwantima**. Before retiring anything else, grep Tunatya first.
-- **Kuwantima is NOT a strict superset.** Navoti has `NavotiOverlayBackground` /
-  `NavotiOverlayTextBrush`; there is no Kuwantima equivalent. Decide deliberately whether to add them.
+- **Before retiring anything else, grep Tunatya — then ask whether the file survives.** This entry
+  used to read *"27 live references are a migration burden."* Re-verified 2026-09-23: the count is
+  right (12 `NavotiGlassBorder` + 15 `NavotiGlassBorderHover`) and the burden was not. **26 of the 27
+  sit inside files the migration deletes** — 24 in Navoti's own control styles (Button, CheckBox,
+  ComboBox, Expander, ListBox, MenuToggleButton, RadioButton, TextBox, ToggleButton — Kuwantima ships
+  a replacement for every one) and 2 in `NavotiGlassBorder.axaml` itself. They are the border brush of
+  controls that are themselves being replaced, so they evaporate with their files. **One** app-code
+  site survives: a `<Separator>` hairline in `HomeView.axaml`, which maps to `KuwantimaDarkBorderBrush`
+  — already shipped, and already what Kuwantima's own style files use for a 1px rule. The retired keys
+  need no reintroduction. *A reference count is not a migration burden until you ask what file it
+  lives in.*
+- **Do NOT answer that `<Separator>` with `Classes="KuwantimaGlass"`.** The 22 `Classes="NavotiGlass"`
+  usages do map straight across, but the glass panel is a 16px-radius surface with glow and shadow; a
+  hairline divider is not a small one. Two different questions that happen to share a word.
+- **Kuwantima is NOT a strict superset, and this is the only real gap.** Navoti has
+  `NavotiOverlayBackground` / `NavotiOverlayTextBrush` (a probing scrim and its text) with no
+  Kuwantima equivalent — and unlike the GlassBorder keys, its 2 consumption sites are in app code
+  (`OnboardingView.axaml`) that survives. Decide it *during* the migration, where the scrim's real
+  backdrop is visible: text on a 75% wash over arbitrary content is a compositing contrast problem,
+  which `Invariant_6` already knows how to measure. Deliberately not pre-specced as a release.
 - Migration plan: `Tunatya/NAVOTI-TO-KUWANTIMA.md`
 
 ## A verification trap this repo has set three times
@@ -186,8 +201,12 @@ Each of these shipped (or nearly), and each survived a check that *felt* rigorou
 - **The control count.** README, `.csproj`, the theme header and the Documents page all said 16.
   Four sources, unanimous — and all wrong, because all four restate a single origin. Checking them
   against each other **confirmed** the error. The truth was `ls Kuwantima/Styles/` minus StreamIcons.
-- **The retired resources.** They were "unused" — measured within Kuwantima only. 27 references were
-  live in Tunatya the whole time.
+- **The retired resources — and the correction to that correction.** They were retired as "unused,"
+  measured within Kuwantima only; 27 references were live in Tunatya the whole time. True — and from
+  c3b36a8 (2026-07-13) it read as *"reintroduce them."* Re-checked 2026-09-23: 26 of the 27 are in style
+  files the migration deletes, so one real site remains and an already-shipped key covers it. The
+  first fix went to ground truth (grep the consumer) and stopped one question short of it (does the
+  containing file survive?). **A number verified at the wrong altitude is still an unverified claim.**
 - **The retired keys' replacements.** The Retired Resources table, the theme header and the migration
   note all agreed the old brushes mapped to `TextOnAccentFillColorPrimaryBrush` /
   `TextFillColor*Brush`. Unanimous — and all dead, because Avalonia 12's Fluent dropped that whole
