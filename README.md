@@ -166,8 +166,110 @@ switches it between icon-only and icon-plus-label so it can follow a `SplitView`
 ```
 
 Checked state gets the accent fill and the warm orange border automatically, so the selected page
-reads at a glance. How you bind the buttons to pages is your app's business — the
-`Kuwantima.Sandbox` project is a complete worked example of one approach.
+reads at a glance.
+
+### Wiring it to pages
+
+The styles do not care how you choose pages, so this part is yours. But the shape below is worth
+copying, because the obvious alternative fails silently — see the note at the end.
+
+Keep **one** list of pages, and let it drive the sidebar and the content area both:
+
+```csharp
+public sealed class NavPage
+{
+    private readonly Func<Control> _build;
+    private Control? _view;
+
+    public NavPage(string title, StreamGeometry icon, Func<Control> build)
+        => (Title, Icon, _build) = (title, icon, build);
+
+    public string Title { get; }
+    public StreamGeometry Icon { get; }
+
+    // Built on first visit, then kept for the lifetime of the app.
+    public Control View => _view ??= _build();
+
+    // Drives the nav button's checked state; raise PropertyChanged from your MVVM framework.
+    public bool IsSelected { get; set; }
+}
+```
+
+```csharp
+public ObservableCollection<NavPage> Pages { get; } = new()
+{
+    new NavPage("Home",     HomeIcon,     () => new HomePage()),
+    new NavPage("Settings", SettingsIcon, () => new SettingsPage()),
+};
+
+// When this changes, clear IsSelected on the old page and set it on the new one.
+public NavPage SelectedPage { get; set; }
+```
+
+The sidebar becomes one `ItemsControl` over that list, and the content one `ContentControl`:
+
+```xml
+<SplitView.Pane>
+    <ItemsControl ItemsSource="{Binding Pages}">
+        <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+                <StackPanel Spacing="6" Margin="8"/>
+            </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+            <DataTemplate x:DataType="vm:NavPage">
+                <ToggleButton Classes="KuwantimaMenu"
+                              Classes.Expanded="{Binding $parent[Window].((vm:MainViewModel)DataContext).IsPaneOpen}"
+                              Tag="{Binding Icon}"
+                              Content="{Binding Title}"
+                              IsChecked="{Binding IsSelected, Mode=OneWay}"
+                              Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).NavigateToCommand}"
+                              CommandParameter="{Binding}"/>
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
+</SplitView.Pane>
+
+<ContentControl Content="{Binding SelectedPage.View}"/>
+```
+
+`Tag` is the icon: the `KuwantimaMenu` template binds it to the button's `PathIcon`, so any
+`StreamGeometry` works. (Holding a `Geometry` on a view model bothers some people. If it bothers you,
+store a resource key string instead and convert it with a small `IValueConverter` — a `DataTemplate`
+cannot write `{StaticResource {Binding IconKey}}`, because a resource key must be known when the
+markup is parsed.)
+
+Adding a page is now one line in `Pages`. The trade-off: navigating away detaches a page from the
+visual tree, so transient control state such as scroll position resets when you come back. The page
+object itself is kept, so anything held in your view model persists.
+
+### If your app uses a Dependency Injection Container
+
+`NavPage` takes a factory — `Func<Control>` — rather than a finished page, which is what makes pages
+build lazily. That factory is also the seam for a **Dependency Injection Container**: a library, such
+as `Microsoft.Extensions.DependencyInjection`, that constructs your objects for you and supplies
+whatever those objects need. If you use one, resolve the page there instead of calling `new`:
+
+```csharp
+new NavPage("Settings", SettingsIcon, () => provider.GetRequiredService<SettingsPage>()),
+```
+
+Nothing else changes. If you are not using a container, the `() => new SettingsPage()` above is
+complete and correct — this is an extension point, not a requirement.
+
+### Why one list
+
+The tempting alternative is a nav button per page in the markup, plus an `int SelectedPageIndex` and
+one `bool IsThisPageVisible` property per page. Kuwantima's own sandbox was written that way, and it
+had two failure modes that produce **no exception and no binding error**:
+
+- A per-page notification list that must be kept in step by hand. Miss an entry and the nav button
+  highlights correctly while the page never appears.
+- `CommandParameter="3"` as a magic number that has to agree with an index in the view model. Off by
+  one and you silently get the wrong page.
+
+With a single list there is nothing to keep in sync, so neither mistake is available. The
+`Kuwantima.Sandbox` project is a complete worked example.
 
 ## Sandbox
 
