@@ -136,11 +136,51 @@ Override them yourself only if you also re-check contrast against the background
 | `SystemControlForegroundBaseMediumBrush` | `#55557F` / `#C8D4E8` | Fluent's value failed AA on the glass panel and on hovered controls. |
 | `TextControlPlaceholderForeground` | `#55557F` / `#C8D4E8` | Same tone. A hovered empty TextBox puts placeholder text on the hover tint, which Fluent's value did not survive. |
 
+## Icons
+
+The same `StyleInclude` brings in 13 icon geometries. They are ordinary `StreamGeometry` resources,
+so any control that takes a `Geometry` can use one:
+
+```xml
+<PathIcon Data="{StaticResource Icon.Home}" Width="18" Height="18"/>
+```
+
+| Key | Key | Key |
+|---|---|---|
+| `Icon.Home` | `Icon.Search` | `Icon.Refresh` |
+| `Icon.Gear` | `Icon.Clear.Circle` | `Icon.Copy` |
+| `Icon.Sliders` | `Icon.Layers` | `Icon.Sun` |
+| `Icon.Expand` | `Icon.Map` | `Icon.Moon.ThirdEye.Smiling` |
+| `Icon.Collapse` | | |
+
+A key that does not exist renders **nothing** rather than failing loudly, so check a blank icon
+against this table before looking anywhere else.
+
 ## Sidebar navigation
 
 The sandbox's collapsible sidebar is built from shipped styles — there is no navigation control to
-install. A `ToggleButton` with `Classes="KuwantimaMenu"` is the nav item, and the `Expanded` class
-switches it between icon-only and icon-plus-label so it can follow a `SplitView`'s pane state:
+install. A `ToggleButton` with `Classes="KuwantimaMenu"` is the nav item:
+
+```xml
+<ToggleButton Classes="KuwantimaMenu"
+              Classes.Expanded="{Binding IsPaneOpen}"
+              Tag="{StaticResource Icon.Home}"
+              Content="Home"
+              IsChecked="{Binding IsHomeSelected}"/>
+```
+
+Two properties drive it, and it is worth being precise about which:
+
+- **`Tag` is the icon.** The template binds it to the button's `PathIcon`, so any `StreamGeometry`
+  works — one of the keys above, or your own.
+- **`Content` is the label**, and it is hidden unless the `Expanded` class is on. That is what makes
+  the button collapse to an icon-only square when the pane closes.
+
+So do **not** put your own icon-plus-label `StackPanel` in `Content`. The template already places
+both, and a panel there is invisible while collapsed and double-indented while expanded.
+
+`Classes.Expanded` is what follows the pane's state, and checked state gets the accent fill and the
+warm orange border automatically, so the selected page reads at a glance:
 
 ```xml
 <SplitView DisplayMode="CompactInline"
@@ -149,14 +189,6 @@ switches it between icon-only and icon-plus-label so it can follow a `SplitView`
            IsPaneOpen="{Binding IsPaneOpen}">
     <SplitView.Pane>
         <StackPanel Spacing="6" Margin="8">
-            <ToggleButton Classes="KuwantimaMenu"
-                          Classes.Expanded="{Binding IsPaneOpen}"
-                          IsChecked="{Binding IsHomeSelected}">
-                <StackPanel Orientation="Horizontal" Spacing="12">
-                    <PathIcon Data="{StaticResource HomeIcon}" Width="18" Height="18"/>
-                    <TextBlock Text="Home" VerticalAlignment="Center"/>
-                </StackPanel>
-            </ToggleButton>
             <!-- one ToggleButton per page -->
         </StackPanel>
     </SplitView.Pane>
@@ -165,50 +197,113 @@ switches it between icon-only and icon-plus-label so it can follow a `SplitView`
 </SplitView>
 ```
 
-Checked state gets the accent fill and the warm orange border automatically, so the selected page
-reads at a glance.
-
 ### Wiring it to pages
 
 The styles do not care how you choose pages, so this part is yours. But the shape below is worth
 copying, because the obvious alternative fails silently — see the note at the end.
 
-Keep **one** list of pages, and let it drive the sidebar and the content area both:
+Keep **one** list of pages, and let it drive the sidebar and the content area both. Each entry
+carries its label, its icon key, and a factory for the page itself:
 
 ```csharp
-public sealed class NavPage
+using System;
+using Avalonia.Controls;
+using CommunityToolkit.Mvvm.ComponentModel;
+
+public sealed partial class NavPage : ObservableObject
 {
     private readonly Func<Control> _build;
     private Control? _view;
 
-    public NavPage(string title, StreamGeometry icon, Func<Control> build)
-        => (Title, Icon, _build) = (title, icon, build);
+    public NavPage(string title, string iconKey, Func<Control> build)
+        => (Title, IconKey, _build) = (title, iconKey, build);
 
     public string Title { get; }
-    public StreamGeometry Icon { get; }
 
-    // Built on first visit, then kept for the lifetime of the app.
+    /// <summary>Key of a geometry from the table above, e.g. "Icon.Home".</summary>
+    public string IconKey { get; }
+
+    /// <summary>Built on first visit, then kept for the lifetime of the app.</summary>
     public Control View => _view ??= _build();
 
-    // Drives the nav button's checked state; raise PropertyChanged from your MVVM framework.
-    public bool IsSelected { get; set; }
+    /// <summary>Drives the nav button's checked state.</summary>
+    [ObservableProperty] private bool _isSelected;
 }
 ```
 
-```csharp
-public ObservableCollection<NavPage> Pages { get; } = new()
-{
-    new NavPage("Home",     HomeIcon,     () => new HomePage()),
-    new NavPage("Settings", SettingsIcon, () => new SettingsPage()),
-};
+`IsSelected` **must** raise `PropertyChanged` — hence `ObservableObject` and `[ObservableProperty]`
+above. A plain `public bool IsSelected { get; set; }` compiles, runs, and leaves the highlight stuck
+on the first page while the content area changes underneath it, with no exception and no binding
+error to go looking for.
 
-// When this changes, clear IsSelected on the old page and set it on the new one.
-public NavPage SelectedPage { get; set; }
+The view model holds the list and the selection, and keeps `IsSelected` in step in one place:
+
+```csharp
+using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+
+public partial class MainViewModel : ObservableObject
+{
+    public ObservableCollection<NavPage> Pages { get; } = new()
+    {
+        new NavPage("Home",     "Icon.Home", () => new HomePage()),
+        new NavPage("Settings", "Icon.Gear", () => new SettingsPage()),
+    };
+
+    [ObservableProperty] private NavPage _selectedPage = null!;
+    [ObservableProperty] private bool _isPaneOpen = true;
+
+    public MainViewModel() => SelectedPage = Pages[0];
+
+    partial void OnSelectedPageChanged(NavPage? oldValue, NavPage newValue)
+    {
+        if (oldValue is not null) oldValue.IsSelected = false;
+        newValue.IsSelected = true;
+    }
+
+    [RelayCommand]
+    private void NavigateTo(NavPage page) => SelectedPage = page;
+}
 ```
 
-The sidebar becomes one `ItemsControl` over that list, and the content one `ContentControl`:
+Because the icon is a *key* rather than a geometry, one small converter turns it into the real
+resource at bind time. A `DataTemplate` cannot write `{StaticResource {Binding IconKey}}` — a
+resource key has to be known when the markup is parsed — so the lookup happens here, which also
+keeps `Geometry` out of your view model:
+
+```csharp
+using System;
+using System.Globalization;
+using Avalonia;
+using Avalonia.Data.Converters;
+
+public class ResourceKeyConverter : IValueConverter
+{
+    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        if (value is not string key || Application.Current is not { } app)
+            return null;
+
+        return app.TryGetResource(key, app.ActualThemeVariant, out var resource) ? resource : null;
+    }
+
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => throw new NotSupportedException($"{nameof(ResourceKeyConverter)} is one-way.");
+}
+```
+
+Pass the theme variant explicitly, as above. `TryGetResource` without one misses theme-scoped
+resources, and returning `null` on an unknown key leaves a nav button iconless rather than taking
+the window down.
+
+The sidebar then becomes one `ItemsControl` over the list, and the content one `ContentControl`:
 
 ```xml
+<Window.Resources>
+    <conv:ResourceKeyConverter x:Key="ResourceKey"/>
+</Window.Resources>
+
 <SplitView.Pane>
     <ItemsControl ItemsSource="{Binding Pages}">
         <ItemsControl.ItemsPanel>
@@ -220,7 +315,7 @@ The sidebar becomes one `ItemsControl` over that list, and the content one `Cont
             <DataTemplate x:DataType="vm:NavPage">
                 <ToggleButton Classes="KuwantimaMenu"
                               Classes.Expanded="{Binding $parent[Window].((vm:MainViewModel)DataContext).IsPaneOpen}"
-                              Tag="{Binding Icon}"
+                              Tag="{Binding IconKey, Converter={StaticResource ResourceKey}}"
                               Content="{Binding Title}"
                               IsChecked="{Binding IsSelected, Mode=OneWay}"
                               Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).NavigateToCommand}"
@@ -232,12 +327,6 @@ The sidebar becomes one `ItemsControl` over that list, and the content one `Cont
 
 <ContentControl Content="{Binding SelectedPage.View}"/>
 ```
-
-`Tag` is the icon: the `KuwantimaMenu` template binds it to the button's `PathIcon`, so any
-`StreamGeometry` works. (Holding a `Geometry` on a view model bothers some people. If it bothers you,
-store a resource key string instead and convert it with a small `IValueConverter` — a `DataTemplate`
-cannot write `{StaticResource {Binding IconKey}}`, because a resource key must be known when the
-markup is parsed.)
 
 Adding a page is now one line in `Pages`. The trade-off: navigating away detaches a page from the
 visual tree, so transient control state such as scroll position resets when you come back. The page
@@ -251,7 +340,7 @@ as `Microsoft.Extensions.DependencyInjection`, that constructs your objects for 
 whatever those objects need. If you use one, resolve the page there instead of calling `new`:
 
 ```csharp
-new NavPage("Settings", SettingsIcon, () => provider.GetRequiredService<SettingsPage>()),
+new NavPage("Settings", "Icon.Gear", () => provider.GetRequiredService<SettingsPage>()),
 ```
 
 Nothing else changes. If you are not using a container, the `() => new SettingsPage()` above is
@@ -268,8 +357,10 @@ had two failure modes that produce **no exception and no binding error**:
 - `CommandParameter="3"` as a magic number that has to agree with an index in the view model. Off by
   one and you silently get the wrong page.
 
-With a single list there is nothing to keep in sync, so neither mistake is available. The
-`Kuwantima.Sandbox` project is a complete worked example.
+With a single list there is nothing left to keep in sync. The one notification that still matters —
+`NavPage.IsSelected` — is raised for you by `[ObservableProperty]` and set in exactly one place,
+`OnSelectedPageChanged`. The `Kuwantima.Sandbox` project is a complete worked example, and the code
+above is the code it runs.
 
 ## Sandbox
 
