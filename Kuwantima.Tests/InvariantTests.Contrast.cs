@@ -63,6 +63,19 @@ public partial class InvariantTests
             + "background becomes the hover brush, so hovering an empty TextBox produces exactly this"),
     ];
 
+    /// <summary>
+    /// The scrim (KuwantimaScrimBackground/Foreground, added v1.5.0): a blocking overlay, so its
+    /// ink/surface pair is measured the same way as a hover surface — both backdrops, both variants
+    /// — even though it is not part of the accent family this file otherwise scopes to.
+    /// </summary>
+    private static readonly Layered[] ScrimPairs =
+    [
+        new("KuwantimaScrimForeground", "KuwantimaScrimBackground", ["SystemRegionBrush"],
+            "scrim text directly on the page"),
+        new("KuwantimaScrimForeground", "KuwantimaScrimBackground", ["SystemRegionBrush", "KuwantimaGlassBackground"],
+            "scrim text over a glass panel — the realistic case, per Tunatya's OnboardingView.axaml"),
+    ];
+
     private static readonly Pair[] AccentPairs =
     [
         new("AccentButtonForeground", "SystemControlBackgroundAccentBrush",
@@ -203,6 +216,43 @@ public partial class InvariantTests
             + "control in the library without anyone noticing. If you changed the hover brush's alpha "
             + "or a muted ink, measure the composite over BOTH backdrops: the glass panel is the worse "
             + "of the two and the one most controls actually sit on.");
+    }
+
+    public static IEnumerable<object[]> ScrimPairMatrix() =>
+        from pair in ScrimPairs
+        from variant in new[] { "Light", "Dark" }
+        select new object[] { pair.Ink, pair.Surface, string.Join(" > ", pair.Backdrop), pair.Where, variant };
+
+    [AvaloniaTheory]
+    [MemberData(nameof(ScrimPairMatrix))]
+    public void Invariant_6_scrim_ink_clears_AA_on_composited_backdrops(
+        string inkKey, string surfaceKey, string backdropChain, string where, string variantName)
+    {
+        var variant = variantName == "Light" ? ThemeVariant.Light : ThemeVariant.Dark;
+
+        Color composited = default;
+        var first = true;
+        foreach (var key in backdropChain.Split(" > "))
+        {
+            var layer = ResolveColor(key, variant);
+            composited = first ? Over((layer.Color, layer.Opacity), Colors.Black) : Over(layer, composited);
+            first = false;
+        }
+
+        var surface = ResolveColor(surfaceKey, variant);
+        composited = Over(surface, composited);
+
+        var ink = ResolveColor(inkKey, variant);
+        var ratio = Contrast(ink.Color, composited);
+
+        Assert.True(
+            ratio >= AA,
+            $"{variantName}: {inkKey} ({ink.Color}) on {surfaceKey} composited over [{backdropChain}] "
+            + $"= {composited}, measuring {ratio:F2}:1 — below WCAG AA of {AA:F1}." + Environment.NewLine
+            + $"  Surface: {where}" + Environment.NewLine + Environment.NewLine
+            + "The scrim's opacity was chosen to read as a solid blocking surface, not to chase the AA "
+            + "floor — if this fails, the wash lost too much opacity or the ink drifted, not the other "
+            + "way round.");
     }
 
     /// <summary>

@@ -214,6 +214,10 @@ Kuwantima **replaces** Navoti in `../Tunatya`. It does not compose with it — t
 design system at two points in time (same architecture, same class convention, 15 controls vs
 Navoti's 12). The Retired Resources list above is, literally, a changelog of what Navoti still has.
 
+**Migration executed 2026-09-25**, against this section as it stood at v1.4.2 — see `Tunatya/CLAUDE.md`
+("Navoti → Kuwantima migration — DONE") for exactly what landed. One open item came out of it: the
+overlay-scrim gap, closed the same day by v1.5.0 — see below.
+
 - **Never run both.** Each ships its own `<fluent:FluentTheme>` and overrides the same three
   `SystemFillColor*` keys. Avalonia resolves by document order, so one silently loses — no error.
 - **Before retiring anything else, grep Tunatya — then ask whether the file survives.** This entry
@@ -230,13 +234,34 @@ Navoti's 12). The Retired Resources list above is, literally, a changelog of wha
 - **Do NOT answer that `<Separator>` with `Classes="KuwantimaGlass"`.** The 22 `Classes="NavotiGlass"`
   usages do map straight across, but the glass panel is a 16px-radius surface with glow and shadow; a
   hairline divider is not a small one. Two different questions that happen to share a word.
-- **Kuwantima is NOT a strict superset, and this is the only real gap.** Navoti has
-  `NavotiOverlayBackground` / `NavotiOverlayTextBrush` (a probing scrim and its text) with no
-  Kuwantima equivalent — and unlike the GlassBorder keys, its 2 consumption sites are in app code
-  (`OnboardingView.axaml`) that survives. Decide it *during* the migration, where the scrim's real
-  backdrop is visible: text on a 75% wash over arbitrary content is a compositing contrast problem,
-  which `Invariant_6` already knows how to measure. Deliberately not pre-specced as a release.
-- Migration plan: `Tunatya/NAVOTI-TO-KUWANTIMA.md`
+- **Kuwantima is no longer missing this. It was the only real gap, and v1.5.0 (2026-09-25) closed
+  it.** Navoti had `NavotiOverlayBackground` / `NavotiOverlayTextBrush` (a probing scrim and its
+  text) with no Kuwantima equivalent, and unlike the GlassBorder keys its 2 consumption sites are in
+  app code (`OnboardingView.axaml`) that survives the migration. Migration did not wait on this repo:
+  it first landed the scrim as local Tunatya-only resources (`TunatyaOverlayBackground` /
+  `TunatyaOverlayTextBrush` in `Tunatya/Tunatya.DevTools/Styles/TunatyaOverlayResources.axaml`),
+  copied byte-for-byte from Navoti's values, unverified against this repo's own bar. That was the
+  stopgap, not the answer — see below for what replaced it.
+
+### Scrim resource — SHIPPED v1.5.0
+`KuwantimaScrimBackground` / `KuwantimaScrimForeground`, defined in both theme dictionaries. Named
+for the *role* (matching `KuwantimaTooltipBackground`, `KuwantimaGlassBackground`), not the control —
+`NavotiOverlayBackground` named the control, which is exactly the pattern this repo's naming
+convention avoids. Composited fresh from each variant's own anchor (MidnightBlue Light, AliceBlue
+Dark) rather than reusing Navoti's White/Black-at-75%-opacity values, which were chosen for Navoti's
+palette and never measured against this one. Measured by `Invariant_6` under both variants and both
+realistic backdrops (bare page, page-under-a-glass-panel, per Tunatya's actual usage in
+`OnboardingView.axaml`): worst case 7.25:1, well above AA — the 75% opacity was picked to read as a
+solid blocking surface, not to chase the AA floor. Full checklist done: both theme dictionaries,
+resource catalog entry, README table entry, `Invariant_6` fixture, sandbox demo (Feedback page,
+"Show Blocking Overlay").
+
+**Not yet done, and it is a `Tunatya`-repo change, not a Kuwantima one:** point `Tunatya/App.axaml`'s
+`Application.Resources` merge at the new Kuwantima keys and delete
+`Tunatya.DevTools/Styles/TunatyaOverlayResources.axaml` — the stopgap file's only reason to exist is
+this gap, and the gap is now closed.
+
+- Migration plan (historical, values superseded by the shipped resource above): `Tunatya/NAVOTI-TO-KUWANTIMA.md`
 
 ## A verification trap this repo has set four times
 Each of these shipped (or nearly), and each survived a check that *felt* rigorous:

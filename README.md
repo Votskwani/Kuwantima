@@ -121,6 +121,8 @@ Custom brushes are defined in `KuwantimaThemeResources.axaml` inside `ThemeDicti
 | `KuwantimaTooltipForeground` | Tooltip text color |
 | `KuwantimaSplitterBrush` | GridSplitter line at rest |
 | `KuwantimaSplitterHoverBrush` | GridSplitter line on hover |
+| `KuwantimaScrimBackground` | Wash behind a blocking overlay (a probe, save, or other long-running operation) |
+| `KuwantimaScrimForeground` | Text/ink on the scrim |
 | `SystemFillColorSuccessBrush` | Green status indicator |
 | `SystemFillColorAttentionBrush` | Blue status indicator |
 | `SystemFillColorCautionBrush` | Yellow status indicator |

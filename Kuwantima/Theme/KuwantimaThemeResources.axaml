@@ -57,6 +57,10 @@
 	│ SPLITTER                               │                                  │
 	│ KuwantimaSplitterBrush                 │ GridSplitter line at rest        │
 	│ KuwantimaSplitterHoverBrush            │ GridSplitter line on hover       │
+	├────────────────────────────────────────┼──────────────────────────────────┤
+	│ SCRIM (blocking overlay)               │                                  │
+	│ KuwantimaScrimBackground               │ Wash behind a modal/probe panel  │
+	│ KuwantimaScrimForeground               │ Text/ink on the scrim            │
 	└────────────────────────────────────────┴──────────────────────────────────┘
 
 	THEME STRATEGY:
@@ -144,6 +148,22 @@
 			<!-- Splitter: MidnightBlue line, intensifies on hover -->
 			<SolidColorBrush x:Key="KuwantimaSplitterBrush" Color="MidnightBlue" Opacity="0.25"/>
 			<SolidColorBrush x:Key="KuwantimaSplitterHoverBrush" Color="MidnightBlue" Opacity="0.6"/>
+
+			<!-- Scrim: a blocking overlay for a long-running operation (probe, save, any multi-step
+			     RPC sequence). Added v1.5.0 to close the one real gap between Kuwantima and Navoti
+			     (see CLAUDE.md, "Downstream: Tunatya/Navoti") — Tunatya had been carrying a local,
+			     unmeasured copy of Navoti's White/Black-at-75%-opacity values.
+
+			     Composited fresh from this theme's own anchor rather than reused: MidnightBlue is
+			     already this variant's ink/glow colour (THEME STRATEGY above), so the scrim reads as
+			     the same design language as the glass it sits over, not a borrowed grey. White ink at
+			     75% opacity measures 7.25:1 on the bare page and 7.69:1 over a glass panel — both far
+			     above AA, which a 75% wash over a light page will do almost regardless of hue; the
+			     opacity was chosen to read as a solid blocking surface, not to chase the AA floor.
+			     Measured by Invariant_6 (composited backdrop chain: page, then glass panel — a scrim
+			     over a glass panel is the realistic case, per Tunatya's OnboardingView.axaml). -->
+			<SolidColorBrush x:Key="KuwantimaScrimBackground" Color="MidnightBlue" Opacity="0.75"/>
+			<SolidColorBrush x:Key="KuwantimaScrimForeground" Color="White"/>
 		</ResourceDictionary>
 
 		<!-- ═════════════════════════════════════════════════════════════ -->
@@ -210,6 +230,13 @@
 			<!-- Splitter: AliceBlue line, intensifies on hover -->
 			<SolidColorBrush x:Key="KuwantimaSplitterBrush" Color="AliceBlue" Opacity="0.3"/>
 			<SolidColorBrush x:Key="KuwantimaSplitterHoverBrush" Color="AliceBlue" Opacity="0.7"/>
+
+			<!-- Scrim — see the Light dictionary. AliceBlue is this variant's frost/glow colour, at
+			     the same 75% opacity, with MidnightBlue ink (mirrors the Light pairing rather than
+			     re-using primary text, so the scrim's ink is theme-invariant like the glow it echoes).
+			     Measured: 8.17:1 on the bare page, 8.70:1 over a glass panel. -->
+			<SolidColorBrush x:Key="KuwantimaScrimBackground" Color="#F0F8FF" Opacity="0.75"/>
+			<SolidColorBrush x:Key="KuwantimaScrimForeground" Color="MidnightBlue"/>
 		</ResourceDictionary>
 
 	</ResourceDictionary.ThemeDictionaries>

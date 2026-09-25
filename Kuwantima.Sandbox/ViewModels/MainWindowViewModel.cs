@@ -82,5 +82,11 @@ namespace Kuwantima.Sandbox.ViewModels
 
         [ObservableProperty]
         private bool _isChecked = true;
+
+        [ObservableProperty]
+        private bool _isScrimVisible;
+
+        [RelayCommand]
+        private void ToggleScrim() => IsScrimVisible = !IsScrimVisible;
     }
 }
