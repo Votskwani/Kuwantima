@@ -1,0 +1,232 @@
+<Styles xmlns="https://github.com/avaloniaui"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+	<Design.PreviewWith>
+		<Border Padding="20" Width="560">
+			<!-- PREVIEW ONLY. At runtime the consumer's StyleInclude supplies these; here the
+			     file stands alone, and an unresolvable DynamicResource is SILENT, so without
+			     them every brush setter below is skipped and the preview renders bare. Do NOT
+			     swap in KuwantimaPrimaryTheme: it carries the SHIPPED control styles and would
+			     show you those instead of the edit you are making in this file. -->
+			<Border.Styles>
+				<FluentTheme/>
+			</Border.Styles>
+			<Border.Resources>
+				<ResourceDictionary>
+					<ResourceDictionary.MergedDictionaries>
+						<ResourceInclude Source="avares://Kuwantima/Theme/KuwantimaThemeResources.axaml"/>
+					</ResourceDictionary.MergedDictionaries>
+				</ResourceDictionary>
+			</Border.Resources>
+			<Grid ColumnDefinitions="*,*">
+
+				<!-- LEFT SIDE: LIGHT THEME PREVIEW -->
+				<ThemeVariantScope RequestedThemeVariant="Light" Grid.Column="0">
+					<Panel Background="{DynamicResource SystemRegionBrush}">
+						<StackPanel Spacing="16" Margin="20" HorizontalAlignment="Center">
+							<TextBlock Text="Light Theme" FontWeight="Bold" FontSize="18" HorizontalAlignment="Center"/>
+
+							<StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center">
+								<Button Classes="KuwantimaPalette"/>
+								<Button Classes="KuwantimaPalette" IsEnabled="False"/>
+							</StackPanel>
+
+							<!-- The swatch grid, shown flat here rather than inside an open flyout — the
+							     previewer (and Invariant_7) parse this subtree in isolation and don't
+							     need the popup actually open to resolve every color it consumes. -->
+							<Grid ColumnDefinitions="Auto,Auto,Auto" RowDefinitions="Auto,Auto"
+							      RowSpacing="8" ColumnSpacing="8" HorizontalAlignment="Center">
+								<ToggleButton Classes="KuwantimaSwatch" Grid.Row="0" Grid.Column="0"
+											  Background="{DynamicResource KuwantimaPaletteBlue}" IsChecked="True"/>
+								<ToggleButton Classes="KuwantimaSwatch" Grid.Row="0" Grid.Column="1"
+											  Background="{DynamicResource KuwantimaPaletteOrange}"/>
+								<ToggleButton Classes="KuwantimaSwatch" Grid.Row="0" Grid.Column="2"
+											  Background="{DynamicResource KuwantimaPalettePurple}"/>
+								<ToggleButton Classes="KuwantimaSwatch" Grid.Row="1" Grid.Column="0"
+											  Background="{DynamicResource KuwantimaPaletteGreen}"/>
+								<ToggleButton Classes="KuwantimaSwatch" Grid.Row="1" Grid.Column="1"
+											  Background="{DynamicResource KuwantimaPaletteRose}"/>
+								<!-- Row 1, Column 2 is deliberately empty: room for a 6th color, not a
+								     placeholder button. Adding one later is one more line here, not a
+								     redesign. -->
+							</Grid>
+						</StackPanel>
+					</Panel>
+				</ThemeVariantScope>
+
+				<!-- RIGHT SIDE: DARK THEME PREVIEW -->
+				<ThemeVariantScope RequestedThemeVariant="Dark" Grid.Column="1">
+					<Panel Background="{DynamicResource SystemRegionBrush}">
+						<StackPanel Spacing="16" Margin="20" HorizontalAlignment="Center">
+							<TextBlock Text="Dark Theme" FontWeight="Bold" FontSize="18" HorizontalAlignment="Center"/>
+
+							<StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center">
+								<Button Classes="KuwantimaPalette"/>
+								<Button Classes="KuwantimaPalette" IsEnabled="False"/>
+							</StackPanel>
+
+							<Grid ColumnDefinitions="Auto,Auto,Auto" RowDefinitions="Auto,Auto"
+							      RowSpacing="8" ColumnSpacing="8" HorizontalAlignment="Center">
+								<ToggleButton Classes="KuwantimaSwatch" Grid.Row="0" Grid.Column="0"
+											  Background="{DynamicResource KuwantimaPaletteBlue}" IsChecked="True"/>
+								<ToggleButton Classes="KuwantimaSwatch" Grid.Row="0" Grid.Column="1"
+											  Background="{DynamicResource KuwantimaPaletteOrange}"/>
+								<ToggleButton Classes="KuwantimaSwatch" Grid.Row="0" Grid.Column="2"
+											  Background="{DynamicResource KuwantimaPalettePurple}"/>
+								<ToggleButton Classes="KuwantimaSwatch" Grid.Row="1" Grid.Column="0"
+											  Background="{DynamicResource KuwantimaPaletteGreen}"/>
+								<ToggleButton Classes="KuwantimaSwatch" Grid.Row="1" Grid.Column="1"
+											  Background="{DynamicResource KuwantimaPaletteRose}"/>
+								<!-- Row 1, Column 2 deliberately empty — see the Light block above. -->
+							</Grid>
+						</StackPanel>
+					</Panel>
+				</ThemeVariantScope>
+
+				<!-- Vertical Divider -->
+				<Separator Width="1" VerticalAlignment="Stretch" Background="{DynamicResource KuwantimaDarkBorderBrush}" Grid.ColumnSpan="2"/>
+			</Grid>
+		</Border>
+	</Design.PreviewWith>
+
+	<!-- ═══ TRIGGER: Button.KuwantimaPalette ═══
+	     A square icon-only button, same footprint and chrome recipe as ToggleButton.KuwantimaMenu
+	     (KuwantimaMenuToggleButton.axaml) so it sits naturally next to it in a header row. Its
+	     Flyout is attached per-instance by whoever places the button (see the Sandbox demo and
+	     README) — this file only styles the trigger and the swatches it opens onto; it does not
+	     hard-code which colors exist. -->
+	<Style Selector="Button.KuwantimaPalette">
+		<Setter Property="Background" Value="{DynamicResource SystemControlBackgroundBaseLowBrush}"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaGlassGlowBorder}"/>
+		<Setter Property="BorderThickness" Value="1.5"/>
+		<Setter Property="CornerRadius" Value="4"/>
+		<Setter Property="Width" Value="48"/>
+		<Setter Property="Height" Value="48"/>
+		<Setter Property="Padding" Value="0"/>
+		<Setter Property="HorizontalContentAlignment" Value="Center"/>
+		<Setter Property="VerticalContentAlignment" Value="Center"/>
+		<Setter Property="Cursor" Value="Hand"/>
+		<Setter Property="FocusAdorner" Value="{x:Null}"/>
+
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Name="PART_Border"
+						Background="{TemplateBinding Background}"
+						BorderBrush="{TemplateBinding BorderBrush}"
+						BorderThickness="{TemplateBinding BorderThickness}"
+						CornerRadius="{TemplateBinding CornerRadius}">
+					<Border.Transitions>
+						<Transitions>
+							<BrushTransition Property="Background" Duration="0:0:0.2"/>
+							<BrushTransition Property="BorderBrush" Duration="0:0:0.2"/>
+						</Transitions>
+					</Border.Transitions>
+
+					<!-- Three overlapping dots: an honest, literal preview of "this opens a color
+					     picker" rather than an abstract glyph — needs no new Icon.* geometry. -->
+					<Canvas Width="20" Height="16">
+						<Ellipse Width="12" Height="12" Canvas.Left="0" Canvas.Top="4" Fill="{DynamicResource KuwantimaPaletteBlue}"/>
+						<Ellipse Width="12" Height="12" Canvas.Left="8" Canvas.Top="0" Fill="{DynamicResource KuwantimaPalettePurple}"/>
+						<Ellipse Width="12" Height="12" Canvas.Left="8" Canvas.Top="4" Fill="{DynamicResource KuwantimaPaletteOrange}"/>
+					</Canvas>
+				</Border>
+			</ControlTemplate>
+		</Setter>
+
+		<!-- Hover -->
+		<Style Selector="^:pointerover /template/ Border#PART_Border">
+			<Setter Property="Background" Value="{DynamicResource KuwantimaControlHoverBrush}"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaGlassGlowBorderHover}"/>
+		</Style>
+
+		<!-- Disabled: pin Cursor/Opacity per the completeness invariant. No Foreground pin — this
+		     template never reads TemplateBinding Foreground (the dots are Ellipse Fill), so there
+		     is nothing for Fluent's disabled brushes to double-dim. See the ForegroundPinExemption
+		     in InvariantTests.Subjects. -->
+		<Style Selector="^:disabled">
+			<Setter Property="Opacity" Value="0.5"/>
+			<Setter Property="Cursor" Value="Arrow"/>
+		</Style>
+		<Style Selector="^:disabled /template/ Border#PART_Border">
+			<Setter Property="Background" Value="{DynamicResource SystemControlBackgroundBaseLowBrush}"/>
+			<Setter Property="BorderBrush" Value="Transparent"/>
+		</Style>
+	</Style>
+
+	<!-- ═══ FLYOUT CHROME: FlyoutPresenter.KuwantimaPalette ═══
+	     FlyoutPresenterClasses is the only way to reach the auto-generated FlyoutPresenter with a
+	     selector — it never appears in markup you author.
+
+	     OPAQUE, not the translucent glass background: a flyout is a Popup floating above arbitrary
+	     content, unlike Border.KuwantimaGlass, which is designed to sit inside the app's own visual
+	     tree over a known backdrop. Translucency here would let whatever is behind the popup show
+	     through the swatch grid, which reads as broken rather than stylish. ComboBox.Kuwantima's own
+	     dropdown (the one other popup in this library) already made this call — its PopupBorder uses
+	     the opaque SystemRegionBrush, not KuwantimaGlassBackground — this follows the same precedent.
+
+	     No BoxShadow glow either, matching that same ComboBox precedent (its Popup sets
+	     WindowManagerAddShadowHint="False" and adds no BoxShadow of its own) — and structurally,
+	     FlyoutPresenter has no BoxShadow property to set even if it wanted one (verified: it inherits
+	     Background/BorderBrush/BorderThickness/CornerRadius/Padding from TemplatedControl, but
+	     BoxShadow is Border-specific). Content goes directly inside <Flyout> — no Border wrapper
+	     needed, unlike the glass panel pattern used elsewhere. -->
+	<Style Selector="FlyoutPresenter.KuwantimaPalette">
+		<Setter Property="Background" Value="{DynamicResource SystemRegionBrush}"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaGlassGlowBorderHover}"/>
+		<Setter Property="BorderThickness" Value="1.5"/>
+		<Setter Property="CornerRadius" Value="8"/>
+		<Setter Property="Padding" Value="12"/>
+	</Style>
+
+	<!-- ═══ SWATCH: ToggleButton.KuwantimaSwatch ═══
+	     Background is set per instance by whoever places the swatch (consumer or demo) — that is
+	     the extensibility mechanism: a 6th color is one more instance, not a style or layout change.
+	     Selection is a warm-accent ring, the same convention every other checked Kuwantima control
+	     uses, so no checkmark glyph is needed — nothing sits ON the fill, so there is no ink-on-
+	     arbitrary-color contrast question to answer (Invariant_6 only sweeps Background/Fill
+	     setters against SystemAccentColor*/SystemControlBackgroundAccentBrush; a literal palette
+	     hex like KuwantimaPaletteBlue is outside what it measures, and this design never asks it to). -->
+	<Style Selector="ToggleButton.KuwantimaSwatch">
+		<Setter Property="Width" Value="32"/>
+		<Setter Property="Height" Value="32"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaGlassGlowBorder}"/>
+		<Setter Property="BorderThickness" Value="1.5"/>
+		<Setter Property="CornerRadius" Value="16"/>
+		<Setter Property="Cursor" Value="Hand"/>
+		<Setter Property="FocusAdorner" Value="{x:Null}"/>
+
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Name="PART_Border"
+						Background="{TemplateBinding Background}"
+						BorderBrush="{TemplateBinding BorderBrush}"
+						BorderThickness="{TemplateBinding BorderThickness}"
+						CornerRadius="{TemplateBinding CornerRadius}">
+					<Border.Transitions>
+						<Transitions>
+							<BrushTransition Property="BorderBrush" Duration="0:0:0.2"/>
+							<ThicknessTransition Property="BorderThickness" Duration="0:0:0.2"/>
+						</Transitions>
+					</Border.Transitions>
+				</Border>
+			</ControlTemplate>
+		</Setter>
+
+		<!-- Hover -->
+		<Style Selector="^:pointerover /template/ Border#PART_Border">
+			<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaGlassGlowBorderHover}"/>
+		</Style>
+
+		<!-- Checked: warm-accent ring marks the current selection -->
+		<Style Selector="^:checked /template/ Border#PART_Border">
+			<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaAccentOrangeBrush}"/>
+			<Setter Property="BorderThickness" Value="3"/>
+		</Style>
+
+		<!-- Disabled: no Foreground pin — a swatch renders no text or glyph, only its own fill. -->
+		<Style Selector="^:disabled">
+			<Setter Property="Opacity" Value="0.4"/>
+			<Setter Property="Cursor" Value="Arrow"/>
+		</Style>
+	</Style>
+</Styles>

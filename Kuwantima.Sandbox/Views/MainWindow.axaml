@@ -88,7 +88,7 @@
                  window and double-clicking toggles maximize, both native, no code-behind needed. -->
             <Border Grid.Row="0" Padding="16,12" Background="{DynamicResource KuwantimaGlassBackground}"
                     WindowDecorationProperties.ElementRole="TitleBar">
-                <Grid ColumnDefinitions="Auto,8,Auto,12,*,12,Auto">
+                <Grid ColumnDefinitions="Auto,8,Auto,8,Auto,12,*,12,Auto">
                     <!-- Pane toggle -->
                     <Button Classes="Kuwantima Minimal"
                             WindowDecorationProperties.ElementRole="User"
@@ -114,7 +114,61 @@
                         </ToggleButton.Styles>
                     </ToggleButton>
 
-                    <StackPanel Grid.Column="4" Orientation="Horizontal" Spacing="10"
+                    <!-- Color palette picker — lands right of the theme toggle, same 48x48 footprint -->
+                    <Button Grid.Column="4" Classes="KuwantimaPalette"
+                            WindowDecorationProperties.ElementRole="User"
+                            ToolTip.Tip="Choose an accent color">
+                        <Button.Flyout>
+                            <Flyout FlyoutPresenterClasses="KuwantimaPalette" Placement="Bottom">
+                                <Grid ColumnDefinitions="Auto,Auto,Auto" RowDefinitions="Auto,Auto"
+                                      RowSpacing="8" ColumnSpacing="8">
+                                    <ToggleButton Classes="KuwantimaSwatch" Grid.Row="0" Grid.Column="0"
+                                                  Background="{DynamicResource KuwantimaPaletteBlue}"
+                                                  IsChecked="{Binding SelectedAccentColor, Mode=OneWay,
+                                                              Converter={x:Static ObjectConverters.Equal},
+                                                              ConverterParameter={x:Static vm:AccentColorOption.Blue}}"
+                                                  Command="{Binding SetAccentColorCommand}"
+                                                  CommandParameter="{x:Static vm:AccentColorOption.Blue}"
+                                                  ToolTip.Tip="Blue"/>
+                                    <ToggleButton Classes="KuwantimaSwatch" Grid.Row="0" Grid.Column="1"
+                                                  Background="{DynamicResource KuwantimaPaletteOrange}"
+                                                  IsChecked="{Binding SelectedAccentColor, Mode=OneWay,
+                                                              Converter={x:Static ObjectConverters.Equal},
+                                                              ConverterParameter={x:Static vm:AccentColorOption.Orange}}"
+                                                  Command="{Binding SetAccentColorCommand}"
+                                                  CommandParameter="{x:Static vm:AccentColorOption.Orange}"
+                                                  ToolTip.Tip="Orange"/>
+                                    <ToggleButton Classes="KuwantimaSwatch" Grid.Row="0" Grid.Column="2"
+                                                  Background="{DynamicResource KuwantimaPalettePurple}"
+                                                  IsChecked="{Binding SelectedAccentColor, Mode=OneWay,
+                                                              Converter={x:Static ObjectConverters.Equal},
+                                                              ConverterParameter={x:Static vm:AccentColorOption.Purple}}"
+                                                  Command="{Binding SetAccentColorCommand}"
+                                                  CommandParameter="{x:Static vm:AccentColorOption.Purple}"
+                                                  ToolTip.Tip="Purple"/>
+                                    <ToggleButton Classes="KuwantimaSwatch" Grid.Row="1" Grid.Column="0"
+                                                  Background="{DynamicResource KuwantimaPaletteGreen}"
+                                                  IsChecked="{Binding SelectedAccentColor, Mode=OneWay,
+                                                              Converter={x:Static ObjectConverters.Equal},
+                                                              ConverterParameter={x:Static vm:AccentColorOption.Green}}"
+                                                  Command="{Binding SetAccentColorCommand}"
+                                                  CommandParameter="{x:Static vm:AccentColorOption.Green}"
+                                                  ToolTip.Tip="Green"/>
+                                    <ToggleButton Classes="KuwantimaSwatch" Grid.Row="1" Grid.Column="1"
+                                                  Background="{DynamicResource KuwantimaPaletteRose}"
+                                                  IsChecked="{Binding SelectedAccentColor, Mode=OneWay,
+                                                              Converter={x:Static ObjectConverters.Equal},
+                                                              ConverterParameter={x:Static vm:AccentColorOption.Rose}}"
+                                                  Command="{Binding SetAccentColorCommand}"
+                                                  CommandParameter="{x:Static vm:AccentColorOption.Rose}"
+                                                  ToolTip.Tip="Rose"/>
+                                    <!-- Row 1, Column 2 deliberately empty — room for a 6th color. -->
+                                </Grid>
+                            </Flyout>
+                        </Button.Flyout>
+                    </Button>
+
+                    <StackPanel Grid.Column="6" Orientation="Horizontal" Spacing="10"
                                 VerticalAlignment="Center">
                         <TextBlock Text="Kuwantima Style Sandbox"
                                    FontSize="20" FontWeight="Bold"/>
@@ -127,7 +181,7 @@
                          ExtendClientAreaToDecorationsHint="True" removes above. (Avalonia 11 had a
                          separate ExtendClientAreaChromeHints for this; 12 dropped it — extending
                          the client area now always means full custom chrome.) -->
-                    <StackPanel Grid.Column="6" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
+                    <StackPanel Grid.Column="8" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
                         <Button Classes="Kuwantima Minimal WindowControl" Width="36" Height="36"
                                 WindowDecorationProperties.ElementRole="User"
                                 ToolTip.Tip="Minimize" Click="OnMinimizeClick">

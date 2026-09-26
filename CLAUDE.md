@@ -82,10 +82,21 @@ suite goes red. The rest are still on you. Run `dotnet test` before you commit.
 7. **Documents page** — add to the controls table in `DocumentsPage.axaml`
 8. **README.md** — add to the Controls table
 9. **Control count** — update in README intro, `.csproj` Description, and KuwantimaPrimaryTheme
-   header (2 places) — *tested*. **The count is CONTROLS, not style files.** There are 16 style
-   files but only **15 controls**: `KuwantimaStreamIcons.axaml` is a `ResourceDictionary` of icon
+   header (2 places) — *tested*. **The count is CONTROLS, not style files.** There are 17 style
+   files but only **16 controls**: `KuwantimaStreamIcons.axaml` is a `ResourceDictionary` of icon
    geometry, registered via `ResourceInclude`, and is not a control. Miscounting it is exactly the
    off-by-one that shipped in v1.0.0 and survived until the suite caught it.
+
+   **"2 places" in the theme header means the LOAD ORDER line specifically — not every place a
+   number appears.** Discovered v1.6.0, the first control added since v1.0.0: the header's
+   VERSION HISTORY section accumulates one bullet per past release and is never retroactively
+   edited, so `1.0.0`'s "15 styled controls (...)" bullet stays 15 forever — it's a historical
+   fact about what that release shipped, not a claim about current state. Only the LOAD ORDER
+   section's "templates for N controls" describes the present. `Published_control_count_matches_
+   the_controls_that_exist` now reads only that section for exactly this reason — scanning the
+   whole header comment would pit the frozen historical count against the current one and fail on
+   a correctly-preserved fact. This went untested for six releases because none of them added a
+   control; treat it as load-bearing now that one has.
 10. **Handouts** — if the control is worth teaching, add it to `docs/` (see Handouts below)
 
 ### New Variant Checklist
@@ -211,7 +222,7 @@ theme header, or the style files agreeing with each other — they are one origi
 
 ## Downstream: Tunatya / Navoti
 Kuwantima **replaces** Navoti in `../Tunatya`. It does not compose with it — they are the same
-design system at two points in time (same architecture, same class convention, 15 controls vs
+design system at two points in time (same architecture, same class convention, 16 controls vs
 Navoti's 12). The Retired Resources list above is, literally, a changelog of what Navoti still has.
 
 **Migration executed 2026-09-25**, against this section as it stood at v1.4.2 — see `Tunatya/CLAUDE.md`
@@ -307,6 +318,43 @@ the key against the live theme. Not to a restatement, however many of them agree
 - **Warm accent**: Orange (#FF8C00 light / #FFA500 dark) — checked/selected borders
 - **System accent**: #0078D4 (Fluent blue) — filled accent backgrounds
 - Do not introduce colors outside this story without intention
+
+### The exception: ColorPalettePicker's five swatch colors (v1.6.0)
+`KuwantimaPalette{Blue,Orange,Purple,Green,Rose}` is a deliberate, bounded exception to the rule
+above, not scope creep. A color-chooser control's entire purpose is offering hues — it doesn't
+touch the structural cool/warm/accent story the rest of the library tells; it sits beside it.
+Blue continues the existing System accent value exactly; Purple, Green and Rose are new and exist
+only as swatch options, never as chrome elsewhere in the theme. All five are theme-invariant
+(identical hex in both dictionaries) — a swatch is a literal paint choice, not UI ink, so unlike
+everything else in this table it should not shift with the app's theme.
+
+**Each is a live accent, not just a fill — measured as one.** The Sandbox wires the picker to
+`Application.Current`'s `FluentTheme.Palettes[variant].Accent`
+(`Kuwantima.Sandbox/ViewModels/MainWindowViewModel.cs`), so picking a swatch re-derives the whole
+Fluent accent ramp from that hex (`SystemAccentColorDark1/2`, etc. — see
+`Avalonia.Themes.Fluent.ColorPaletteResources`). `AccentButtonForeground` (White) has to clear AA
+against the raw color *and* both derived shades, the same bar `#0078D4` was held to in v1.3.0.
+Checked, not assumed — `InvariantTests.Contrast.cs`'s
+`Invariant_6_every_palette_swatch_clears_AA_as_a_live_accent` enforces this permanently, one more
+theory per color per variant. Two of the five first-pick hues failed it outright:
+
+| Color | Hex | rest | :pointerover (Dark1) | :pressed (Dark2) |
+|---|---|---|---|---|
+| Blue | `#0078D4` | 4.53 | 7.32 | 10.50 |
+| Orange | `#A35A00` (was `#FF8C00` — failed at 2.33) | 5.22 | 9.38 | 14.22 |
+| Purple | `#8E44AD` | 5.87 | 8.53 | 11.19 |
+| Green | `#297C4D` (was `#2E8B57` — failed at 4.25) | 5.14 | 9.25 | 14.00 |
+| Rose | `#C2185B` | 5.87 | 8.99 | 12.15 |
+
+Orange's first pick was `KuwantimaAccentOrangeBrush`'s own Light value (`#FF8C00`) reused for
+continuity — reused wrongly: that color has only ever been a *border*, never a fill with text on
+it, and at 2.33:1 it repeats the exact v1.2.0 mistake (orange fill + white text) almost to the
+decimal. Green's first pick (`SeaGreen`, `#2E8B57`) missed by a much thinner margin (4.25 vs 4.5).
+Both were fixed by darkening in HSL space (lightness only, hue/saturation untouched, so each still
+reads as the same color) — the smallest step that cleared AA with a real margin rather than the
+first step that technically passed, matching how the muted-ink fix was chosen in v1.3.0. Swept and
+verified with a throwaway `[AvaloniaFact]` before editing the resource file, not reasoned about —
+the exact discipline this file's own verification-trap section keeps having to relearn.
 
 ### Accent-on text is WHITE, and the ramp is what makes that possible (v1.3.0)
 `AccentButtonForeground` is overridden to **White** in both theme dictionaries

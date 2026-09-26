@@ -1,7 +1,11 @@
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Media;
 using Avalonia.Styling;
+using Avalonia.Themes.Fluent;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Kuwantima.Sandbox.Views.Pages;
@@ -88,5 +92,54 @@ namespace Kuwantima.Sandbox.ViewModels
 
         [RelayCommand]
         private void ToggleScrim() => IsScrimVisible = !IsScrimVisible;
+
+        [ObservableProperty]
+        private AccentColorOption _selectedAccentColor = AccentColorOption.Blue;
+
+        [RelayCommand]
+        private void SetAccentColor(AccentColorOption option) => SelectedAccentColor = option;
+
+        /// <summary>
+        /// Re-tints the live Fluent accent ramp. Looks the color up from Kuwantima's own
+        /// KuwantimaPalette{X} theme resource rather than hardcoding hex here, so this always
+        /// matches whatever the library ships — no second copy of the palette to drift out of sync.
+        /// </summary>
+        partial void OnSelectedAccentColorChanged(AccentColorOption value)
+        {
+            if (Application.Current is not { } app)
+                return;
+
+            var key = $"KuwantimaPalette{value}";
+            if (!app.TryFindResource(key, app.ActualThemeVariant, out var resource))
+                return;
+            if (resource is not ISolidColorBrush brush)
+                return;
+
+            if (FindFluentTheme(app.Styles) is not { } fluentTheme)
+                return;
+
+            fluentTheme.Palettes[ThemeVariant.Light].Accent = brush.Color;
+            fluentTheme.Palettes[ThemeVariant.Dark].Accent = brush.Color;
+        }
+
+        /// <summary>
+        /// KuwantimaPrimaryTheme.axaml embeds its own &lt;fluent:FluentTheme&gt; (with Kuwantima's
+        /// Light/Dark ColorPaletteResources already attached) as one item inside the Styles object
+        /// that App.axaml's single StyleInclude resolves to — so it has to be found by walking the
+        /// style tree rather than indexed directly.
+        /// </summary>
+        private static FluentTheme? FindFluentTheme(IEnumerable<IStyle> styles)
+        {
+            foreach (var style in styles)
+            {
+                if (style is FluentTheme fluent)
+                    return fluent;
+
+                if (style is Styles nested && FindFluentTheme(nested) is { } found)
+                    return found;
+            }
+
+            return null;
+        }
     }
 }

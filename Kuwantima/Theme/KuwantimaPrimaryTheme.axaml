@@ -83,7 +83,7 @@
 
 	LOAD ORDER (order matters — later entries can override earlier ones):
 	  1. Merged resources  — icons + KuwantimaThemeResources (custom brushes)
-	  2. Control styles    — Kuwantima-classed templates for 15 controls
+	  2. Control styles    — Kuwantima-classed templates for 16 controls
 	  3. Fluent palette    — ColorPaletteResources that tint the entire Fluent
 	                         base with MidnightBlue / AliceBlue
 	  4. Global defaults   — PathIcon sizing
@@ -241,6 +241,7 @@
 	<StyleInclude Source="avares://Kuwantima/Styles/KuwantimaTabControl.axaml"/>
 	<StyleInclude Source="avares://Kuwantima/Styles/KuwantimaToolTip.axaml"/>
 	<StyleInclude Source="avares://Kuwantima/Styles/KuwantimaGridSplitter.axaml"/>
+	<StyleInclude Source="avares://Kuwantima/Styles/KuwantimaColorPalettePicker.axaml"/>
 
 	<!-- ═══════════════════════════════════════════════════════════════════ -->
 	<!-- 3. FLUENT PALETTE                                                 -->

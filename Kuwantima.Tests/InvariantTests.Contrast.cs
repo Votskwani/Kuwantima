@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Headless.XUnit;
 using Avalonia.Media;
 using Avalonia.Styling;
+using Avalonia.Themes.Fluent;
 
 namespace Kuwantima.Tests;
 
@@ -168,6 +169,74 @@ public partial class InvariantTests
             + "all of them — and under BOTH variants, which are not interchangeable: SystemBaseHighColor "
             + "inverts per variant while the SystemAccentColor* ramp is theme-invariant." + Environment.NewLine
             + "Do not resolve this by exempting the pair. Re-ramp the surface, or change the ink.");
+    }
+
+    /// <summary>
+    /// Every color the ColorPalettePicker (KuwantimaColorPalettePicker.axaml) offers as a live
+    /// accent — the Sandbox wires it to Application.Current's FluentTheme.Palettes[variant].Accent
+    /// (see Kuwantima.Sandbox/ViewModels/MainWindowViewModel.cs). AccentPairs above only measures
+    /// whatever accent is CURRENTLY configured in KuwantimaPrimaryTheme.axaml (#0078D4) — nothing
+    /// checks the other four hypothetical accents a consumer can switch to at runtime. Blue and
+    /// Orange reuse existing brand colors (continuity with the System/warm accents); Purple, Green
+    /// and Rose are new and were never checked as accent fills before this.
+    /// </summary>
+    private static readonly string[] CandidateAccentKeys =
+    [
+        "KuwantimaPaletteBlue", "KuwantimaPaletteOrange", "KuwantimaPalettePurple",
+        "KuwantimaPaletteGreen", "KuwantimaPaletteRose",
+    ];
+
+    public static IEnumerable<object[]> CandidateAccentMatrix() =>
+        from key in CandidateAccentKeys
+        from variant in new[] { "Light", "Dark" }
+        select new object[] { key, variant };
+
+    [AvaloniaTheory]
+    [MemberData(nameof(CandidateAccentMatrix))]
+    public void Invariant_6_every_palette_swatch_clears_AA_as_a_live_accent(string paletteKey, string variantName)
+    {
+        var variant = variantName == "Light" ? ThemeVariant.Light : ThemeVariant.Dark;
+        var baseColor = ResolveColor(paletteKey, variant).Color;
+        var ink = ResolveColor("AccentButtonForeground", variant).Color;
+
+        // ColorPaletteResources is the same public type KuwantimaPrimaryTheme.axaml declares for
+        // its own Light/Dark palettes. Setting Accent triggers Avalonia's real internal shade
+        // derivation (SystemAccentColors.CalculateAccentShades, which is itself `internal` and
+        // cannot be called directly) and exposes the result via TryGetResource — no hand-copied
+        // HSL math, no live Application/window needed.
+        var palette = new ColorPaletteResources { Accent = baseColor };
+        Color Shade(string key) =>
+            palette.TryGetResource(key, null, out var value) && value is Color color
+                ? color
+                : throw new InvalidOperationException($"ColorPaletteResources did not derive {key} for {paletteKey}.");
+
+        // Same 3 states AccentPairs checks for the shipped default. "rest" is the raw accent color
+        // unmodified — confirmed against Fluent's own Accents/BaseResources.xaml, where
+        // SystemControlBackgroundAccentBrush is `Color="{DynamicResource SystemAccentColor}"` with
+        // no blend or alpha. Nothing in the styles paints white ink on Dark3/Light1-3 today.
+        var states = new (string State, Color Surface)[]
+        {
+            ("rest / :checked / :selected", baseColor),
+            (":pointerover", Shade("SystemAccentColorDark1")),
+            (":pressed", Shade("SystemAccentColorDark2")),
+        };
+
+        var failures = states
+            .Select(s => (s.State, s.Surface, Ratio: Contrast(ink, s.Surface)))
+            .Where(s => s.Ratio < AA)
+            .ToArray();
+
+        Assert.True(
+            failures.Length == 0,
+            $"{variantName}: {paletteKey} ({baseColor}) fails white-text contrast as a live accent — "
+            + "picking this color in the ColorPalettePicker would make its own accent-filled text "
+            + "unreadable." + Environment.NewLine
+            + string.Join(Environment.NewLine, failures.Select(f =>
+                $"  {f.State}: ink {ink} on {f.Surface} measures {f.Ratio:F2}:1 — below WCAG AA of {AA:F1}"))
+            + Environment.NewLine + Environment.NewLine
+            + $"Fix: adjust {paletteKey} in KuwantimaThemeResources.axaml (both Light and Dark — it is "
+            + "theme-invariant) — nudge lightness/saturation by the smallest step that clears AA with "
+            + "margin, keeping the hue recognizable, the same way the v1.3.0 accent re-ramp was chosen.");
     }
 
     /// <summary>Source-over composite of a possibly-translucent brush onto an opaque backdrop.</summary>

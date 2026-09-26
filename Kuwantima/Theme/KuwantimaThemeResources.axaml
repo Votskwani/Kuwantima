@@ -61,7 +61,14 @@
 	│ SCRIM (blocking overlay)               │                                  │
 	│ KuwantimaScrimBackground               │ Wash behind a modal/probe panel  │
 	│ KuwantimaScrimForeground               │ Text/ink on the scrim            │
-	└────────────────────────────────────────┴──────────────────────────────────┘
+	├────────────────────────────────────────┼──────────────────────────────────┤
+		│ PALETTE (ColorPalettePicker swatches)  │ Theme-invariant — same both vars │
+		│ KuwantimaPaletteBlue                   │ Swatch: blue                     │
+		│ KuwantimaPaletteOrange                 │ Swatch: orange                   │
+		│ KuwantimaPalettePurple                 │ Swatch: purple                   │
+		│ KuwantimaPaletteGreen                  │ Swatch: green                    │
+		│ KuwantimaPaletteRose                   │ Swatch: rose                     │
+		└────────────────────────────────────────┴──────────────────────────────────┘
 
 	THEME STRATEGY:
 	  Light — MidnightBlue-tinted.  Glass uses dark tint on light surface.
@@ -164,6 +171,22 @@
 			     over a glass panel is the realistic case, per Tunatya's OnboardingView.axaml). -->
 			<SolidColorBrush x:Key="KuwantimaScrimBackground" Color="MidnightBlue" Opacity="0.75"/>
 			<SolidColorBrush x:Key="KuwantimaScrimForeground" Color="White"/>
+
+			<!-- ColorPalettePicker swatches: theme-invariant. A swatch is a literal paint choice, not
+			     UI ink, so it shouldn't shift with the app's theme.
+
+			     Each is verified by InvariantTests.Contrast.cs's
+			     Invariant_6_every_palette_swatch_clears_AA_as_a_live_accent as a LIVE FLUENT ACCENT
+			     (the Sandbox wires the picker to Application.Current's FluentTheme.Palettes[variant]
+			     .Accent) — white AccentButtonForeground must clear AA on the raw color (rest) and both
+			     derived shades (:pointerover/:pressed). Orange and Green needed darkening from their
+			     first-pick hex to clear that bar; Blue/Purple/Rose passed unmodified. See CLAUDE.md's
+			     Color Philosophy section for the full measured table. -->
+			<SolidColorBrush x:Key="KuwantimaPaletteBlue" Color="#0078D4"/>
+			<SolidColorBrush x:Key="KuwantimaPaletteOrange" Color="#A35A00"/>
+			<SolidColorBrush x:Key="KuwantimaPalettePurple" Color="#8E44AD"/>
+			<SolidColorBrush x:Key="KuwantimaPaletteGreen" Color="#297C4D"/>
+			<SolidColorBrush x:Key="KuwantimaPaletteRose" Color="#C2185B"/>
 		</ResourceDictionary>
 
 		<!-- ═════════════════════════════════════════════════════════════ -->
@@ -237,6 +260,13 @@
 			     Measured: 8.17:1 on the bare page, 8.70:1 over a glass panel. -->
 			<SolidColorBrush x:Key="KuwantimaScrimBackground" Color="#F0F8FF" Opacity="0.75"/>
 			<SolidColorBrush x:Key="KuwantimaScrimForeground" Color="MidnightBlue"/>
+
+			<!-- ColorPalettePicker swatches — see the Light dictionary. Same hex both variants. -->
+			<SolidColorBrush x:Key="KuwantimaPaletteBlue" Color="#0078D4"/>
+			<SolidColorBrush x:Key="KuwantimaPaletteOrange" Color="#A35A00"/>
+			<SolidColorBrush x:Key="KuwantimaPalettePurple" Color="#8E44AD"/>
+			<SolidColorBrush x:Key="KuwantimaPaletteGreen" Color="#297C4D"/>
+			<SolidColorBrush x:Key="KuwantimaPaletteRose" Color="#C2185B"/>
 		</ResourceDictionary>
 
 	</ResourceDictionary.ThemeDictionaries>

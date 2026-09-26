@@ -107,6 +107,17 @@ public partial class InvariantTests
                 + "WPF's IsMouseOver), verified headlessly, so those selectors are already dead. That leaves "
                 + "Opacity as the ONLY signal that a splitter is inert."),
 
+        ["KuwantimaColorPalettePicker.axaml"] = new(
+            "ColorPalettePicker",
+            CursorExemption: null,
+            DisabledExemption: null,
+            ForegroundPinExemption:
+                "Neither half of this control ever reads TemplateBinding Foreground: the trigger's dot-cluster "
+                + "glyph is three Ellipse Fill draws, and a swatch's color is its own Background, set per "
+                + "instance by whoever places it. There is no text or Foreground-driven glyph anywhere in this "
+                + "file for Fluent's disabled brushes to double-dim. The Cursor and Opacity pins still apply "
+                + "and are enforced on both the trigger and the swatch."),
+
         ["KuwantimaProgressBar.axaml"] = new(
             "ProgressBar",
             CursorExemption:
@@ -752,9 +763,24 @@ public partial class InvariantTests
         var description = XDocument.Parse(LoadText("Kuwantima.csproj"))
             .Descendants("Description").Single().Value;
 
-        // The theme's count lives in its file-header comment. XComment is a first-class node, so this reads a
-        // known node — it is not a text grep hoping to land in the right place.
-        var themeHeader = Load(ThemePath).Nodes().OfType<XComment>().First().Value;
+        // The theme's CURRENT-state count claim lives in the LOAD ORDER section specifically — not
+        // the whole header comment. The header also contains VERSION HISTORY, which accumulates one
+        // bullet per past release and is never retroactively edited, including 1.0.0's "15 styled
+        // controls (...)", a historical fact about what that release shipped. Scanning the whole
+        // comment for "N controls" would pit that frozen historical count against the current one
+        // and fail forever the moment any control is ever added after 1.0.0 — untested until 1.6.0,
+        // since no control had been added since. XComment is a first-class node, so this still reads
+        // a known node, just sliced to the one part of it actually claiming a current-state count.
+        var header = Load(ThemePath).Nodes().OfType<XComment>().First().Value;
+        var loadOrderStart = header.IndexOf("LOAD ORDER", StringComparison.Ordinal);
+        var colorPhilosophyStart = header.IndexOf("COLOR PHILOSOPHY", StringComparison.Ordinal);
+        Assert.True(
+            loadOrderStart >= 0 && colorPhilosophyStart > loadOrderStart,
+            "Expected the theme header comment to contain a 'LOAD ORDER' section before a "
+            + "'COLOR PHILOSOPHY' section — this test reads the current-state control count from "
+            + "between them, deliberately excluding the historical VERSION HISTORY bullets above. "
+            + "If the header was restructured, update these markers.");
+        var themeHeader = header[loadOrderStart..colorPhilosophyStart];
 
         var claims = new (string Source, int[] Counts)[]
         {

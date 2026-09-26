@@ -19,7 +19,7 @@
                 </StackPanel>
                 <TextBlock Text="A glass-glow design system for Avalonia UI."
                            FontSize="14" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"/>
-                <TextBlock Text="One StyleInclude, 15 styled controls, automatic light/dark theming."
+                <TextBlock Text="One StyleInclude, 16 styled controls, automatic light/dark theming."
                            FontSize="13" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
             </StackPanel>
 
@@ -71,7 +71,7 @@
             <StackPanel Spacing="8">
                 <TextBlock Text="Controls" FontWeight="SemiBold" FontSize="18"/>
                 <Border Classes="KuwantimaGlass" Padding="16" CornerRadius="6">
-                    <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+                    <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
 
                         <!-- Header -->
                         <TextBlock Grid.Row="0" Grid.Column="0" Text="Control" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,6"/>
@@ -86,47 +86,50 @@
                         <TextBlock Grid.Row="2" Grid.Column="1" Text="Kuwantima" FontSize="11" FontFamily="Cascadia Code,Consolas,Courier New"/>
                         <TextBlock Grid.Row="2" Grid.Column="2" Text="Classic" FontSize="11" FontFamily="Cascadia Code,Consolas,Courier New"/>
 
-                        <TextBlock Grid.Row="3" Grid.Column="0" Text="ComboBox" FontSize="12"/>
-                        <TextBlock Grid.Row="3" Grid.Column="1" Text="Kuwantima" FontSize="11" FontFamily="Cascadia Code,Consolas,Courier New"/>
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Color Palette Picker" FontSize="12"/>
+                        <TextBlock Grid.Row="3" Grid.Column="1" Text="KuwantimaPalette / KuwantimaSwatch" FontSize="11" FontFamily="Cascadia Code,Consolas,Courier New"/>
 
-                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Expander" FontSize="12"/>
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="ComboBox" FontSize="12"/>
                         <TextBlock Grid.Row="4" Grid.Column="1" Text="Kuwantima" FontSize="11" FontFamily="Cascadia Code,Consolas,Courier New"/>
 
-                        <TextBlock Grid.Row="5" Grid.Column="0" Text="Border (Glass)" FontSize="12"/>
-                        <TextBlock Grid.Row="5" Grid.Column="1" Text="KuwantimaGlass" FontSize="11" FontFamily="Cascadia Code,Consolas,Courier New"/>
+                        <TextBlock Grid.Row="5" Grid.Column="0" Text="Expander" FontSize="12"/>
+                        <TextBlock Grid.Row="5" Grid.Column="1" Text="Kuwantima" FontSize="11" FontFamily="Cascadia Code,Consolas,Courier New"/>
 
-                        <TextBlock Grid.Row="6" Grid.Column="0" Text="GridSplitter" FontSize="12"/>
-                        <TextBlock Grid.Row="6" Grid.Column="1" Text="Kuwantima" FontSize="11" FontFamily="Cascadia Code,Consolas,Courier New"/>
-                        <TextBlock Grid.Row="6" Grid.Column="2" Text="Pill, Arrow" FontSize="11" FontFamily="Cascadia Code,Consolas,Courier New"/>
+                        <TextBlock Grid.Row="6" Grid.Column="0" Text="Border (Glass)" FontSize="12"/>
+                        <TextBlock Grid.Row="6" Grid.Column="1" Text="KuwantimaGlass" FontSize="11" FontFamily="Cascadia Code,Consolas,Courier New"/>
 
-                        <TextBlock Grid.Row="7" Grid.Column="0" Text="ListBox" FontSize="12"/>
+                        <TextBlock Grid.Row="7" Grid.Column="0" Text="GridSplitter" FontSize="12"/>
                         <TextBlock Grid.Row="7" Grid.Column="1" Text="Kuwantima" FontSize="11" FontFamily="Cascadia Code,Consolas,Courier New"/>
+                        <TextBlock Grid.Row="7" Grid.Column="2" Text="Pill, Arrow" FontSize="11" FontFamily="Cascadia Code,Consolas,Courier New"/>
 
-                        <TextBlock Grid.Row="8" Grid.Column="0" Text="MenuToggleButton" FontSize="12"/>
-                        <TextBlock Grid.Row="8" Grid.Column="1" Text="KuwantimaMenu" FontSize="11" FontFamily="Cascadia Code,Consolas,Courier New"/>
+                        <TextBlock Grid.Row="8" Grid.Column="0" Text="ListBox" FontSize="12"/>
+                        <TextBlock Grid.Row="8" Grid.Column="1" Text="Kuwantima" FontSize="11" FontFamily="Cascadia Code,Consolas,Courier New"/>
 
-                        <TextBlock Grid.Row="9" Grid.Column="0" Text="ProgressBar" FontSize="12"/>
-                        <TextBlock Grid.Row="9" Grid.Column="1" Text="Kuwantima" FontSize="11" FontFamily="Cascadia Code,Consolas,Courier New"/>
+                        <TextBlock Grid.Row="9" Grid.Column="0" Text="MenuToggleButton" FontSize="12"/>
+                        <TextBlock Grid.Row="9" Grid.Column="1" Text="KuwantimaMenu" FontSize="11" FontFamily="Cascadia Code,Consolas,Courier New"/>
 
-                        <TextBlock Grid.Row="10" Grid.Column="0" Text="RadioButton" FontSize="12"/>
+                        <TextBlock Grid.Row="10" Grid.Column="0" Text="ProgressBar" FontSize="12"/>
                         <TextBlock Grid.Row="10" Grid.Column="1" Text="Kuwantima" FontSize="11" FontFamily="Cascadia Code,Consolas,Courier New"/>
-                        <TextBlock Grid.Row="10" Grid.Column="2" Text="Classic" FontSize="11" FontFamily="Cascadia Code,Consolas,Courier New"/>
 
-                        <TextBlock Grid.Row="11" Grid.Column="0" Text="Slider" FontSize="12"/>
+                        <TextBlock Grid.Row="11" Grid.Column="0" Text="RadioButton" FontSize="12"/>
                         <TextBlock Grid.Row="11" Grid.Column="1" Text="Kuwantima" FontSize="11" FontFamily="Cascadia Code,Consolas,Courier New"/>
+                        <TextBlock Grid.Row="11" Grid.Column="2" Text="Classic" FontSize="11" FontFamily="Cascadia Code,Consolas,Courier New"/>
 
-                        <TextBlock Grid.Row="12" Grid.Column="0" Text="TabControl" FontSize="12"/>
+                        <TextBlock Grid.Row="12" Grid.Column="0" Text="Slider" FontSize="12"/>
                         <TextBlock Grid.Row="12" Grid.Column="1" Text="Kuwantima" FontSize="11" FontFamily="Cascadia Code,Consolas,Courier New"/>
 
-                        <TextBlock Grid.Row="13" Grid.Column="0" Text="TextBox" FontSize="12"/>
+                        <TextBlock Grid.Row="13" Grid.Column="0" Text="TabControl" FontSize="12"/>
                         <TextBlock Grid.Row="13" Grid.Column="1" Text="Kuwantima" FontSize="11" FontFamily="Cascadia Code,Consolas,Courier New"/>
-                        <TextBlock Grid.Row="13" Grid.Column="2" Text="ReadOnly" FontSize="11" FontFamily="Cascadia Code,Consolas,Courier New"/>
 
-                        <TextBlock Grid.Row="14" Grid.Column="0" Text="ToggleButton" FontSize="12"/>
+                        <TextBlock Grid.Row="14" Grid.Column="0" Text="TextBox" FontSize="12"/>
                         <TextBlock Grid.Row="14" Grid.Column="1" Text="Kuwantima" FontSize="11" FontFamily="Cascadia Code,Consolas,Courier New"/>
+                        <TextBlock Grid.Row="14" Grid.Column="2" Text="ReadOnly" FontSize="11" FontFamily="Cascadia Code,Consolas,Courier New"/>
 
-                        <TextBlock Grid.Row="15" Grid.Column="0" Text="ToolTip" FontSize="12"/>
+                        <TextBlock Grid.Row="15" Grid.Column="0" Text="ToggleButton" FontSize="12"/>
                         <TextBlock Grid.Row="15" Grid.Column="1" Text="Kuwantima" FontSize="11" FontFamily="Cascadia Code,Consolas,Courier New"/>
+
+                        <TextBlock Grid.Row="16" Grid.Column="0" Text="ToolTip" FontSize="12"/>
+                        <TextBlock Grid.Row="16" Grid.Column="1" Text="Kuwantima" FontSize="11" FontFamily="Cascadia Code,Consolas,Courier New"/>
                     </Grid>
                 </Border>
             </StackPanel>

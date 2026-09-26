@@ -8,8 +8,6 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write  # Required for Trusted Publishing (OIDC)
 
     steps:
       - name: Checkout

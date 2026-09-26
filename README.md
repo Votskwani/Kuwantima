@@ -1,7 +1,7 @@
 # Kuwantima
 
 A glass-glow design system for [Avalonia UI](https://avaloniaui.net/).
-One `StyleInclude`, 15 styled controls, automatic light/dark theming.
+One `StyleInclude`, 16 styled controls, automatic light/dark theming.
 
 <!-- TODO: Add screenshot of sandbox (light + dark side-by-side) -->
 
@@ -42,6 +42,7 @@ That's it. Every Fluent control picks up the Kuwantima color palette. To apply f
 |---------|-------|----------|
 | Button | `Kuwantima` | `Accent` |
 | CheckBox | `Kuwantima` | `Classic` |
+| Color Palette Picker | `KuwantimaPalette` (trigger), `KuwantimaSwatch` (swatch) | |
 | ComboBox | `Kuwantima` | |
 | Expander | `Kuwantima` | |
 | Border (Glass) | `KuwantimaGlass` | |
@@ -123,6 +124,11 @@ Custom brushes are defined in `KuwantimaThemeResources.axaml` inside `ThemeDicti
 | `KuwantimaSplitterHoverBrush` | GridSplitter line on hover |
 | `KuwantimaScrimBackground` | Wash behind a blocking overlay (a probe, save, or other long-running operation) |
 | `KuwantimaScrimForeground` | Text/ink on the scrim |
+| `KuwantimaPaletteBlue` | ColorPalettePicker swatch: blue (theme-invariant) |
+| `KuwantimaPaletteOrange` | ColorPalettePicker swatch: orange (theme-invariant) |
+| `KuwantimaPalettePurple` | ColorPalettePicker swatch: purple (theme-invariant) |
+| `KuwantimaPaletteGreen` | ColorPalettePicker swatch: green (theme-invariant) |
+| `KuwantimaPaletteRose` | ColorPalettePicker swatch: rose (theme-invariant) |
 | `SystemFillColorSuccessBrush` | Green status indicator |
 | `SystemFillColorAttentionBrush` | Blue status indicator |
 | `SystemFillColorCautionBrush` | Yellow status indicator |
@@ -157,6 +163,21 @@ so any control that takes a `Geometry` can use one:
 
 A key that does not exist renders **nothing** rather than failing loudly, so check a blank icon
 against this table before looking anywhere else.
+
+### Icon Attribution
+
+Most of these are drawn from existing icon sets rather than original geometry, and retaining
+credit is a condition of both licenses:
+
+- `Icon.Home`, `Icon.Gear`, `Icon.Sliders`, `Icon.Expand`, `Icon.Collapse`, `Icon.Search`,
+  `Icon.Clear.Circle`, `Icon.Layers`, `Icon.Refresh`, `Icon.Map`, `Icon.Copy` — from
+  [Material Design Icons](https://pictogrammers.com/library/mdi/) by Pictogrammers, licensed
+  [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
+- `Icon.Sun` — from [Fluent System Icons](https://github.com/microsoft/fluentui-system-icons) by
+  Microsoft, licensed [MIT](https://github.com/microsoft/fluentui-system-icons/blob/main/LICENSE).
+- `Icon.Moon.ThirdEye.Smiling` is original.
+
+No changes were made to the geometry beyond what's needed to use it as a `StreamGeometry` resource.
 
 ## Sidebar navigation
 
@@ -363,6 +384,93 @@ With a single list there is nothing left to keep in sync. The one notification t
 `NavPage.IsSelected` — is raised for you by `[ObservableProperty]` and set in exactly one place,
 `OnSelectedPageChanged`. The `Kuwantima.Sandbox` project is a complete worked example, and the code
 above is the code it runs.
+
+## Color Palette Picker
+
+`Button.KuwantimaPalette` is a 48×48 square trigger — the same footprint as the `KuwantimaMenu`
+nav button, so it sits naturally next to one — that opens a `Flyout` onto a grid of
+`ToggleButton.KuwantimaSwatch` color swatches. It's the first Kuwantima control built on a
+`Flyout` rather than a custom `Popup`.
+
+```xml
+<Button Classes="KuwantimaPalette">
+    <Button.Flyout>
+        <Flyout FlyoutPresenterClasses="KuwantimaPalette" Placement="Bottom">
+            <Grid ColumnDefinitions="Auto,Auto,Auto" RowDefinitions="Auto,Auto" RowSpacing="8" ColumnSpacing="8">
+                <ToggleButton Classes="KuwantimaSwatch" Grid.Row="0" Grid.Column="0" Background="{DynamicResource KuwantimaPaletteBlue}"/>
+                <ToggleButton Classes="KuwantimaSwatch" Grid.Row="0" Grid.Column="1" Background="{DynamicResource KuwantimaPaletteOrange}"/>
+                <ToggleButton Classes="KuwantimaSwatch" Grid.Row="0" Grid.Column="2" Background="{DynamicResource KuwantimaPalettePurple}"/>
+                <ToggleButton Classes="KuwantimaSwatch" Grid.Row="1" Grid.Column="0" Background="{DynamicResource KuwantimaPaletteGreen}"/>
+                <ToggleButton Classes="KuwantimaSwatch" Grid.Row="1" Grid.Column="1" Background="{DynamicResource KuwantimaPaletteRose}"/>
+                <!-- Row 1, Column 2 is deliberately empty — room for a 6th, not a placeholder button. -->
+            </Grid>
+        </Flyout>
+    </Button.Flyout>
+</Button>
+```
+
+Two things worth being precise about, the same way the nav section above is about `Tag`/`Content`:
+
+- **`FlyoutPresenterClasses="KuwantimaPalette"` is what styles the flyout itself** — an opaque
+  panel matching `ComboBox`'s own dropdown, not the translucent glass background used elsewhere.
+  A flyout floats over arbitrary content, so translucency there would let whatever's behind it
+  show through the swatches. `FlyoutPresenterClasses` is the only way to reach the
+  auto-generated presenter with a selector; it never appears in markup you write.
+- **A swatch's color is set per instance, on `Background`** — it is not baked into the style. This
+  is what makes the swatch grid open-ended rather than fixed at 5: adding a 6th color is one more
+  `ToggleButton` line, not a style or layout change.
+
+### Overriding the 5 default colors
+
+`KuwantimaPaletteBlue/Orange/Purple/Green/Rose` are ordinary theme resources, overridable exactly
+like [any other Kuwantima brush](#overriding-brushes) — redefine the key after the `StyleInclude`.
+They're deliberately identical in both Light and Dark dictionaries (a swatch is a literal paint
+choice, not UI ink, so it shouldn't shift with the app's theme), so override both if you want to
+keep that property:
+
+```xml
+<Application.Resources>
+    <ResourceDictionary>
+        <ResourceDictionary.ThemeDictionaries>
+            <ResourceDictionary x:Key="Light">
+                <SolidColorBrush x:Key="KuwantimaPaletteBlue" Color="#2563EB"/>
+            </ResourceDictionary>
+            <ResourceDictionary x:Key="Dark">
+                <SolidColorBrush x:Key="KuwantimaPaletteBlue" Color="#2563EB"/>
+            </ResourceDictionary>
+        </ResourceDictionary.ThemeDictionaries>
+    </ResourceDictionary>
+</Application.Resources>
+```
+
+If you replace one of these, re-check it the way `KuwantimaPaletteOrange` and `KuwantimaPaletteGreen`
+had to be re-picked in this repo: as a **live Fluent accent**, not just a fill color — see below.
+
+### Adding more colors
+
+No resource involved at all — just add another swatch with whatever brush or literal color you
+want:
+
+```xml
+<ToggleButton Classes="KuwantimaSwatch" Grid.Row="1" Grid.Column="2" Background="#009688"/>
+```
+
+### Wiring it to actually do something
+
+The styles don't care what happens when a swatch is picked — same as the nav pattern above, that
+part is yours. Mutual exclusion is the same shape as the nav `ToggleButton`s:
+`IsChecked="{Binding SelectedColor, Mode=OneWay, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=...}"`
+plus a `Command` that updates `SelectedColor`.
+
+`Kuwantima.Sandbox` goes one step further and uses the selection to re-tint the app's *live* Fluent
+accent — every `SystemAccentColor*`-derived surface in the app, not just the swatch itself — by
+reaching `Application.Current`'s `FluentTheme` and setting
+`.Palettes[variant].Accent` (see `MainWindowViewModel.cs`). That's a real worked example, but it's
+Sandbox application code, not something the package provides: Kuwantima ships zero C#, so "does
+picking a color change anything" is entirely up to your app, the same way page navigation is.
+**If you replace one of the 5 defaults, or add your own, re-check it against white text as a live
+accent** the way the two colors above had to be — a color that reads fine as a small swatch can
+still fail contrast once it's driving `SystemAccentColorDark1`/`Dark2` behind white ink.
 
 ## Sandbox
 
