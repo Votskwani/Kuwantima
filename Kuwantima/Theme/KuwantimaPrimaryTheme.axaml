@@ -5,6 +5,20 @@
 	App.axaml is all that's needed to apply the full theme:
 
 	VERSION HISTORY:
+	  1.6.0  2026-09-26  ColorPalettePicker — the 16th control, first to use a Flyout
+	         • Button.KuwantimaPalette (48×48 square trigger, footprint matches KuwantimaMenu) opens
+	           a Flyout onto ToggleButton.KuwantimaSwatch instances; selection is a warm-accent ring,
+	           the same convention every other checked control already uses — no checkmark glyph, so
+	           no new ink-on-arbitrary-color contrast question
+	         • FlyoutPresenterClasses="KuwantimaPalette" — opaque, matching ComboBox's own dropdown,
+	           not the translucent glass background; a flyout floats over arbitrary content
+	         • Five theme-invariant swatch brushes (KuwantimaPalette{Blue,Orange,Purple,Green,Rose}) —
+	           each independently verified as a LIVE ACCENT (Invariant_6), not just a static fill;
+	           Orange and Green needed darkening from their first-pick hex to clear AA with white text
+	         • Which 5 colors exist, and the empty 6th grid cell, are consumer/demo markup, not
+	           baked into the style — extensibility is structural, the same as every other control
+	         • README now credits Material Design Icons (Pictogrammers, Apache-2.0) and Fluent System
+	           Icons (Microsoft, MIT) for icon geometry drawn from them — found in a pre-release audit
 	  1.5.0  2026-09-25  KuwantimaScrimBackground / KuwantimaScrimForeground — a blocking overlay
 	         • Closes the one real gap between Kuwantima and Navoti: Tunatya had been carrying a
 	           local, unmeasured copy of Navoti's White/Black-at-75%-opacity scrim
