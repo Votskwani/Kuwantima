@@ -10,7 +10,9 @@
         Icon="/Assets/avalonia-logo.ico"
         Title="Kuwantima Style Sandbox"
         Width="1200" Height="800"
-        MinWidth="800" MinHeight="600">
+        MinWidth="800" MinHeight="600"
+        ExtendClientAreaToDecorationsHint="True"
+        WindowDecorations="BorderOnly">
 
     <Design.DataContext>
         <vm:MainWindowViewModel/>
@@ -20,15 +22,76 @@
         <conv:ResourceKeyConverter x:Key="ResourceKey"/>
     </Window.Resources>
 
+    <!--
+        Custom window chrome — a worked example kept here in the Sandbox on purpose, not in the
+        packaged library. The button visuals are stylable (see the WindowClose override below,
+        and MainWindow.axaml.cs for the rest) but minimize/maximize/close are behavior, not a
+        selector — the library ships zero C#, and this is exactly the kind of thing that would
+        break that. If this ever earns a real README recipe, this is the working reference to
+        write it from.
+
+        Avalonia 11's ExtendClientAreaChromeHints="NoChrome" is gone in 12; the replacement is
+        WindowDecorations="BorderOnly" (above) plus marking the header below as the title bar
+        region (WindowDecorationProperties.ElementRole="TitleBar") — that one attached property
+        gives native drag-to-move and double-click-to-maximize for free. "None" instead of
+        "BorderOnly" works identically for this demo's purposes.
+
+        TitleBar is a drag region, full stop — it does NOT pass clicks through to children. Every
+        pointer press anywhere in that Border, buttons included, is captured as a window-move
+        gesture unless the child itself is marked otherwise. Each of the three window-control
+        buttons below carries its own WindowDecorationProperties.ElementRole="User" for exactly
+        this reason: "User" (as opposed to "DecorationsElement", which is Avalonia's own internal
+        chrome) means "app-defined interactive control — pass input through, don't drag." Without
+        it the buttons render but silently never fire Click. (There are also OS-native
+        CloseButton/MinimizeButton/MaximizeButton roles that hand the action to Win32 directly, but
+        that bypasses our own Click handlers and glyph/tooltip state below, so this file uses
+        "User" and drives everything from code-behind instead.)
+
+        Known rough edge, verified environmental rather than a bug in this markup: on one test
+        machine, maximizing while the window sat on its primary display left a ghost render
+        artifact that outlived the window itself (it was still there after the window moved to a
+        second monitor) and cleared only on a subsequent restore — reproducible with both
+        WindowDecorations values, absent entirely on the secondary display. That rules out
+        anything in this file; it's Windows/DWM-level, in the same rough area as several open
+        Avalonia 12 issues around ExtendClientAreaToDecorationsHint + maximize
+        (AvaloniaUI/Avalonia#21212, #21151, #21318). If a future reader hits something similar,
+        it is very unlikely to be their code either — check the primary/secondary display first.
+    -->
+    <Window.Styles>
+        <!-- Windows' own close-hover red, not a Kuwantima palette color — scoped to this window
+             only, deliberately not part of the shipped design language. -->
+        <Style Selector="Button.WindowClose:pointerover">
+            <Setter Property="Background" Value="#C42B1C"/>
+            <Setter Property="BorderBrush" Value="#C42B1C"/>
+        </Style>
+        <Style Selector="Button.WindowClose:pointerover PathIcon">
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <!-- Press glow: minimize/maximize reuse the library's own warm accent glow
+             (KuwantimaAccentGlowPressed — same resource Button.Kuwantima.Accent presses into) so
+             they read as Kuwantima chrome. Close gets a red-tinted echo of that same shape instead,
+             keeping it out of the shared palette for the reason above. -->
+        <Style Selector="Button.WindowControl:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="BoxShadow" Value="{DynamicResource KuwantimaAccentGlowPressed}"/>
+        </Style>
+        <Style Selector="Button.WindowClose:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="BoxShadow" Value="0 0 8 2 #70C42B1C, 0 0 18 5 #40C42B1C"/>
+        </Style>
+    </Window.Styles>
+
     <!-- Root glass container -->
     <Border Classes="KuwantimaGlass" Margin="8" Padding="0" ClipToBounds="True">
         <Grid RowDefinitions="Auto,*">
 
-            <!-- HEADER -->
-            <Border Grid.Row="0" Padding="16,12" Background="{DynamicResource KuwantimaGlassBackground}">
-                <Grid ColumnDefinitions="Auto,8,Auto,12,*,Auto">
+            <!-- HEADER — doubles as the title bar via ElementRole="TitleBar": dragging it moves the
+                 window and double-clicking toggles maximize, both native, no code-behind needed. -->
+            <Border Grid.Row="0" Padding="16,12" Background="{DynamicResource KuwantimaGlassBackground}"
+                    WindowDecorationProperties.ElementRole="TitleBar">
+                <Grid ColumnDefinitions="Auto,8,Auto,12,*,12,Auto">
                     <!-- Pane toggle -->
                     <Button Classes="Kuwantima Minimal"
+                            WindowDecorationProperties.ElementRole="User"
                             Command="{Binding TogglePaneCommand}"
                             ToolTip.Tip="Toggle navigation pane"
                             Width="36" Height="36">
@@ -37,6 +100,7 @@
 
                     <!-- Theme toggle -->
                     <ToggleButton Grid.Column="2" Classes="KuwantimaMenu"
+                                  WindowDecorationProperties.ElementRole="User"
                                   Content="Theme"
                                   IsChecked="{Binding IsDarkTheme}"
                                   ToolTip.Tip="Toggle light/dark theme">
@@ -59,11 +123,29 @@
                                    Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
                     </StackPanel>
 
-                    <StackPanel Grid.Column="5" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                        <Button Classes="Kuwantima Accent" Content="Accent"/>
-                        <Button Classes="Kuwantima" Content="Standard"/>
-                        <Button Classes="Kuwantima Minimal">
-                            <PathIcon Data="{StaticResource Icon.Gear}" Width="16" Height="16"/>
+                    <!-- Custom window controls — replace the native titlebar buttons that
+                         ExtendClientAreaToDecorationsHint="True" removes above. (Avalonia 11 had a
+                         separate ExtendClientAreaChromeHints for this; 12 dropped it — extending
+                         the client area now always means full custom chrome.) -->
+                    <StackPanel Grid.Column="6" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
+                        <Button Classes="Kuwantima Minimal WindowControl" Width="36" Height="36"
+                                WindowDecorationProperties.ElementRole="User"
+                                ToolTip.Tip="Minimize" Click="OnMinimizeClick">
+                            <Rectangle Width="10" Height="1.4"
+                                       Fill="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
+                        </Button>
+                        <Button x:Name="MaximizeRestoreButton" Classes="Kuwantima Minimal WindowControl" Width="36" Height="36"
+                                WindowDecorationProperties.ElementRole="User"
+                                ToolTip.Tip="Maximize" Click="OnMaximizeRestoreClick">
+                            <Rectangle Width="10" Height="10"
+                                       Stroke="{DynamicResource SystemControlForegroundBaseHighBrush}"
+                                       StrokeThickness="1.3"/>
+                        </Button>
+                        <Button Classes="Kuwantima Minimal WindowClose" Width="36" Height="36"
+                                WindowDecorationProperties.ElementRole="User"
+                                ToolTip.Tip="Close" Click="OnCloseClick">
+                            <PathIcon Data="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"
+                                      Width="12" Height="12"/>
                         </Button>
                     </StackPanel>
                 </Grid>
