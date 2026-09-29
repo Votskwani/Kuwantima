@@ -83,6 +83,11 @@
 									<TextBlock Text="Layers" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource SystemBaseHighColor}"/>
 								</StackPanel>
 
+								<StackPanel Orientation="Horizontal" Spacing="10">
+									<PathIcon Data="{StaticResource Icon.Add}" Foreground="{DynamicResource SystemFillColorAttentionBrush}"/>
+									<TextBlock Text="Add" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource SystemBaseHighColor}"/>
+								</StackPanel>
+
 							</StackPanel>
 						</Border>
 					</ThemeVariantScope>
@@ -143,6 +148,11 @@
 								<StackPanel Orientation="Horizontal" Spacing="10">
 									<PathIcon Data="{StaticResource Icon.Layers}" Foreground="{DynamicResource SystemFillColorAttentionBrush}"/>
 									<TextBlock Text="Layers" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource SystemBaseHighColor}"/>
+								</StackPanel>
+
+								<StackPanel Orientation="Horizontal" Spacing="10">
+									<PathIcon Data="{StaticResource Icon.Add}" Foreground="{DynamicResource SystemFillColorAttentionBrush}"/>
+									<TextBlock Text="Add" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource SystemBaseHighColor}"/>
 								</StackPanel>
 
 							</StackPanel>
@@ -213,5 +223,8 @@
 
 	<!-- Copy -->
 	<StreamGeometry x:Key="Icon.Copy">M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z</StreamGeometry>
+
+	<!-- Add -->
+	<StreamGeometry x:Key="Icon.Add">M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z</StreamGeometry>
 
 </ResourceDictionary>

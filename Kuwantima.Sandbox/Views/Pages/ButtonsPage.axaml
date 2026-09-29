@@ -93,6 +93,10 @@
                                     ToolTip.Tip="Refresh">
                                 <PathIcon Data="{StaticResource Icon.Refresh}" Width="16" Height="16"/>
                             </Button>
+                            <Button Classes="Kuwantima Minimal" Margin="0,0,8,8"
+                                    ToolTip.Tip="Add">
+                                <PathIcon Data="{StaticResource Icon.Add}" Width="16" Height="16"/>
+                            </Button>
                         </WrapPanel>
                     </StackPanel>
                 </ScrollViewer>
