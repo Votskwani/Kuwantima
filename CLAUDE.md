@@ -9,6 +9,15 @@ Checked 2026-07-13: NuGet shows ~245 downloads (mirrors and scanners — noise),
 0 watchers, 0 views, and **1 fork**. The `docs/` handouts are step-by-step instructions for forking
 this repo. That one fork is almost certainly the person the teacher guide was written for.
 
+**Re-checked 2026-10-03: NuGet downloads have grown to 680 (2.8×), but GitHub is unmoved** — still
+0 stars, 0 watchers, still exactly 1 fork, and the last 14 days of traffic show 2 total views / 1
+unique visitor. Downloads climbing with zero corresponding GitHub engagement is itself informative:
+a real new user would leave *some* trace there (a star, a view, a second fork) before or after
+pulling the package. None has. This is the signature of restore traffic scaling with time and
+package count (CI caches, mirrors, scanners re-pulling the index), not of new adopters — the growth
+is real, but it doesn't change who the actual audience is. Re-check both halves together next time;
+the download number alone is misleading without the GitHub side to weigh it against.
+
 So Kuwantima's real user is **a student learning to fork, clone, edit and push** — not a NuGet
 consumer integrating a design system. Prioritise accordingly:
 - **The IDE previewer working is a first-class feature**, not a nicety. A beginner who opens a style
