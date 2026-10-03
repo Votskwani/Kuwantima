@@ -32,6 +32,7 @@
 	│ KuwantimaControlHoverBrush             │ Background on pointer-over       │
 	│ KuwantimaAccentOrangeBrush             │ Warm border for checked/selected │
 	│ KuwantimaDarkBorderBrush               │ Subtle separator (dark only)     │
+	│ KuwantimaValidationErrorBrush          │ Border edge on native :error     │
 	├────────────────────────────────────────┼──────────────────────────────────┤
 	│ TEXT                                   │                                  │
 	│ KuwantimaSuccessTextBrush              │ Positive-outcome label text      │
@@ -98,6 +99,16 @@
 			<SolidColorBrush x:Key="KuwantimaControlHoverBrush" Color="#33A0C0FF"/>
 			<SolidColorBrush x:Key="KuwantimaDarkBorderBrush" Color="Transparent"/>
 			<SolidColorBrush x:Key="KuwantimaAccentOrangeBrush" Color="#FF8C00" />
+
+			<!-- Validation error border: a role reuse, not a new hue — reuses KuwantimaWarningTextBrush's
+			     exact Light value under a new border-role key, deliberately, the same bounded-exception
+			     treatment the ColorPalettePicker swatches got in v1.6.0 (see CLAUDE.md's Color Philosophy
+			     section). Border-only (BorderBrush, not Background/Fill), so it is excluded from
+			     Invariant_6's AccentSurfaceInk contrast sweep by that test's own property filter — no
+			     contrast invariant exists for any border-role brush in this library today
+			     (KuwantimaAccentOrangeBrush, KuwantimaGlassGlowBorder), and this one follows that
+			     precedent rather than inventing a new rule just for itself. -->
+			<SolidColorBrush x:Key="KuwantimaValidationErrorBrush" Color="#C23616" />
 
 			<!-- Accent-on text and glyphs. WHITE as of v1.3.0 — it was Black in v1.2.0, and the reason
 			     that flipped is worth keeping.
@@ -213,6 +224,10 @@
 			<SolidColorBrush x:Key="KuwantimaControlHoverBrush" Color="#33D4DFFF"/>
 			<SolidColorBrush x:Key="KuwantimaDarkBorderBrush" Color="#20FFFFFF"/>
 			<SolidColorBrush x:Key="KuwantimaAccentOrangeBrush" Color="#FFA500" />
+
+			<!-- Validation error border — see the Light dictionary. Reuses KuwantimaWarningTextBrush's
+			     exact Dark value under the new border-role key. -->
+			<SolidColorBrush x:Key="KuwantimaValidationErrorBrush" Color="#E84118" />
 
 			<!-- Accent-on text — light by design as of v1.3.0; see the Light dictionary and CLAUDE.md.
 			     Same value in both variants because the accent backgrounds it sits on are themselves

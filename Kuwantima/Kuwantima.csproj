@@ -32,7 +32,7 @@
 
     <!-- NuGet package metadata -->
     <PackageId>Kuwantima</PackageId>
-    <Version>1.6.0</Version>
+    <Version>1.7.0</Version>
     <Authors>Cole Larson</Authors>
     <Description>A glass-glow design system for Avalonia UI. 16 styled controls, automatic light/dark theming, Fluent palette integration.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -42,17 +42,17 @@
     <PackageTags>avalonia;ui;theme;glass;design-system</PackageTags>
     <!-- Version-coupled: rewrite this every release. It is on the Version Bump Checklist in
          CLAUDE.md for that reason - stale release notes are worse than none. -->
-    <PackageReleaseNotes>v1.6.0 - New: Color Palette Picker.
+    <PackageReleaseNotes>v1.7.0 - New: validation error styling for TextBox and ComboBox, plus an Icon.Add glyph.
 
-Button.KuwantimaPalette (a 48x48 square trigger, same footprint as the KuwantimaMenu nav button) opens a Flyout onto ToggleButton.KuwantimaSwatch color swatches - the first Kuwantima control built on a Flyout rather than a custom Popup. Five theme-invariant swatch colors ship by default (KuwantimaPalette{Blue,Orange,Purple,Green,Rose}), each independently verified as a live Fluent accent rather than just a static fill - two needed re-picking to clear WCAG AA with white text once they drive the derived accent ramp, and that check is now a permanent part of the test suite.
+A new KuwantimaValidationErrorBrush resource styles Avalonia's native :error pseudo-class (the state a binding enters under DataValidationErrors / INotifyDataErrorInfo / ObservableValidator validation) with a border color change on TextBox.Kuwantima and ComboBox.Kuwantima. Fluent supplies no baseline treatment for this state at all - verified by a headless probe before writing any style - so this is a from-scratch addition, not an override of an existing Fluent key.
 
-Which colors exist is consumer markup, not baked into the style: adding a sixth swatch is one more ToggleButton line, and the 5 defaults override like any other Kuwantima brush - see the new Color Palette Picker section in README.
+The new brush reuses KuwantimaWarningTextBrush's existing hex under a new border-role key rather than introducing a new color into the palette - see README's Available Theme Resources table and CLAUDE.md's Color Philosophy section for the full rationale.
 
-Additive and non-breaking: one new style file, five new resource keys, nothing existing renamed or removed.
+Demoed on the Inputs sandbox page's new "Validation" section, wired to the real DataValidationErrors.Errors attached property (not a forced pseudo-class), so it exercises the same mechanism a consuming app's validation will drive.
 
-Also: README now credits Material Design Icons (Pictogrammers, Apache-2.0) and Fluent System Icons (Microsoft, MIT) for the icon geometry drawn from them - a missing-attribution gap found during a pre-release audit.
+Also: Icon.Add (a plus-glyph from Material Design Icons, matching the existing MDI set), filling a gap found while building a consuming app's onboarding wizard. 14 icons now ship, up from 13.
 
-Demoed on the Toggles sandbox page and in the sandbox header, next to the theme toggle.</PackageReleaseNotes>
+Additive and non-breaking: two new resource keys, one new selector per file on two existing controls, nothing existing renamed or removed. Control count stays 16.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

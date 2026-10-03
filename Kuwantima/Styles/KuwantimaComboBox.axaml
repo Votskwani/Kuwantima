@@ -41,6 +41,12 @@
 							<ComboBox Classes="Kuwantima" IsEnabled="False" SelectedIndex="0" HorizontalAlignment="Stretch">
 								<ComboBoxItem>Disabled</ComboBoxItem>
 							</ComboBox>
+
+							<!-- :error is NOT demoed here: setting DataValidationErrors.Errors in a
+							     statically-parsed, detached preview tree throws a NullReferenceException
+							     inside Avalonia's own pseudo-class wiring (it expects a live visual root,
+							     confirmed while building KuwantimaTextBox.axaml's preview). See the real
+							     demo in Kuwantima.Sandbox's InputsPage instead. -->
 						</StackPanel>
 					</Panel>
 				</ThemeVariantScope>
@@ -68,6 +74,8 @@
 							<ComboBox Classes="Kuwantima" IsEnabled="False" SelectedIndex="0" HorizontalAlignment="Stretch">
 								<ComboBoxItem>Disabled</ComboBoxItem>
 							</ComboBox>
+
+							<!-- :error not demoed here — see the Light column's comment above. -->
 						</StackPanel>
 					</Panel>
 				</ThemeVariantScope>
@@ -215,6 +223,13 @@
 		<!-- Focus -->
 		<Style Selector="^:focus-visible /template/ Border#Background">
 			<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaGlassGlowBorderHover}"/>
+		</Style>
+
+		<!-- Validation error — see KuwantimaTextBox.axaml for the full rationale. One plain selector:
+		     document order already makes it win over :focus-visible above and lose to :disabled
+		     below, with no compound selector needed. -->
+		<Style Selector="^:error /template/ Border#Background">
+			<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaValidationErrorBrush}"/>
 		</Style>
 
 		<!-- Disabled: pin Background/Foreground to prevent Fluent's disabled brushes from double-dimming -->

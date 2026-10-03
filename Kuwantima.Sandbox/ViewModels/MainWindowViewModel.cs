@@ -94,6 +94,24 @@ namespace Kuwantima.Sandbox.ViewModels
         private void ToggleScrim() => IsScrimVisible = !IsScrimVisible;
 
         [ObservableProperty]
+        private bool _isValidationDemoActive;
+
+        /// <summary>
+        /// Drives the real Avalonia.Controls.DataValidationErrors.Errors attached property on the
+        /// Inputs page's demo TextBox/ComboBox — the actual mechanism BBService's ObservableValidator
+        /// forms will use, not a pseudo-class forced directly. Non-null/non-empty is what fires the
+        /// native :error pseudo-class.
+        /// </summary>
+        public IEnumerable<string>? ValidationDemoErrors =>
+            IsValidationDemoActive ? new[] { "This field is required." } : null;
+
+        partial void OnIsValidationDemoActiveChanged(bool value) =>
+            OnPropertyChanged(nameof(ValidationDemoErrors));
+
+        [RelayCommand]
+        private void ToggleValidationDemo() => IsValidationDemoActive = !IsValidationDemoActive;
+
+        [ObservableProperty]
         private AccentColorOption _selectedAccentColor = AccentColorOption.Blue;
 
         [RelayCommand]

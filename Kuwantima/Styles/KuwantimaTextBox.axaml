@@ -32,6 +32,12 @@
 
 							<TextBox Classes="Kuwantima ReadOnly" Text="Read-only display text"
 							         IsReadOnly="True" HorizontalAlignment="Stretch"/>
+
+							<!-- :error is NOT demoed here: setting DataValidationErrors.Errors in a
+							     statically-parsed, detached preview tree throws a NullReferenceException
+							     inside Avalonia's own pseudo-class wiring (it expects a live visual root).
+							     See the real demo in Kuwantima.Sandbox's InputsPage instead, which sets
+							     Errors through a live binding after the control is attached. -->
 						</StackPanel>
 					</Panel>
 				</ThemeVariantScope>
@@ -50,6 +56,8 @@
 
 							<TextBox Classes="Kuwantima ReadOnly" Text="Read-only display text"
 							         IsReadOnly="True" HorizontalAlignment="Stretch"/>
+
+							<!-- :error not demoed here — see the Light column's comment above. -->
 						</StackPanel>
 					</Panel>
 				</ThemeVariantScope>
@@ -101,6 +109,17 @@
 			<Setter Property="Background" Value="{DynamicResource SystemControlBackgroundBaseLowBrush}"/>
 			<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaAccentOrangeBrush}"/>
 			<Setter Property="BorderThickness" Value="1.5"/>
+		</Style>
+
+		<!-- Validation error: fires on Avalonia's native :error pseudo-class (DataValidationErrors /
+		     INotifyDataErrorInfo binding validation). A probe proved Fluent supplies no baseline
+		     treatment here — Background/BorderBrush/Foreground were identical rest vs. :error in both
+		     variants — so this is a from-scratch addition, not an override. One plain selector, no
+		     compound with :focus: document order already makes it win over :focus above (so an error
+		     stays visible while the field is being edited) and lose to :disabled below (so a disabled
+		     field still just looks disabled). -->
+		<Style Selector="^:error /template/ Border#PART_BorderElement">
+			<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaValidationErrorBrush}"/>
 		</Style>
 
 		<!-- Disabled: pin Background/Foreground to prevent Fluent's disabled brushes from double-dimming -->

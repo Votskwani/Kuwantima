@@ -220,6 +220,47 @@ library *consumes* must resolve under both variants. The suite previously only c
 (`Application.Current.TryGetResource` in a throwaway `[AvaloniaFact]`). Do not trust this table, the
 theme header, or the style files agreeing with each other — they are one origin, restated.
 
+## Downstream: BBService
+
+**Open request (2026-10-02): validation error styling.** BBService's onboarding forms want to flag
+missing required fields on Save-click (red border etc.) instead of leaving Save disabled with no clue
+which of many fields is blocking it. See **`VALIDATION-STYLING-PLAN.md`** (repo root) for the full
+split of responsibility between the two repos.
+
+### Validation error border — SHIPPED v1.7.0
+`KuwantimaValidationErrorBrush`, a new border-role resource styling Avalonia's native `:error`
+pseudo-class on `TextBox.Kuwantima`/`ComboBox.Kuwantima`. A throwaway `[AvaloniaFact]` (2026-10-03)
+proved Fluent supplies **zero** baseline `:error` treatment on either control — Background,
+BorderBrush and Foreground were byte-identical rest vs. forced `:error`, in both variants — so this
+is a from-scratch key, not an override, and nothing in Fluent would ever have papered over a mistake
+here. One plain `^:error` selector per file (no compound selectors), placed after `:focus`/
+`:focus-visible` and before `:disabled` — document order alone makes it win over focus and lose to
+disabled, per the Avalonia Gotchas section below. Guarded permanently by
+`InvariantTests.Validation.cs`'s `Invariant_8`, which forces `:error` and asserts the template
+part's `BorderBrush` actually changes — proven to catch the regression it exists for by temporarily
+breaking the selector and watching it go red before shipping.
+
+Reuses `KuwantimaWarningTextBrush`'s exact hex under the new key (role expansion, text ink → border
+edge, not a new hue — see Color Philosophy below). Border-only, so excluded from `Invariant_6`'s
+mandatory `AccentSurfaceInk` contrast sweep (that scan only fires on `Background`/`Fill` setters) —
+no contrast invariant exists for any border-role brush in this library, and this one follows that
+precedent rather than inventing a new rule for itself.
+
+**Sandbox demo wires the real mechanism, not a forced pseudo-class** — `InputsPage`'s "Validation"
+section binds `DataValidationErrors.Errors` to a `MainWindowViewModel.ValidationDemoErrors` property
+toggled by a "Show Validation Error" button (same shape as the scrim's `IsScrimVisible`/
+`ToggleScrim`), so it proves the actual attached-property path BBService's `ObservableValidator`
+forms will drive. Confirmed visually in both Light and Dark via the running sandbox.
+
+**Bonus finding from that same sandbox run, relevant to the open tooltip question below**: Fluent
+renders an inline "This field is required." message automatically under an errored control, with no
+styling from this repo — `TooltipDataValidationErrors`'s default appears to be inline text, not a
+popup tooltip, at least for the demo's binding-validation path. Unstyled, unmeasured for contrast,
+and not confirmed against every path (e.g. `ObservableValidator`'s exact error-message flow) — a
+real probe of this, and of whether `KuwantimaToolTip.axaml`'s bare `ToolTip` selector would apply if
+a tooltip path *is* taken, is still open and non-blocking. Message/tooltip display stays BBService's
+side of the split; this repo's scope stops at the border.
+
 ## Downstream: Tunatya / Navoti
 Kuwantima **replaces** Navoti in `../Tunatya`. It does not compose with it — they are the same
 design system at two points in time (same architecture, same class convention, 16 controls vs
@@ -355,6 +396,16 @@ reads as the same color) — the smallest step that cleared AA with a real margi
 first step that technically passed, matching how the muted-ink fix was chosen in v1.3.0. Swept and
 verified with a throwaway `[AvaloniaFact]` before editing the resource file, not reasoned about —
 the exact discipline this file's own verification-trap section keeps having to relearn.
+
+### A second, smaller exception: KuwantimaValidationErrorBrush (v1.7.0)
+Reuses `KuwantimaWarningTextBrush`'s exact hex (`#C23616` Light, `#E84118` Dark) under a new
+border-role key, rather than introducing a fourth hue. This is a role expansion (text ink → border
+edge), not a new color in the story — one key, not five, so it doesn't earn its own measured table
+the way the palette swatches did above. Border-only, so it's excluded from `Invariant_6`'s
+`AccentSurfaceInk` sweep (that test only fires on `Background`/`Fill` setters) and no contrast
+invariant exists for it, matching every other border-role brush in this library
+(`KuwantimaAccentOrangeBrush`, `KuwantimaGlassGlowBorder`). Visibility against the glass panel in
+both variants was a sandbox eyeball check, not a measured gate — see "Downstream: BBService" above.
 
 ### Accent-on text is WHITE, and the ramp is what makes that possible (v1.3.0)
 `AccentButtonForeground` is overridden to **White** in both theme dictionaries

@@ -1,6 +1,8 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="Kuwantima.Sandbox.Views.Pages.InputsPage">
+             xmlns:vm="using:Kuwantima.Sandbox.ViewModels"
+             x:Class="Kuwantima.Sandbox.Views.Pages.InputsPage"
+             x:DataType="vm:MainWindowViewModel">
 
     <Border Classes="KuwantimaGlass" Padding="0" ClipToBounds="True">
     <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="24">
@@ -52,6 +54,27 @@
                     <ListBoxItem>Alert History</ListBoxItem>
                     <ListBoxItem>Driver Reports</ListBoxItem>
                 </ListBox>
+            </StackPanel>
+
+            <!-- Validation -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="Validation" FontWeight="SemiBold" FontSize="14"
+                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                <TextBox Classes="Kuwantima" Text="Vehicle ID">
+                    <DataValidationErrors.Errors>
+                        <Binding Path="ValidationDemoErrors"/>
+                    </DataValidationErrors.Errors>
+                </TextBox>
+                <ComboBox Classes="Kuwantima" PlaceholderText="Choose a site..." HorizontalAlignment="Stretch">
+                    <ComboBox.Items>
+                        <ComboBoxItem>North Depot</ComboBoxItem>
+                        <ComboBoxItem>South Depot</ComboBoxItem>
+                    </ComboBox.Items>
+                    <DataValidationErrors.Errors>
+                        <Binding Path="ValidationDemoErrors"/>
+                    </DataValidationErrors.Errors>
+                </ComboBox>
+                <Button Classes="Kuwantima" Content="Show Validation Error" Command="{Binding ToggleValidationDemoCommand}"/>
             </StackPanel>
 
         </StackPanel>

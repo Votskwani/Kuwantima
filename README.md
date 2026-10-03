@@ -43,7 +43,7 @@ That's it. Every Fluent control picks up the Kuwantima color palette. To apply f
 | Button | `Kuwantima` | `Accent` |
 | CheckBox | `Kuwantima` | `Classic` |
 | Color Palette Picker | `KuwantimaPalette` (trigger), `KuwantimaSwatch` (swatch) | |
-| ComboBox | `Kuwantima` | |
+| ComboBox | `Kuwantima` | `:error` |
 | Expander | `Kuwantima` | |
 | Border (Glass) | `KuwantimaGlass` | |
 | GridSplitter | `Kuwantima` | `Pill`, `Arrow` (+ `Horizontal`/`Vertical`) |
@@ -53,9 +53,12 @@ That's it. Every Fluent control picks up the Kuwantima color palette. To apply f
 | RadioButton | `Kuwantima` | `Classic` |
 | Slider | `Kuwantima` | |
 | TabControl | `Kuwantima` | |
-| TextBox | `Kuwantima` | `ReadOnly` |
+| TextBox | `Kuwantima` | `ReadOnly`, `:error` |
 | ToggleButton | `Kuwantima` | |
 | ToolTip | `Kuwantima` | |
+
+`:error` isn't a class you add — unlike every other variant above, it's Avalonia's native
+`:error` pseudo-class, which fires automatically from `DataValidationErrors`/binding validation.
 
 ### Variant Examples
 
@@ -116,6 +119,7 @@ Custom brushes are defined in `KuwantimaThemeResources.axaml` inside `ThemeDicti
 | `KuwantimaAccentGlowPressed` | Warm outer glow on accent press (BoxShadows) |
 | `KuwantimaAccentOrangeBrush` | Warm border for checked/selected state |
 | `KuwantimaDarkBorderBrush` | Subtle separator (dark theme only) |
+| `KuwantimaValidationErrorBrush` | Border edge on native `:error` (TextBox, ComboBox) |
 | `KuwantimaSuccessTextBrush` | Positive-outcome label text |
 | `KuwantimaWarningTextBrush` | Negative-outcome label text |
 | `KuwantimaTooltipBackground` | Tooltip backdrop |
@@ -146,7 +150,7 @@ Override them yourself only if you also re-check contrast against the background
 
 ## Icons
 
-The same `StyleInclude` brings in 13 icon geometries. They are ordinary `StreamGeometry` resources,
+The same `StyleInclude` brings in 14 icon geometries. They are ordinary `StreamGeometry` resources,
 so any control that takes a `Geometry` can use one:
 
 ```xml
@@ -159,7 +163,7 @@ so any control that takes a `Geometry` can use one:
 | `Icon.Gear` | `Icon.Clear.Circle` | `Icon.Copy` |
 | `Icon.Sliders` | `Icon.Layers` | `Icon.Sun` |
 | `Icon.Expand` | `Icon.Map` | `Icon.Moon.ThirdEye.Smiling` |
-| `Icon.Collapse` | | |
+| `Icon.Collapse` | `Icon.Add` | |
 
 A key that does not exist renders **nothing** rather than failing loudly, so check a blank icon
 against this table before looking anywhere else.
@@ -170,7 +174,7 @@ Most of these are drawn from existing icon sets rather than original geometry, a
 credit is a condition of both licenses:
 
 - `Icon.Home`, `Icon.Gear`, `Icon.Sliders`, `Icon.Expand`, `Icon.Collapse`, `Icon.Search`,
-  `Icon.Clear.Circle`, `Icon.Layers`, `Icon.Refresh`, `Icon.Map`, `Icon.Copy` — from
+  `Icon.Clear.Circle`, `Icon.Layers`, `Icon.Refresh`, `Icon.Map`, `Icon.Copy`, `Icon.Add` — from
   [Material Design Icons](https://pictogrammers.com/library/mdi/) by Pictogrammers, licensed
   [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
 - `Icon.Sun` — from [Fluent System Icons](https://github.com/microsoft/fluentui-system-icons) by

@@ -5,6 +5,21 @@
 	App.axaml is all that's needed to apply the full theme:
 
 	VERSION HISTORY:
+	  1.7.0  2026-10-03  Validation error styling for TextBox / ComboBox, plus Icon.Add
+	         • KuwantimaValidationErrorBrush styles Avalonia's native :error pseudo-class — a
+	           headless probe proved Fluent supplies NO baseline treatment here, so this is a
+	           from-scratch key, not an override; a permanent test (Invariant_8) forces :error and
+	           asserts the border actually repaints, since nothing in Fluent would ever catch a
+	           regression here silently
+	         • One plain ^:error selector per file (KuwantimaTextBox.axaml, KuwantimaComboBox.axaml),
+	           placed after :focus/:focus-visible and before :disabled — document order alone makes
+	           error win over focus and lose to disabled, no compound selectors needed
+	         • Reuses KuwantimaWarningTextBrush's exact hex under the new border-role key rather than
+	           introducing a new hue — a deliberate, bounded exception, same treatment as the
+	           ColorPalettePicker swatches got in v1.6.0
+	         • Demoed on the Inputs sandbox page via a real DataValidationErrors.Errors binding, not
+	           a forced pseudo-class — proves the actual mechanism a consuming app's validation drives
+	         • Also: Icon.Add (a plus glyph, Material Design Icons) — 14 icons now ship, up from 13
 	  1.6.0  2026-09-26  ColorPalettePicker — the 16th control, first to use a Flyout
 	         • Button.KuwantimaPalette (48×48 square trigger, footprint matches KuwantimaMenu) opens
 	           a Flyout onto ToggleButton.KuwantimaSwatch instances; selection is a warm-accent ring,
