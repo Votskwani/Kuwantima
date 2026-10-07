@@ -36,7 +36,46 @@ That's it. Every Fluent control picks up the Kuwantima color palette. To apply f
 <TextBox Classes="Kuwantima" PlaceholderText="Search..."/>
 ```
 
+### DataGrid (optional)
+
+DataGrid ships as a separate package, **`Kuwantima.DataGrid`**, because the control itself lives
+in Avalonia's own separate `Avalonia.Controls.DataGrid` package, not core Avalonia — installing
+the core `Kuwantima` package never pulls that dependency in. If you want a styled grid, add the
+second package (it depends on `Kuwantima`, so that comes along automatically) and one more
+`StyleInclude`, after Kuwantima's own:
+
+```
+dotnet add package Kuwantima.DataGrid
+```
+
+```xml
+<Application.Styles>
+    <StyleInclude Source="avares://Kuwantima/Theme/KuwantimaPrimaryTheme.axaml"/>
+    <StyleInclude Source="avares://Kuwantima.DataGrid/Theme/KuwantimaDataGridTheme.axaml"/>
+</Application.Styles>
+```
+
+```xml
+<DataGrid Classes="Kuwantima" AutoGenerateColumns="False">
+    <DataGrid.Columns>
+        <DataGridTextColumn Header="Vehicle" Binding="{Binding Id}"/>
+        <DataGridTextColumn Header="Status" Binding="{Binding Status}"/>
+    </DataGrid.Columns>
+</DataGrid>
+```
+
+Covers headers (hover/pressed, sort-direction glyph), rows (hover, selection joining the same
+accent family as ListBox/ComboBox), alternating-row tint, grid lines, disabled state, and
+`:invalid` reusing `KuwantimaValidationErrorBrush`. Not yet covered: row grouping, frozen columns,
+inline cell-editing chrome, row-details expansion.
+
+`Kuwantima.DataGrid` is versioned in lockstep with `Kuwantima` — same version number, same
+release — even on a release where only one of the two actually changed.
+
 ## Controls
+
+The table below is the **core `Kuwantima` package** — 16 controls, one dependency-light install.
+DataGrid ships separately; see [DataGrid (optional)](#datagrid-optional) above.
 
 | Control | Class | Variants |
 |---------|-------|----------|
@@ -484,7 +523,9 @@ The `Kuwantima.Sandbox` project is a live gallery of every control and variant. 
 dotnet run --project Kuwantima.Sandbox
 ```
 
-Seven demo pages: **Buttons**, **Inputs**, **Toggles**, **Feedback**, **Containers**, **Theme Preview** (side-by-side light/dark), and **Documents** (styled README + license dialog).
+Eight demo pages: **Buttons**, **Inputs**, **Toggles**, **Feedback**, **Containers**, **DataGrid**
+(`Kuwantima.DataGrid`'s demo — requires the sandbox to reference that package too, which it does),
+**Theme Preview** (side-by-side light/dark), and **Documents** (styled README + license dialog).
 
 ## Requirements
 

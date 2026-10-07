@@ -22,5 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Kuwantima\Kuwantima.csproj" />
+    <!-- Avalonia.Controls.DataGrid flows through transitively — no need to reference it directly. -->
+    <ProjectReference Include="..\Kuwantima.DataGrid\Kuwantima.DataGrid.csproj" />
   </ItemGroup>
 </Project>

@@ -23,11 +23,24 @@ jobs:
       - name: Test
         run: dotnet test Kuwantima.Tests/Kuwantima.Tests.csproj -c Release
 
+      - name: Test Kuwantima.DataGrid
+        run: dotnet test Kuwantima.DataGrid.Tests/Kuwantima.DataGrid.Tests.csproj -c Release
+
       - name: Build
         run: dotnet build Kuwantima/Kuwantima.csproj -c Release
+
+      - name: Build Kuwantima.DataGrid
+        run: dotnet build Kuwantima.DataGrid/Kuwantima.DataGrid.csproj -c Release
 
       - name: Pack
         run: dotnet pack Kuwantima/Kuwantima.csproj -c Release --no-build
 
+      - name: Pack Kuwantima.DataGrid
+        run: dotnet pack Kuwantima.DataGrid/Kuwantima.DataGrid.csproj -c Release --no-build
+
+      # Both packages are versioned in lockstep (see CLAUDE.md's Version Management section) and
+      # publish from the same tag push, whether or not both changed content this release.
       - name: Publish to NuGet
-        run: dotnet nuget push Kuwantima/bin/Release/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
+        run: |
+          dotnet nuget push Kuwantima/bin/Release/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
+          dotnet nuget push Kuwantima.DataGrid/bin/Release/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}

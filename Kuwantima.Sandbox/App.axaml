@@ -6,5 +6,6 @@
 
     <Application.Styles>
         <StyleInclude Source="avares://Kuwantima/Theme/KuwantimaPrimaryTheme.axaml"/>
+        <StyleInclude Source="avares://Kuwantima.DataGrid/Theme/KuwantimaDataGridTheme.axaml"/>
     </Application.Styles>
 </Application>

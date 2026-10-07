@@ -25,3 +25,6 @@ jobs:
       # with no xvfb wrapper.
       - name: Test
         run: dotnet test Kuwantima.Tests/Kuwantima.Tests.csproj
+
+      - name: Test Kuwantima.DataGrid
+        run: dotnet test Kuwantima.DataGrid.Tests/Kuwantima.DataGrid.Tests.csproj

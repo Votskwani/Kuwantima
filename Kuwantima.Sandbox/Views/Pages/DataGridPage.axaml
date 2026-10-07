@@ -1,0 +1,46 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Kuwantima.Sandbox.ViewModels"
+             x:Class="Kuwantima.Sandbox.Views.Pages.DataGridPage"
+             x:DataType="vm:MainWindowViewModel">
+
+    <Border Classes="KuwantimaGlass" Padding="0" ClipToBounds="True">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="24">
+        <StackPanel Spacing="24" MaxWidth="600">
+
+            <!-- Fleet Status -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="Fleet Status" FontWeight="SemiBold" FontSize="14"
+                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                <!-- x:CompileBindings="False": column Binding expressions target each row's
+                     Vehicle, not this page's MainWindowViewModel DataContext — a different
+                     x:DataType scope than the page declares above, so reflection bindings here
+                     avoid a second x:DataType declaration for a single grid. -->
+                <DataGrid Classes="Kuwantima" AutoGenerateColumns="False" x:CompileBindings="False"
+                          ItemsSource="{Binding SampleVehicles}" Height="260">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Vehicle" Binding="{Binding Id}" Width="*"/>
+                        <DataGridTextColumn Header="Site" Binding="{Binding Site}" Width="*"/>
+                        <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*"/>
+                        <DataGridTextColumn Header="Fuel %" Binding="{Binding FuelPercent}" Width="80"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+
+            <!-- Disabled -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="Disabled" FontWeight="SemiBold" FontSize="14"
+                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                <DataGrid Classes="Kuwantima" AutoGenerateColumns="False" x:CompileBindings="False"
+                          ItemsSource="{Binding SampleVehicles}" IsEnabled="False" Height="100">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Vehicle" Binding="{Binding Id}" Width="*"/>
+                        <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+
+        </StackPanel>
+    </ScrollViewer>
+    </Border>
+</UserControl>

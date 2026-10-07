@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <!-- Keep these in lockstep with Kuwantima.DataGrid.csproj — same reasoning as
+       Kuwantima.Tests.csproj's identical comment. -->
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="12.1.3" />
+    <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="12.1.3" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.3" />
+    <PackageReference Include="Avalonia.Controls.DataGrid" Version="12.1.2" />
+    <PackageReference Include="Avalonia.Headless" Version="12.1.3" />
+    <PackageReference Include="Avalonia.Headless.XUnit" Version="12.1.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="xunit.v3" Version="3.2.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="coverlet.collector" Version="6.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Transitively pulls Kuwantima too — needed since the DataGrid style reuses Kuwantima's own
+         theme resources (glass border, hover wash, accent orange, validation error). -->
+    <ProjectReference Include="..\Kuwantima.DataGrid\Kuwantima.DataGrid.csproj" />
+  </ItemGroup>
+
+  <!-- Same reasoning as Kuwantima.Tests.csproj: compiled XAML strips the raw markup from the
+       assembly, so sources are linked in as EmbeddedResource to be read back at runtime. A
+       separate LogicalName root ("DataGridStyles/", "DataGridTheme/") avoids any collision with
+       Kuwantima.Tests' own "Styles/"/"Theme/" roots, since these are independent test binaries. -->
+  <ItemGroup>
+    <EmbeddedResource Include="..\Kuwantima.DataGrid\Styles\*.axaml" LogicalName="DataGridStyles/%(Filename)%(Extension)" Visible="false" />
+    <EmbeddedResource Include="..\Kuwantima.DataGrid\Theme\KuwantimaDataGridTheme.axaml" LogicalName="DataGridTheme/KuwantimaDataGridTheme.axaml" Visible="false" />
+    <EmbeddedResource Include="..\Kuwantima.DataGrid\Theme\KuwantimaDataGridThemeResources.axaml" LogicalName="KuwantimaDataGridThemeResources.axaml" Visible="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+</Project>

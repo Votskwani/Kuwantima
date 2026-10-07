@@ -1,0 +1,67 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <!-- PREVIEWER SUPPORT. Exact mirror of Kuwantima.csproj's setup — see that file for the full
+         rationale. Debug-only; Release stays a library so the package is untouched. -->
+    <GenerateRuntimeConfigurationFiles Condition="'$(Configuration)' == 'Debug'">true</GenerateRuntimeConfigurationFiles>
+    <CopyLocalLockFileAssemblies Condition="'$(Configuration)' == 'Debug'">true</CopyLocalLockFileAssemblies>
+    <OutputType Condition="'$(Configuration)' == 'Debug'">Exe</OutputType>
+
+    <!-- NuGet package metadata -->
+    <PackageId>Kuwantima.DataGrid</PackageId>
+    <Version>1.7.0</Version>
+    <Authors>Cole Larson</Authors>
+    <Description>A styled DataGrid for Kuwantima, Avalonia's glass-glow design system. Ships separately so the core Kuwantima package stays free of the Avalonia.Controls.DataGrid dependency.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageProjectUrl>https://github.com/Votskwani/Kuwantima</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Votskwani/Kuwantima</RepositoryUrl>
+    <PackageTags>avalonia;ui;theme;glass;design-system;datagrid</PackageTags>
+    <!-- Lockstep with Kuwantima.csproj's <Version> — see CLAUDE.md's Version Management section.
+         PLACEHOLDER: <Version> above still reads 1.7.0, matching Kuwantima.csproj's last-STAMPED
+         value, per this repo's own convention (feature commits land unstamped; a separate "Stamp
+         vX.Y.Z" commit bumps <Version> and rewrites these notes — see the Version Bump Checklist).
+         v1.7.0 itself already shipped (validation styling + Icon.Add) before this package existed,
+         so this content belongs to whatever version the NEXT stamp actually picks (likely 1.8.0,
+         since this is new, additive content) — do not tag/publish under 1.7.0. Rewrite the leading
+         version number here, and bump <Version> above, together at that point. -->
+    <PackageReleaseNotes>First release of Kuwantima.DataGrid, a companion package styling Avalonia's DataGrid control (Avalonia.Controls.DataGrid) to match the rest of Kuwantima.
+
+Ships separately from the core Kuwantima package because DataGrid lives in its own Avalonia package, not core Avalonia — folding it into Kuwantima would force that dependency on every consumer, even ones who never use a grid. Install this alongside Kuwantima and add one more StyleInclude.
+
+Covers: column headers (hover/pressed, sort-direction glyph in accent orange), rows (hover, selection joining the same accent family as ListBox/ComboBox — solid accent fill, white text, orange left edge), alternating-row tint, grid lines, disabled state, and :invalid reusing KuwantimaValidationErrorBrush. Out of scope for this release: row grouping, frozen columns, inline cell-editing chrome, row-details expansion.
+
+Nearly every color is a reuse of an existing Kuwantima brush (KuwantimaControlHoverBrush, KuwantimaGlassBackground, KuwantimaSplitterBrush, KuwantimaAccentOrangeBrush, KuwantimaValidationErrorBrush, the SystemAccentColor* ramp) rather than a new hue — consistent with Kuwantima's Color Philosophy of not introducing colors without intention.</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Previewer\ holds the ONLY C# in this package, and it never ships — same reasoning as
+         Kuwantima.csproj. -->
+    <Compile Remove="Previewer\**\*.cs" Condition="'$(Configuration)' != 'Debug'" />
+    <None Include="..\README.md" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="12.1.3" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.3" />
+    <PackageReference Include="Avalonia.Controls.DataGrid" Version="12.1.2" />
+
+    <!-- Previewer only, same reasoning as Kuwantima.csproj. Kept out of the .nupkg. -->
+    <PackageReference Include="Avalonia.Desktop" Version="12.1.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The style file resolves avares://Kuwantima/Theme/KuwantimaThemeResources.axaml at runtime
+         to reuse Kuwantima's existing brushes (glass border, hover wash, accent orange, validation
+         error) rather than inventing a parallel palette. A ProjectReference between two packable
+         SDK projects also makes `dotnet pack` auto-emit a matching <dependency id="Kuwantima"/>
+         in this package's nuspec, so `dotnet add package Kuwantima.DataGrid` pulls Kuwantima in
+         automatically — verified by inspecting the packed .nuspec (see CLAUDE.md). -->
+    <ProjectReference Include="..\Kuwantima\Kuwantima.csproj" />
+  </ItemGroup>
+
+</Project>

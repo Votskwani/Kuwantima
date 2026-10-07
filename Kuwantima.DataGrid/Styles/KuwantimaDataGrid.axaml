@@ -1,0 +1,220 @@
+<Styles xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:col="using:Avalonia.Collections">
+	<Design.PreviewWith>
+		<!-- x:CompileBindings="False": the preview's DataGridTextColumn.Binding expressions below
+		     have no x:DataType to compile against (items are plain x:String), and the designer's
+		     runtime XAML compiler — unlike the normal build — refuses a compiled binding without
+		     one. Reflection bindings sidestep that; verified by running the previewer command in
+		     CLAUDE.md's Avalonia Gotchas section before trusting this, not assumed. -->
+		<Border Padding="20" Width="760">
+			<!-- PREVIEW ONLY. At runtime the consumer's StyleIncludes supply these; here the file
+			     stands alone, and an unresolvable DynamicResource is SILENT, so without them every
+			     brush setter below is skipped and the preview renders bare. Unlike every other
+			     Kuwantima style file, DataGrid ALSO needs its own base Fluent theme
+			     (avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml) — DataGrid's own
+			     ControlTemplate lives there, not in core Fluent, confirmed by reading
+			     Avalonia.Controls.DataGrid's source before relying on it. Do NOT swap in
+			     KuwantimaPrimaryTheme or KuwantimaDataGridTheme: they carry the SHIPPED styles and
+			     would show you those instead of the edit you are making in this file. -->
+			<Border.Styles>
+				<FluentTheme/>
+				<StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
+			</Border.Styles>
+			<Border.Resources>
+				<ResourceDictionary>
+					<ResourceDictionary.MergedDictionaries>
+						<ResourceInclude Source="avares://Kuwantima/Theme/KuwantimaThemeResources.axaml"/>
+						<ResourceInclude Source="avares://Kuwantima.DataGrid/Theme/KuwantimaDataGridThemeResources.axaml"/>
+					</ResourceDictionary.MergedDictionaries>
+				</ResourceDictionary>
+			</Border.Resources>
+			<Grid ColumnDefinitions="*, *">
+				<!-- LEFT SIDE: LIGHT THEME PREVIEW -->
+				<ThemeVariantScope RequestedThemeVariant="Light" Grid.Column="0">
+					<Border Background="{DynamicResource SystemRegionBrush}" Padding="16" Classes="KuwantimaGlass">
+						<StackPanel Spacing="12">
+							<TextBlock Text="Light Theme" FontWeight="Bold" FontSize="18" HorizontalAlignment="Center"/>
+
+							<DataGrid Classes="Kuwantima" AutoGenerateColumns="False" SelectedIndex="1" Height="220" x:CompileBindings="False">
+								<DataGrid.Columns>
+									<DataGridTextColumn Header="Vehicle" Binding="{Binding}" Width="*"/>
+									<DataGridTextColumn Header="Length" Binding="{Binding Length}" Width="80"/>
+								</DataGrid.Columns>
+								<DataGrid.ItemsSource>
+									<col:AvaloniaList x:TypeArguments="x:String">
+										<x:String>Truck 14</x:String>
+										<x:String>Van 22</x:String>
+										<x:String>Truck 31</x:String>
+										<x:String>Van 08</x:String>
+										<x:String>Truck 02</x:String>
+									</col:AvaloniaList>
+								</DataGrid.ItemsSource>
+							</DataGrid>
+
+							<DataGrid Classes="Kuwantima" AutoGenerateColumns="False" IsEnabled="False" Height="80" x:CompileBindings="False">
+								<DataGrid.Columns>
+									<DataGridTextColumn Header="Disabled" Binding="{Binding}" Width="*"/>
+								</DataGrid.Columns>
+								<DataGrid.ItemsSource>
+									<col:AvaloniaList x:TypeArguments="x:String">
+										<x:String>Row One</x:String>
+										<x:String>Row Two</x:String>
+									</col:AvaloniaList>
+								</DataGrid.ItemsSource>
+							</DataGrid>
+						</StackPanel>
+					</Border>
+				</ThemeVariantScope>
+
+				<!-- RIGHT SIDE: DARK THEME PREVIEW -->
+				<ThemeVariantScope RequestedThemeVariant="Dark" Grid.Column="1">
+					<Border Background="{DynamicResource SystemRegionBrush}" Padding="16" Classes="KuwantimaGlass">
+						<StackPanel Spacing="12">
+							<TextBlock Text="Dark Theme" FontWeight="Bold" FontSize="18" HorizontalAlignment="Center"/>
+
+							<DataGrid Classes="Kuwantima" AutoGenerateColumns="False" SelectedIndex="1" Height="220" x:CompileBindings="False">
+								<DataGrid.Columns>
+									<DataGridTextColumn Header="Vehicle" Binding="{Binding}" Width="*"/>
+									<DataGridTextColumn Header="Length" Binding="{Binding Length}" Width="80"/>
+								</DataGrid.Columns>
+								<DataGrid.ItemsSource>
+									<col:AvaloniaList x:TypeArguments="x:String">
+										<x:String>Truck 14</x:String>
+										<x:String>Van 22</x:String>
+										<x:String>Truck 31</x:String>
+										<x:String>Van 08</x:String>
+										<x:String>Truck 02</x:String>
+									</col:AvaloniaList>
+								</DataGrid.ItemsSource>
+							</DataGrid>
+
+							<DataGrid Classes="Kuwantima" AutoGenerateColumns="False" IsEnabled="False" Height="80" x:CompileBindings="False">
+								<DataGrid.Columns>
+									<DataGridTextColumn Header="Disabled" Binding="{Binding}" Width="*"/>
+								</DataGrid.Columns>
+								<DataGrid.ItemsSource>
+									<col:AvaloniaList x:TypeArguments="x:String">
+										<x:String>Row One</x:String>
+										<x:String>Row Two</x:String>
+									</col:AvaloniaList>
+								</DataGrid.ItemsSource>
+							</DataGrid>
+						</StackPanel>
+					</Border>
+				</ThemeVariantScope>
+			</Grid>
+		</Border>
+	</Design.PreviewWith>
+
+	<!-- ═══ BASE: DataGrid.Kuwantima ═══
+	     Avalonia.Controls.DataGrid's own Fluent theme is a type-keyed ControlTheme, not a
+	     Classes-scoped Style like the rest of this library — so most of what follows is plain CLR
+	     property Setters (which a classed Style always wins over a ControlTheme's own Setter for,
+	     regardless of document order between them), not a ControlTemplate replacement. The
+	     hover/selection/grid-line colors that the vendor theme wires through global
+	     DynamicResource keys instead of settable properties are overridden once, for every
+	     DataGrid, in KuwantimaDataGridThemeResources.axaml — see that file's header for why those
+	     specific few can't be scoped to Classes="Kuwantima" the way everything here is. -->
+	<Style Selector="DataGrid.Kuwantima">
+		<Setter Property="Background" Value="{DynamicResource SystemControlBackgroundBaseLowBrush}"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaGlassGlowBorder}"/>
+		<Setter Property="BorderThickness" Value="1.5"/>
+		<Setter Property="CornerRadius" Value="4"/>
+		<Setter Property="Foreground" Value="{DynamicResource SystemBaseHighColor}"/>
+
+		<!-- RowBackground is a real DataGrid CLR property, bound by the vendor's own ControlTheme
+		     into each row's Background — setting it here cascades to every row with no template
+		     work needed. There is no AlternatingRowBackground property on Avalonia's DataGrid
+		     (confirmed by reading DataGrid.cs — the WPF property this name suggests was never
+		     ported); zebra striping is done below via :nth-child instead. -->
+		<Setter Property="RowBackground" Value="Transparent"/>
+
+		<!-- Grid lines default to GridLinesVisibility="None" in the vendor theme — without this,
+		     the KuwantimaSplitterBrush override in KuwantimaDataGridThemeResources.axaml would
+		     have nothing to paint. -->
+		<Setter Property="GridLinesVisibility" Value="All"/>
+
+		<Setter Property="Transitions">
+			<Transitions>
+				<BrushTransition Property="BorderBrush" Duration="0:0:0.2"/>
+			</Transitions>
+		</Setter>
+
+		<!-- Hover: brighten the glass border, matching ListBox/ComboBox's identical treatment. -->
+		<Style Selector="^:pointerover">
+			<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaGlassGlowBorderHover}"/>
+		</Style>
+
+		<!-- Disabled: pin Foreground/Cursor/Opacity, the standard three, to prevent Fluent's
+		     disabled brushes from double-dimming. The vendor theme has its own
+		     PART_DisabledVisualElement overlay mechanism, but it's driven by a resource key that
+		     is consumed and never defined anywhere in the vendor theme (confirmed by reading the
+		     source) — an unresolved DynamicResource is silent, so that overlay is already a no-op
+		     today. This pin is what actually dims the control, same mechanism as every other
+		     control in this library. -->
+		<Style Selector="^:disabled">
+			<Setter Property="Foreground" Value="{DynamicResource SystemBaseHighColor}"/>
+			<Setter Property="Opacity" Value="0.5"/>
+			<Setter Property="Cursor" Value="Arrow"/>
+		</Style>
+	</Style>
+
+	<!-- ═══ COLUMN HEADERS: DataGrid.Kuwantima DataGridColumnHeader ═══
+	     Scoped descendant selector (same pattern as ListBox.Kuwantima ListBoxItem /
+	     ComboBox.Kuwantima ComboBoxItem) — DataGridColumnHeader instances are generated by the
+	     DataGrid itself and can't carry Classes="Kuwantima" directly, so the opt-in has to come
+	     from the ancestor DataGrid's class instead. -->
+	<Style Selector="DataGrid.Kuwantima DataGridColumnHeader">
+		<Setter Property="Background" Value="{DynamicResource SystemControlBackgroundBaseLowBrush}"/>
+		<Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"/>
+		<Setter Property="FontWeight" Value="SemiBold"/>
+		<!-- Sortable, i.e. actually clickable — same reasoning that gives ListBoxItem (not ListBox)
+		     the Hand cursor: the cursor belongs on the thing that responds to the click. -->
+		<Setter Property="Cursor" Value="Hand"/>
+	</Style>
+
+	<!-- Sort-direction glyph: orange, same "the warm accent lives on the edge/glyph, never the
+	     fill" rule the v1.3.0 accent redesign established (see CLAUDE.md's Color Philosophy). The
+	     vendor theme already toggles the glyph's IsVisible/Data per sort direction; this only adds
+	     the color. -->
+	<Style Selector="DataGrid.Kuwantima DataGridColumnHeader:sortascending /template/ Path#SortIcon">
+		<Setter Property="Fill" Value="{DynamicResource KuwantimaAccentOrangeBrush}"/>
+	</Style>
+	<Style Selector="DataGrid.Kuwantima DataGridColumnHeader:sortdescending /template/ Path#SortIcon">
+		<Setter Property="Fill" Value="{DynamicResource KuwantimaAccentOrangeBrush}"/>
+	</Style>
+
+	<!-- ═══ ROWS: DataGrid.Kuwantima DataGridRow ═══
+	     Hover/plain-selection background and opacity are handled globally (see
+	     KuwantimaDataGridThemeResources.axaml) since the vendor theme wires them through
+	     DynamicResource keys consumed inside its own ControlTheme, not plain CLR properties. What
+	     remains here are genuine CLR properties on DataGridRow itself. -->
+	<Style Selector="DataGrid.Kuwantima DataGridRow">
+		<Setter Property="Cursor" Value="Hand"/>
+	</Style>
+
+	<!-- Zebra striping: RowBorder's Background (this Setter) sits BEHIND the vendor template's
+	     BackgroundRectangle (the Fill hover/selection paint via the global resource aliases in
+	     KuwantimaDataGridThemeResources.axaml) — confirmed from the template's part order, so a
+	     hovered or selected row's opaque fill correctly covers the tint rather than blending with
+	     it. Reuses KuwantimaGlassBackground (the same "a subtle tint, barely there" role as a
+	     glass panel fill) rather than inventing a new zebra-stripe color. :nth-child is Avalonia's
+	     own answer to WPF's AlternationIndex — confirmed against Avalonia.Controls.DataGrid's own
+	     sample, which uses the identical selector on DataGridRow. -->
+	<Style Selector="DataGrid.Kuwantima DataGridRow:nth-child(2n)">
+		<Setter Property="Background" Value="{DynamicResource KuwantimaGlassBackground}"/>
+	</Style>
+
+	<!-- Selected: join the accent family exactly like ListBoxItem/ComboBoxItem — white text on the
+	     solid accent fill (the fill itself comes from the global override above) plus the orange
+	     left-edge border used everywhere else a list item is selected. Without this Foreground
+	     override, selected rows would show dark base text on the accent-blue fill — the exact
+	     2.33:1 mistake v1.3.0 fixed everywhere else in the library; DataGridRow/DataGridCell don't
+	     set their own Foreground, so this cascades down through the cells by inheritance. -->
+	<Style Selector="DataGrid.Kuwantima DataGridRow:selected">
+		<Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaAccentOrangeBrush}"/>
+		<Setter Property="BorderThickness" Value="2,0,0,0"/>
+	</Style>
+</Styles>

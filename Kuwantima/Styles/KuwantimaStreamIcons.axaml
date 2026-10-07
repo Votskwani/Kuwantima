@@ -88,6 +88,11 @@
 									<TextBlock Text="Add" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource SystemBaseHighColor}"/>
 								</StackPanel>
 
+								<StackPanel Orientation="Horizontal" Spacing="10">
+									<PathIcon Data="{StaticResource Icon.Grid}" Foreground="{DynamicResource SystemFillColorAttentionBrush}"/>
+									<TextBlock Text="Grid" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource SystemBaseHighColor}"/>
+								</StackPanel>
+
 							</StackPanel>
 						</Border>
 					</ThemeVariantScope>
@@ -153,6 +158,11 @@
 								<StackPanel Orientation="Horizontal" Spacing="10">
 									<PathIcon Data="{StaticResource Icon.Add}" Foreground="{DynamicResource SystemFillColorAttentionBrush}"/>
 									<TextBlock Text="Add" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource SystemBaseHighColor}"/>
+								</StackPanel>
+
+								<StackPanel Orientation="Horizontal" Spacing="10">
+									<PathIcon Data="{StaticResource Icon.Grid}" Foreground="{DynamicResource SystemFillColorAttentionBrush}"/>
+									<TextBlock Text="Grid" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource SystemBaseHighColor}"/>
 								</StackPanel>
 
 							</StackPanel>
@@ -226,5 +236,8 @@
 
 	<!-- Add -->
 	<StreamGeometry x:Key="Icon.Add">M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z</StreamGeometry>
+
+	<!-- Grid — added for the DataGrid sandbox nav entry (Kuwantima.DataGrid, v1.7.0) -->
+	<StreamGeometry x:Key="Icon.Grid">M3,11H11V3H3M3,21H11V13H3M13,21H21V13H13M13,3V11H21V3</StreamGeometry>
 
 </ResourceDictionary>

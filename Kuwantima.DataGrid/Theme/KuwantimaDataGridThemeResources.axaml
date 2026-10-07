@@ -1,0 +1,107 @@
+<!--
+	KuwantimaDataGridThemeResources.axaml
+	═══════════════════════════════════════════════════════════════════════════
+	Overrides for the resource keys Avalonia.Controls.DataGrid's OWN Fluent theme
+	(avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml) consumes via DynamicResource.
+
+	UNLIKE Kuwantima/Theme/KuwantimaThemeResources.axaml, every key here is a KNOWN REUSE —
+	the exact value of an existing Kuwantima brush, copied under DataGrid's own key name
+	(which this package doesn't control) — not a new hue. Per CLAUDE.md's Color Philosophy:
+	"Do not introduce colors outside this story without intention."
+
+	These are LITERAL per-variant values, not a <DynamicResource x:Key="X" ResourceKey="Y"/>
+	indirection to the source brush. That indirection was the first attempt and is WRONG — it
+	silently corrupts resource resolution for the entire merged dictionary scope under
+	Avalonia's designer-only runtime XAML compiler (confirmed with a throwaway probe: a plain
+	Style Setter referencing an UNRELATED, pre-existing Fluent key failed with
+	"Unable to cast DynamicResourceExtension to IBrush" the moment this file was merged in,
+	and stopped failing the moment the indirection was removed — even though the vendor's own
+	Fluent.xaml uses the identical-looking <StaticResource x:Key="X" ResourceKey="Y"/> pattern
+	successfully). StaticResource was the next candidate and is also wrong here, for a
+	different reason: it resolves once and would freeze these colors at whichever theme
+	variant was active when the dictionary first loaded, breaking this app's live Light/Dark
+	toggle for every DataGrid on screen. Literal duplication — the same choice already made for
+	KuwantimaValidationErrorBrush's exact hex under a new border-role key — is the only option
+	of the three that is both correct under the designer's compiler AND stays reactive to a
+	runtime theme switch, the same as every other resource in this library.
+
+	Confirmed by reading Avalonia.Controls.DataGrid's actual Fluent.xaml source (GitHub,
+	release matching 12.1.2) before writing any of this — not assumed.
+
+	RESOURCE CATALOG (all literal reuses — see each entry's comment for its source):
+	┌────────────────────────────────────────────────┬──────────────────────────────────────┐
+	│ Key (DataGrid's own, not Kuwantima-prefixed)   │ Reuses the exact value of…            │
+	├────────────────────────────────────────────────┼──────────────────────────────────────┤
+	│ DataGridColumnHeaderHoveredBackgroundBrush     │ KuwantimaControlHoverBrush            │
+	│ DataGridRowHoveredBackgroundColor               │ KuwantimaControlHoverBrush            │
+	│ DataGridGridLinesBrush                          │ KuwantimaSplitterBrush                │
+	│ DataGridRowInvalidBrush                         │ KuwantimaValidationErrorBrush         │
+	│ DataGridCellInvalidBrush                        │ KuwantimaValidationErrorBrush         │
+	├────────────────────────────────────────────────┼──────────────────────────────────────┤
+	│ (theme-invariant — flat, no Light/Dark split)  │                                        │
+	│ DataGridColumnHeaderPressedBackgroundBrush     │ SystemControlBackgroundAccentBrush     │
+	│ DataGridRowSelectedBackgroundBrush              │ SystemControlBackgroundAccentBrush    │
+	│ DataGridRowSelectedUnfocusedBackgroundBrush     │ SystemControlBackgroundAccentBrush    │
+	│ DataGridRowSelectedHoveredBackgroundBrush        │ SystemAccentColorDark1               │
+	│ DataGridRowSelectedHoveredUnfocusedBackgroundBrush│ SystemAccentColorDark1              │
+	│ DataGridRowSelected*BackgroundOpacity (×4)     │ 1.0 (vendor default is a 0.6/0.8       │
+	│                                                  │ translucent wash — Kuwantima wants a   │
+	│                                                  │ solid chip, matching ListBoxItem)      │
+	└────────────────────────────────────────────────┴──────────────────────────────────────┘
+
+	The accent-family keys are flat rather than Light/Dark-split because the SystemAccentColor*
+	ramp they reuse is itself theme-invariant (same hex both variants) — see CLAUDE.md's v1.3.0
+	accent-redesign notes. Column header rest-state Background/Foreground and the selected-row
+	Foreground/left-edge border are plain CLR properties on DataGridColumnHeader/DataGridRow
+	instead, scoped to Classes="Kuwantima" in Styles/KuwantimaDataGrid.axaml — only the keys the
+	vendor theme reads itself, globally, by DynamicResource live here.
+
+	NOT overridden (deliberately, v1 scope — see CLAUDE.md's DataGrid section):
+	  DataGridColumnHeaderDraggedBackgroundBrush, DataGridCellFocusVisualPrimary/SecondaryBrush,
+	  DataGridRowGroupHeader* (grouping is out of v1 scope entirely), DataGridScrollBarsSeparator-
+	  Background / DataGridDisabledVisualElementBackground / DataGridDropLocationIndicatorBackground
+	  (consumed by the vendor theme but never actually DEFINED anywhere in it — confirmed by
+	  reading the source; an unresolved DynamicResource is silent, so these are simply transparent
+	  no-ops today, not a defect this package needs to fix). All of these fall back to the vendor's
+	  own Fluent defaults, which were confirmed live (not dead WinUI-era keys) by checking
+	  Avalonia's core BaseColorsPalette.xaml for the underlying System*Color values before relying
+	  on any of it.
+-->
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+	<!-- Theme-invariant: the SystemAccentColor* ramp this reuses is the same hex in both variants. -->
+	<SolidColorBrush x:Key="DataGridColumnHeaderPressedBackgroundBrush" Color="#0078D4"/>
+	<SolidColorBrush x:Key="DataGridRowSelectedBackgroundBrush" Color="#0078D4"/>
+	<SolidColorBrush x:Key="DataGridRowSelectedUnfocusedBackgroundBrush" Color="#0078D4"/>
+	<SolidColorBrush x:Key="DataGridRowSelectedHoveredBackgroundBrush" Color="#00589B"/>
+	<SolidColorBrush x:Key="DataGridRowSelectedHoveredUnfocusedBackgroundBrush" Color="#00589B"/>
+	<x:Double x:Key="DataGridRowSelectedBackgroundOpacity">1</x:Double>
+	<x:Double x:Key="DataGridRowSelectedUnfocusedBackgroundOpacity">1</x:Double>
+	<x:Double x:Key="DataGridRowSelectedHoveredBackgroundOpacity">1</x:Double>
+	<x:Double x:Key="DataGridRowSelectedHoveredUnfocusedBackgroundOpacity">1</x:Double>
+
+	<ResourceDictionary.ThemeDictionaries>
+		<ResourceDictionary x:Key="Light">
+			<!-- = KuwantimaControlHoverBrush (Light) -->
+			<SolidColorBrush x:Key="DataGridColumnHeaderHoveredBackgroundBrush" Color="#33A0C0FF"/>
+			<SolidColorBrush x:Key="DataGridRowHoveredBackgroundColor" Color="#33A0C0FF"/>
+			<!-- = KuwantimaSplitterBrush (Light) -->
+			<SolidColorBrush x:Key="DataGridGridLinesBrush" Color="MidnightBlue" Opacity="0.25"/>
+			<!-- = KuwantimaValidationErrorBrush (Light) -->
+			<SolidColorBrush x:Key="DataGridRowInvalidBrush" Color="#C23616"/>
+			<SolidColorBrush x:Key="DataGridCellInvalidBrush" Color="#C23616"/>
+		</ResourceDictionary>
+		<ResourceDictionary x:Key="Dark">
+			<!-- = KuwantimaControlHoverBrush (Dark) -->
+			<SolidColorBrush x:Key="DataGridColumnHeaderHoveredBackgroundBrush" Color="#33D4DFFF"/>
+			<SolidColorBrush x:Key="DataGridRowHoveredBackgroundColor" Color="#33D4DFFF"/>
+			<!-- = KuwantimaSplitterBrush (Dark) -->
+			<SolidColorBrush x:Key="DataGridGridLinesBrush" Color="AliceBlue" Opacity="0.3"/>
+			<!-- = KuwantimaValidationErrorBrush (Dark) -->
+			<SolidColorBrush x:Key="DataGridRowInvalidBrush" Color="#E84118"/>
+			<SolidColorBrush x:Key="DataGridCellInvalidBrush" Color="#E84118"/>
+		</ResourceDictionary>
+	</ResourceDictionary.ThemeDictionaries>
+
+</ResourceDictionary>

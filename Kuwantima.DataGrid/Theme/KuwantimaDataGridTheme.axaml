@@ -1,0 +1,91 @@
+<!--
+	KuwantimaDataGridTheme.axaml
+	═══════════════════════════════════════════════════════════════════════════
+	Entry point for the Kuwantima.DataGrid companion package. Add ONE StyleInclude
+	after Kuwantima's own (KuwantimaPrimaryTheme.axaml must already be present —
+	this package does not define a FluentTheme or palette of its own):
+
+		<StyleInclude Source="avares://Kuwantima/Theme/KuwantimaPrimaryTheme.axaml"/>
+		<StyleInclude Source="avares://Kuwantima.DataGrid/Theme/KuwantimaDataGridTheme.axaml"/>
+
+	VERSION HISTORY:
+	  [unstamped]  First release — DataGrid, Kuwantima's 1st companion-package control. Version
+	               number TBD at the next "Stamp vX.Y.Z" commit — NOT 1.7.0, which already shipped
+	               (validation styling + Icon.Add) before this package existed. Fill in the real
+	               version + date here when that stamp happens, per CLAUDE.md's Version Bump
+	               Checklist, the same way every other entry below was finalized.
+	         • Ships as a SEPARATE package from Kuwantima because DataGrid lives in a separate
+	           Avalonia package (Avalonia.Controls.DataGrid), not core Avalonia — folding it into
+	           Kuwantima would force that dependency on every consumer, even ones who never use a
+	           grid. Versioned in LOCKSTEP with Kuwantima (same number, same tag) even on a release
+	           where only one of the two packages' content actually changed
+	         • Avalonia.Controls.DataGrid's own Fluent theme is a type-keyed ControlTheme, not a
+	           Classes-scoped Style like the rest of Kuwantima — confirmed by reading its source
+	           before writing anything, the same discipline CLAUDE.md's Avalonia Gotchas section
+	           prescribes for every other Avalonia internal this library has ever depended on
+	         • Covers (v1 scope): column headers (hover/pressed, sort glyph in accent orange),
+	           rows (hover, selection joining the ListBox/ComboBox accent family — solid fill,
+	           white text, orange left edge), alternating-row tint, grid lines, disabled state,
+	           :invalid reusing KuwantimaValidationErrorBrush. Out of scope: row grouping, frozen
+	           columns, inline cell-editing chrome, row-details expansion
+	         • Nearly every color is a reuse of an existing Kuwantima brush, not a new hue — see
+	           KuwantimaDataGridThemeResources.axaml's header for the full alias table
+
+	LOAD ORDER (order matters — later entries can override earlier ones):
+	  1. DataGrid base theme — Avalonia.Controls.DataGrid's own Fluent.xaml. DataGrid's
+	                            ControlTemplate lives here, not in core Fluent; without it there is
+	                            no template for Kuwantima's overrides to apply on top of.
+	  2. Merged resources   — KuwantimaDataGridThemeResources (aliases to Kuwantima's existing
+	                           brushes), loaded after the base theme so its key overrides win.
+	  3. Control style      — Kuwantima-classed templates for 1 control (DataGrid).
+
+	This package does NOT embed its own <fluent:FluentTheme>: the consumer's one FluentTheme
+	already comes from KuwantimaPrimaryTheme.axaml, and CLAUDE.md's Tunatya/Navoti section is
+	explicit that two FluentTheme entries silently collide on SystemFillColor* keys by document
+	order (Avalonia resolves duplicates last-wins, with no error).
+-->
+<Styles xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+	<Design.PreviewWith>
+		<!-- Root container with a neutral background and proper padding -->
+		<Border Padding="20" Width="400" Height="200">
+			<Border.Styles>
+				<FluentTheme/>
+				<StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
+			</Border.Styles>
+			<Border.Resources>
+				<ResourceInclude Source="avares://Kuwantima/Theme/KuwantimaThemeResources.axaml"/>
+			</Border.Resources>
+			<TextBlock Text="See Styles/KuwantimaDataGrid.axaml for the real preview — this entry-point
+			file has nothing of its own to render." TextWrapping="Wrap"/>
+		</Border>
+	</Design.PreviewWith>
+
+	<!-- ═══════════════════════════════════════════════════════════════════ -->
+	<!-- 1. DATAGRID BASE THEME                                             -->
+	<!--    DataGrid's own ControlTemplate — not part of core Fluent.       -->
+	<!-- ═══════════════════════════════════════════════════════════════════ -->
+	<StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
+
+	<!-- ═══════════════════════════════════════════════════════════════════ -->
+	<!-- 2. MERGED RESOURCES                                                -->
+	<!--    Alias overrides for the DataGrid-specific keys the base theme   -->
+	<!--    above consumes, loaded after it so these win by document order. -->
+	<!-- ═══════════════════════════════════════════════════════════════════ -->
+	<Styles.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceInclude Source="avares://Kuwantima.DataGrid/Theme/KuwantimaDataGridThemeResources.axaml"/>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Styles.Resources>
+
+	<!-- ═══════════════════════════════════════════════════════════════════ -->
+	<!-- 3. CONTROL STYLE                                                   -->
+	<!--    Kuwantima-classed templates for 1 control. Applied via          -->
+	<!--    Classes="Kuwantima", same convention as the core package.       -->
+	<!-- ═══════════════════════════════════════════════════════════════════ -->
+	<StyleInclude Source="avares://Kuwantima.DataGrid/Styles/KuwantimaDataGrid.axaml"/>
+
+</Styles>

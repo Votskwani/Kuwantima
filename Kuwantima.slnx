@@ -3,6 +3,8 @@
     <File Path="LICENSE" />
     <File Path="README.md" />
   </Folder>
+  <Project Path="Kuwantima.DataGrid/Kuwantima.DataGrid.csproj" />
+  <Project Path="Kuwantima.DataGrid.Tests/Kuwantima.DataGrid.Tests.csproj" />
   <Project Path="Kuwantima.Sandbox/Kuwantima.Sandbox.csproj" />
   <Project Path="Kuwantima.Tests/Kuwantima.Tests.csproj" />
   <Project Path="Kuwantima/Kuwantima.csproj" />

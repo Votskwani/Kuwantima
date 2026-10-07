@@ -35,6 +35,23 @@ consumer integrating a design system. Prioritise accordingly:
 - `KuwantimaPrimaryTheme.axaml` header has a manual VERSION HISTORY changelog — update it when bumping version
 - Git tags should match: `git tag v{version}`
 
+### Two packages, one version number — LOCKSTEP
+`Kuwantima.DataGrid` (see "Downstream: DataGrid" below) is versioned in **lockstep** with
+`Kuwantima`: same `<Version>` in both csproj files, same git tag, bumped together by `publish.sh`
+in one pass — even on a release where only one of the two packages' content actually changed.
+Decided deliberately over independent per-package versioning: this project's primary audience is a
+student forking the repo (see "Who this is actually for" at the top of this file), and one version
+number for "Kuwantima" is easier to reason about than two drifting independently, the same way
+multi-package ecosystems like the .NET runtime's `System.*` family ship under one number.
+
+**The real cost, and why it's acceptable:** this breaks the "every version bump means the DLL
+changed" assumption the MAJOR/MINOR/NOT-A-RELEASE rules below are built on — a `Kuwantima.DataGrid`-only
+fix still ticks `Kuwantima.csproj`'s `<Version>` even though nothing in that package's content
+changed. The fix is procedural, not architectural: **`PackageReleaseNotes` in each csproj must say
+which package(s) actually changed** in a given release — don't let the shared version number imply
+both did. Apply the MAJOR/MINOR classification below per package, independently, before deciding
+what the (shared) release number should be.
+
 ### What earns a major version
 Version numbers describe the **consumer's migration burden, not the maintainer's effort**. A big
 session is not a major release.
@@ -72,6 +89,15 @@ Revisit when .NET 10 leaves support (~2028), not before. If you want to play wit
 ## Completeness Invariants
 Items 2, 3, 4, and 8 below are **enforced by `Kuwantima.Tests`** — you cannot forget them, the
 suite goes red. The rest are still on you. Run `dotnet test` before you commit.
+
+**This checklist is for a control that ships in the core `Kuwantima` package.** A control whose
+own Avalonia control type lives in a separate NuGet package (DataGrid's `Avalonia.Controls.DataGrid`
+is the first example) doesn't belong here — it follows "The DataGrid companion package" section
+below's shape instead: its own project (`Kuwantima.{Control}`), its own theme entry point and
+resources file, its own test project (`Kuwantima.{Control}.Tests`), lockstep version with
+`Kuwantima` (see Version Management), and its own `StyleInclude` line for the consumer to add. The
+"16 controls" count this checklist's item 9 protects is specifically the core package's count and
+does not include companion-package controls.
 
 ### New Control Checklist
 1. **Style file** — `Kuwantima/Styles/Kuwantima{Control}.axaml` with `Design.PreviewWith` for both
@@ -362,6 +388,160 @@ Each of these shipped (or nearly), and each survived a check that *felt* rigorou
 **Agreement between sources that share an origin is not verification.** Go to ground truth: run
 `dotnet test`, write a throwaway `[AvaloniaFact]`, list the directory, grep the *consumer*, resolve
 the key against the live theme. Not to a restatement, however many of them agree.
+
+## The DataGrid companion package — SHIPPED v1.7.0
+
+`Kuwantima.DataGrid`, a new project/package styling Avalonia's `DataGrid`, Kuwantima's first
+*companion*-package control rather than a 17th entry in the core package. See README's
+"DataGrid (optional)" section for the consumer-facing install story and the Version Management
+section above for the lockstep-versioning decision. This section is the implementation record.
+
+**Why separate, restated once more because it drove every other decision below:** `DataGrid`
+ships in `Avalonia.Controls.DataGrid`, a package Avalonia itself keeps outside core Avalonia.
+Folding it into `Kuwantima` would force that dependency on every consumer, even ones who never
+touch a grid. `Kuwantima.DataGrid` references `Kuwantima` via `ProjectReference` instead — both so
+its style file can reuse Kuwantima's existing brushes at runtime, and because `dotnet pack`
+auto-emits a matching `<dependency id="Kuwantima"/>` in the nuspec from a `ProjectReference`
+between two packable projects, so `dotnet add package Kuwantima.DataGrid` pulls `Kuwantima` in for
+free. `KuwantimaDataGridTheme.axaml` does **not** embed its own `<fluent:FluentTheme>` — the
+Tunatya/Navoti section above is explicit that two of those collide silently by document order, and
+the consumer's one `FluentTheme` already comes from `KuwantimaPrimaryTheme.axaml`.
+
+### The vendor theme is shaped differently than every control Kuwantima had styled before
+Read `Avalonia.Controls.DataGrid`'s actual `Themes/Fluent.xaml` source before writing anything
+(GitHub, release matching the `12.1.2` package version — the DataGrid package trails core Avalonia
+slightly; its nuspec only requires `Avalonia >= 12.1.0`, satisfied by this repo's `12.1.3`, so there
+is no conflict). It is a set of type-keyed `ControlTheme`s (`{x:Type DataGrid}`,
+`{x:Type DataGridRow}`, `{x:Type DataGridColumnHeader}`, `{x:Type DataGridCell}`), not
+`Classes`-scoped `Style`s the way every other control in this library's own Fluent base is shaped.
+Two consequences:
+- **Most of the override surface is plain CLR-property `Setter`s on a `DataGrid.Kuwantima`-scoped
+  `Style`**, not a `ControlTemplate` replacement — a `Style` always wins over a `ControlTheme`'s own
+  `Setter` for the same property, so `Background`/`BorderBrush`/`RowBackground`/
+  `GridLinesVisibility`/`Cursor` all just work as ordinary Setters, scoped and opt-in exactly like
+  every other control.
+- **Hover/selection/grid-line colors are wired through global `DynamicResource` keys consumed
+  *inside* the vendor's own `ControlTheme`** (`DataGridColumnHeaderHoveredBackgroundBrush`,
+  `DataGridRowSelected*BackgroundBrush` ×4, `DataGridGridLinesBrush`, `DataGridRowInvalidBrush`,
+  `DataGridCellInvalidBrush`, …), not settable properties — these can't be reached by a scoped
+  `Classes="Kuwantima"` selector at all, so `KuwantimaDataGridThemeResources.axaml` overrides them
+  globally instead. The blast radius is narrow regardless: nothing but `DataGrid` consumes a
+  `DataGrid*` key, so "global" here means "every DataGrid once this package's StyleInclude is
+  added," not "every control in the app."
+- There is no `AlternatingRowBackground` property on Avalonia's `DataGrid` — the WPF property this
+  name suggests was never ported (confirmed by reading `DataGrid.cs`). Zebra striping instead uses
+  `:nth-child(2n)` on `DataGridRow`, Avalonia's own answer to WPF's `AlternationIndex` and the exact
+  selector `Avalonia.Controls.DataGrid`'s own sample app uses for the identical purpose. It composes
+  cleanly with hover/selection for a structural reason, not a coincidence: the zebra tint is a
+  `Setter` on `DataGridRow.Background` (the *outer* `RowBorder`), while hover/selection repaint the
+  vendor template's `Rectangle#BackgroundRectangle`, a sibling drawn *in front of* it — so a
+  hovered or selected row's opaque fill correctly covers the stripe instead of blending with it.
+
+### The resource-aliasing bug: three candidates, only the third one both works and stays live
+`KuwantimaDataGridThemeResources.axaml` needed to override several of the vendor's global keys to
+equal the value of an *existing* Kuwantima brush (`KuwantimaControlHoverBrush`,
+`KuwantimaSplitterBrush`, `KuwantimaValidationErrorBrush` — reuse, not new hues, same discipline as
+the rest of Color Philosophy below). The obvious approach —
+`<DynamicResource x:Key="DataGridColumnHeaderHoveredBackgroundBrush" ResourceKey="KuwantimaControlHoverBrush"/>`
+as a bare resource-dictionary entry — **silently corrupts resolution of the entire merged
+dictionary scope** under Avalonia's designer-only runtime XAML compiler (the one `Design.PreviewWith`
+previews go through, distinct from the normal build's AOT compiler). Found with a throwaway probe:
+a plain `Style` `Setter` referencing an *unrelated*, pre-existing Fluent key
+(`SystemControlBackgroundBaseLowBrush`) failed with `InvalidCastException: Unable to cast
+DynamicResourceExtension to IBrush` the moment this file was merged into the preview's resources —
+and stopped failing the instant the indirection was removed. `dotnet build` never caught it; only
+the previewer did, which is exactly the class of failure "A style file previewed ALONE has no
+theme" in the Avalonia Gotchas section above was written to catch, in a new shape.
+
+The vendor's own `Fluent.xaml` uses the identical-looking `<StaticResource x:Key="X"
+ResourceKey="Y"/>` pattern successfully (e.g. `DataGridRowBackgroundBrush` →
+`SystemControlTransparentBrush`), which was the second candidate — and it is *also* wrong here, for
+a different reason: `StaticResource` resolves once and would freeze these colors at whichever theme
+variant was active when the dictionary first loaded, breaking this app's live Light/Dark toggle for
+every `DataGrid` on screen. It works for the vendor's own use because `SystemControlTransparentBrush`
+is "Transparent" in both variants — there is nothing to freeze.
+
+The fix that is both correct under the designer's compiler and stays reactive to a runtime theme
+switch: **literal per-variant values**, duplicating the source brush's hex under the vendor's key
+name, inside proper `ResourceDictionary.ThemeDictionaries` Light/Dark blocks (or flat, for the
+handful of keys reusing the theme-invariant `SystemAccentColor*` ramp). This is the same choice
+already made for `KuwantimaValidationErrorBrush` itself (an exact-hex reuse of
+`KuwantimaWarningTextBrush` under a new border-role key) — duplicating a few hex values under a
+name this package doesn't control is a small, precedented cost next to a silently-broken previewer
+or a theme toggle that stops working for one control.
+
+### Previewing a `DataGridTextColumn.Binding` needs its own workarounds
+Every other style file's `Design.PreviewWith` uses literal child elements (`<ListBoxItem>Dashboard
+</ListBoxItem>`) with no `{Binding}` anywhere, because `DataGrid` has no such literal-children
+syntax — rows come only from `ItemsSource`. Two previewer-only fixes were needed, both found by
+running the previewer rather than assumed:
+- `x:Array` (the usual XAML collection literal) is **not supported by the designer's runtime XAML
+  compiler** — it fails with "Unable to find public constructor for type System.Array()", i.e. the
+  compiler treats `x:Array` as a literal attempt to construct `System.Array` rather than recognizing
+  the directive. `Avalonia.Collections.AvaloniaList` (a real type with a public constructor and an
+  `Add` method) works identically in both compilers and is the fix — plain object construction
+  needs no special directive support.
+- `DataGridTextColumn.Binding="{Binding}"` has no `x:DataType` to compile against (the preview's
+  items are plain `x:String`), and the designer's runtime compiler — unlike the normal build —
+  refuses a compiled binding without one. `x:CompileBindings="False"`, scoped to just the
+  `DataGrid` elements, sidesteps it with reflection bindings.
+
+Neither surfaces in a normal `dotnet build` — both are specific to the isolated, runtime-compiled
+path `Design.PreviewWith` content goes through. **Always run the previewer command from the
+Avalonia Gotchas section above, on the actual file, before trusting a style file's preview** — this
+is the second time in this repo's history that a preview-only compiler limitation produced a
+failure invisible to the build (the first was the missing-theme-resources gap `Invariant_7` now
+guards against).
+
+### v1 scope, and what's deliberately not here
+Headers (hover/pressed, sort-direction glyph in accent orange), rows (hover, selection joining the
+`ListBoxItem`/`ComboBoxItem` accent family — solid fill, white text via `AccentButtonForeground`,
+orange left-edge border), alternating-row tint, grid lines, the standard `:disabled` pin, and
+`:invalid` reusing `KuwantimaValidationErrorBrush` (a clean tie-in to the v1.7.0 validation work).
+**Not in scope**: row-group headers, frozen columns, inline cell-editing chrome, row-details
+expansion — each would roughly double the vendor surface this package would need to read and
+override, and none of them were needed to prove the companion-package architecture out. Also not
+overridden: `DataGridColumnHeaderDraggedBackgroundBrush` and the cell/header focus-visual brushes
+(left at vendor defaults — confirmed live, not dead WinUI-era keys, by checking Avalonia's core
+`BaseColorsPalette.xaml` before relying on them) and three vendor keys
+(`DataGridScrollBarsSeparatorBackground`, `DataGridDisabledVisualElementBackground`,
+`DataGridDropLocationIndicatorBackground`) that the vendor theme *consumes* but never *defines*
+anywhere in its own source — already a silent no-op today, not a regression this package
+introduces.
+
+Selection's Foreground is set explicitly (`AccentButtonForeground`) even though
+`DataGridRow`/`DataGridCell` don't declare their own `Foreground` in the vendor theme — without it,
+selected rows would inherit the base dark/light text color onto the accent-blue fill, the same
+2.33:1 mistake the v1.3.0 accent redesign fixed everywhere else in the library.
+
+### Tests, CI, sandbox
+`Kuwantima.DataGrid.Tests` (see Testing above) — 11 tests, all passing, covering registration,
+document order (vendor theme before Kuwantima overrides before the Kuwantima style), the Cursor
+and disabled-pin invariants, Light/Dark key parity and resolution for the new resources, and a
+preview-resolves-every-key check mirroring `Invariant_7`. `ci.yml` and `publish.yml` gained
+parallel `Test`/`Build`/`Pack` steps for the new project rather than switching to a solution-wide
+`dotnet pack Kuwantima.slnx` — the latter would also attempt to pack `Kuwantima.Sandbox`, which has
+no `IsPackable=false` today, so the surgical, explicit-path addition matches the existing
+(deliberately non-generic) workflow style rather than introducing a new footgun. `publish.sh`'s
+single `CSPROJ` variable became a `CSPROJS` array so one version argument bumps both files.
+Sandbox: `Kuwantima.Sandbox.csproj` gained a `ProjectReference` to `Kuwantima.DataGrid` (the
+`Avalonia.Controls.DataGrid` package reference flows through transitively), `App.axaml` gained the
+second `StyleInclude` after Kuwantima's own, and a new `DataGridPage` demos a small fleet-themed
+dataset (`Models/Vehicle.cs`, matching the fleet-tracking flavor already used in the
+Inputs/Toggles demo content) bound via `MainWindowViewModel.SampleVehicles`. A new `Icon.Grid`
+(MDI `view-grid`, confirmed against the actual Material Design Icons SVG source before use) was
+added to the core package's icon set for the nav entry — 15 icons now, up from 14 — since none of
+the existing 14 read as a grid/table glyph.
+
+**Confirmed working in the actual running sandbox app, not just the previewer or the test suite**:
+the DataGrid nav entry renders correctly styled in both Light and Dark (live-toggled via the
+sandbox's existing theme switch, confirmed mid-session), and the Fleet Status grid itself renders
+with styled headers and populated rows in Dark mode. Row-selection color and the disabled grid
+specifically were not independently confirmed in that same live session — native GUI click
+automation wasn't reliably reachable in that environment (synthetic mouse clicks weren't reaching
+the window even once it was confirmed foreground; keyboard navigation was) — so if a future session
+touches selection or disabled styling again, re-verify those two states specifically rather than
+assuming this entry covers them.
 
 ## Color Philosophy
 - **Cool anchor**: MidnightBlue (#191970) / AliceBlue (#F0F8FF)
@@ -702,6 +882,14 @@ and CI machines, so they would false-fail constantly, and every intentional desi
 invalidate every baseline. The sandbox remains the harness for *visual* correctness — glass, glow,
 spacing, the orange checked border. Tests cover the mechanical layer; eyes cover the aesthetic one.
 
+### `Kuwantima.DataGrid.Tests` — a second, smaller suite
+Scoped to the companion package (see "Downstream: DataGrid" below), mirroring
+`Kuwantima.Tests`'s structure and discovery mechanism (embedded-resource linking, `XDocument`
+parsing, never grep) but without the generalized `Subjects`-table machinery — one control doesn't
+need it. `TestApp.cs` boots both `KuwantimaPrimaryTheme.axaml` and `KuwantimaDataGridTheme.axaml`,
+in that order, matching a real consumer's two `StyleInclude` lines. Run it alongside the core
+suite before every release: `dotnet test Kuwantima.DataGrid.Tests/Kuwantima.DataGrid.Tests.csproj`.
+
 ## File Conventions
 - Theme files: `Kuwantima/Theme/`
 - Style files: `Kuwantima/Styles/Kuwantima{Control}.axaml`
@@ -711,3 +899,6 @@ spacing, the orange checked border. Tests cover the mechanical layer; eyes cover
 - **`README.md` is shipped, not repo-internal.** `<PackageReadmeFile>` packs it, so it renders as
   the package's front page on nuget.org and in Visual Studio's package details. Write it for a
   consumer who has never seen the repo. It is the one file where a docs-only change reaches users.
+- **`Kuwantima.DataGrid/`** — the companion package, same internal shape as `Kuwantima/`
+  (`Theme/`, `Styles/`, `Previewer/`). See "Downstream: DataGrid" below for why it's separate.
+  Its tests live in the sibling `Kuwantima.DataGrid.Tests/`, not inside `Kuwantima.Tests/`.

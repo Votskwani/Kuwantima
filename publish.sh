@@ -12,7 +12,8 @@
 #   5. Made all feature/fix changes
 #
 # This script will:
-#   1. Update <Version> in Kuwantima.csproj
+#   1. Update <Version> in Kuwantima.csproj AND Kuwantima.DataGrid.csproj (lockstep — see
+#      CLAUDE.md's Version Management section; both packages ship under one version number)
 #   2. Commit all changes
 #   3. Tag the commit
 #   4. Push commit + tag to origin
@@ -23,7 +24,10 @@ set -e
 
 VERSION="$1"
 REPO_ROOT="$(cd "$(dirname "$0")" && pwd)"
-CSPROJ="$REPO_ROOT/Kuwantima/Kuwantima.csproj"
+CSPROJS=(
+    "$REPO_ROOT/Kuwantima/Kuwantima.csproj"
+    "$REPO_ROOT/Kuwantima.DataGrid/Kuwantima.DataGrid.csproj"
+)
 
 # ── Validate ──────────────────────────────────────────────────────
 if [ -z "$VERSION" ]; then
@@ -45,10 +49,11 @@ echo "════════════════════════�
 # ── Pre-flight checks ────────────────────────────────────────────
 echo ""
 echo "Pre-flight checklist:"
-echo "  [ ] VERSION HISTORY updated in KuwantimaPrimaryTheme.axaml?"
+echo "  [ ] VERSION HISTORY updated in KuwantimaPrimaryTheme.axaml AND KuwantimaDataGridTheme.axaml?"
 echo "  [ ] Version entry added in DocumentsPage.axaml?"
 echo "  [ ] doc-version stamp bumped in all three docs/*.html handouts?"
 echo "  [ ] README.md updated if needed?"
+echo "  [ ] PackageReleaseNotes rewritten in BOTH csproj files — state which package(s) actually changed?"
 echo ""
 read -p "Continue? (y/n) " -n 1 -r
 echo ""
@@ -57,11 +62,13 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     exit 0
 fi
 
-# ── Step 1: Update .csproj version ───────────────────────────────
+# ── Step 1: Update .csproj version (lockstep across both packages) ──
 echo ""
-echo "Step 1/6: Updating version in .csproj..."
-sed -i "s|<Version>[^<]*</Version>|<Version>$VERSION</Version>|" "$CSPROJ"
-echo "  → Kuwantima.csproj <Version> set to $VERSION"
+echo "Step 1/6: Updating version in both .csproj files..."
+for CSPROJ in "${CSPROJS[@]}"; do
+    sed -i "s|<Version>[^<]*</Version>|<Version>$VERSION</Version>|" "$CSPROJ"
+    echo "  → $(basename "$CSPROJ") <Version> set to $VERSION"
+done
 
 # ── Step 2: Commit ───────────────────────────────────────────────
 echo ""

@@ -8,6 +8,7 @@ using Avalonia.Styling;
 using Avalonia.Themes.Fluent;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Kuwantima.Sandbox.Models;
 using Kuwantima.Sandbox.Views.Pages;
 
 namespace Kuwantima.Sandbox.ViewModels
@@ -37,8 +38,20 @@ namespace Kuwantima.Sandbox.ViewModels
             new NavPage("Toggles",       "Icon.Sliders", () => new TogglesPage()),
             new NavPage("Feedback",      "Icon.Layers",  () => new FeedbackPage()),
             new NavPage("Containers",    "Icon.Map",     () => new ContainersPage()),
+            new NavPage("DataGrid",      "Icon.Grid",    () => new DataGridPage()),
             new NavPage("Theme Preview", "Icon.Sun",     () => new ThemePreviewPage()),
             new NavPage("Documents",     "Icon.Copy",    () => new DocumentsPage()),
+        };
+
+        /// <summary>Sample rows for the DataGrid page — Kuwantima.DataGrid's demo.</summary>
+        public ObservableCollection<Vehicle> SampleVehicles { get; } = new()
+        {
+            new Vehicle("Truck 14", "North Depot", "En Route", 72),
+            new Vehicle("Van 22",   "South Depot", "Idle",     48),
+            new Vehicle("Truck 31", "North Depot", "En Route", 91),
+            new Vehicle("Van 08",   "East Depot",  "Loading",  15),
+            new Vehicle("Truck 02", "South Depot", "Idle",     63),
+            new Vehicle("Van 17",   "East Depot",  "En Route", 37),
         };
 
         [ObservableProperty]
