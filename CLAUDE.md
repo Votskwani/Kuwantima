@@ -18,6 +18,19 @@ package count (CI caches, mirrors, scanners re-pulling the index), not of new ad
 is real, but it doesn't change who the actual audience is. Re-check both halves together next time;
 the download number alone is misleading without the GitHub side to weigh it against.
 
+**Re-checked 2026-10-11, right after publishing v1.8.0 (Icon.Grid + Kuwantima.DataGrid's first-ever
+release): NuGet jumped to ~1.1K (the nuget.org package page, not the search API — that endpoint
+still reported the stale 680 from the prior check, over a week stale, a reminder to pick the right
+source rather than the first one that answers). GitHub: still 0 stars, 0 watchers, still exactly 1
+fork — unmoved a third time.** The sharper evidence this round didn't need comparing two separate
+counts at all: the last 14 days show **0 page views and 73 clones from 35 unique cloners** in the
+same window. Those two numbers are mutually exclusive for a human — nobody clones a repo they never
+viewed — which pins this down more precisely than "downloads grew, GitHub didn't": something is
+pulling the repo straight off its `RepositoryUrl`/`ProjectUrl` without ever rendering the page,
+almost certainly a license/security scanner or mirror triggered by the publish event itself (two
+package pushes landed this week: v1.8.0 and `Kuwantima.DataGrid`'s debut). Same conclusion as both
+prior checks, now resting on evidence that doesn't depend on cross-source comparison to read.
+
 So Kuwantima's real user is **a student learning to fork, clone, edit and push** — not a NuGet
 consumer integrating a design system. Prioritise accordingly:
 - **The IDE previewer working is a first-class feature**, not a nicety. A beginner who opens a style
