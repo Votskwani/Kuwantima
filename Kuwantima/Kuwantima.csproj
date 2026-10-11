@@ -32,7 +32,7 @@
 
     <!-- NuGet package metadata -->
     <PackageId>Kuwantima</PackageId>
-    <Version>1.7.0</Version>
+    <Version>1.8.0</Version>
     <Authors>Cole Larson</Authors>
     <Description>A glass-glow design system for Avalonia UI. 16 styled controls, automatic light/dark theming, Fluent palette integration.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -42,17 +42,13 @@
     <PackageTags>avalonia;ui;theme;glass;design-system</PackageTags>
     <!-- Version-coupled: rewrite this every release. It is on the Version Bump Checklist in
          CLAUDE.md for that reason - stale release notes are worse than none. -->
-    <PackageReleaseNotes>v1.7.0 - New: validation error styling for TextBox and ComboBox, plus an Icon.Add glyph.
+    <PackageReleaseNotes>v1.8.0 - Kuwantima: one new icon (Icon.Grid). Kuwantima.DataGrid: first release.
 
-A new KuwantimaValidationErrorBrush resource styles Avalonia's native :error pseudo-class (the state a binding enters under DataValidationErrors / INotifyDataErrorInfo / ObservableValidator validation) with a border color change on TextBox.Kuwantima and ComboBox.Kuwantima. Fluent supplies no baseline treatment for this state at all - verified by a headless probe before writing any style - so this is a from-scratch addition, not an override of an existing Fluent key.
+Icon.Grid (Material Design Icons' view-grid, matching the existing MDI set) joins the icon set for the new DataGrid companion package's nav glyph, filling the one gap in the existing 14 that didn't read as a grid/table icon. 15 icons now ship, up from 14. Nothing else in the core package changed this release - no controls added, removed, or renamed. Control count stays 16.
 
-The new brush reuses KuwantimaWarningTextBrush's existing hex under a new border-role key rather than introducing a new color into the palette - see README's Available Theme Resources table and CLAUDE.md's Color Philosophy section for the full rationale.
+The real news this release is Kuwantima.DataGrid, a new companion package styling Avalonia's DataGrid control (Avalonia.Controls.DataGrid). It ships separately, as its own `dotnet add package`, because that control lives in its own Avalonia package, not core Avalonia - folding it into Kuwantima would force that dependency on every consumer, even ones who never use a grid. See the Kuwantima.DataGrid package's own release notes, and README's "DataGrid (optional)" section, for what it covers.
 
-Demoed on the Inputs sandbox page's new "Validation" section, wired to the real DataValidationErrors.Errors attached property (not a forced pseudo-class), so it exercises the same mechanism a consuming app's validation will drive.
-
-Also: Icon.Add (a plus-glyph from Material Design Icons, matching the existing MDI set), filling a gap found while building a consuming app's onboarding wizard. 14 icons now ship, up from 13.
-
-Additive and non-breaking: two new resource keys, one new selector per file on two existing controls, nothing existing renamed or removed. Control count stays 16.</PackageReleaseNotes>
+Both packages are versioned in lockstep (same number, same tag) even though only one of them has code changes beyond a single icon - see CLAUDE.md's Version Management section for why.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

@@ -9,11 +9,7 @@
 		<StyleInclude Source="avares://Kuwantima.DataGrid/Theme/KuwantimaDataGridTheme.axaml"/>
 
 	VERSION HISTORY:
-	  [unstamped]  First release — DataGrid, Kuwantima's 1st companion-package control. Version
-	               number TBD at the next "Stamp vX.Y.Z" commit — NOT 1.7.0, which already shipped
-	               (validation styling + Icon.Add) before this package existed. Fill in the real
-	               version + date here when that stamp happens, per CLAUDE.md's Version Bump
-	               Checklist, the same way every other entry below was finalized.
+	  1.8.0  2026-10-11  First release — DataGrid, Kuwantima's 1st companion-package control
 	         • Ships as a SEPARATE package from Kuwantima because DataGrid lives in a separate
 	           Avalonia package (Avalonia.Controls.DataGrid), not core Avalonia — folding it into
 	           Kuwantima would force that dependency on every consumer, even ones who never use a

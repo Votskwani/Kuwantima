@@ -179,6 +179,31 @@
                 <TextBlock Text="Version History" FontWeight="SemiBold" FontSize="18"/>
                 <Border Classes="KuwantimaGlass" Padding="16" CornerRadius="6">
                     <StackPanel Spacing="12">
+                        <!-- v1.8.0 -->
+                        <StackPanel Spacing="6">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <Border Background="{DynamicResource SystemControlBackgroundAccentBrush}"
+                                        CornerRadius="4" Padding="8,2">
+                                    <TextBlock Text="v1.8.0" FontWeight="Bold" FontSize="12"
+                                               Foreground="{DynamicResource AccentButtonForeground}"/>
+                                </Border>
+                                <TextBlock Text="2026-10-11" FontSize="12" VerticalAlignment="Center"
+                                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                                <TextBlock Text="Icon.Grid, plus the Kuwantima.DataGrid companion package" FontSize="12" VerticalAlignment="Center"
+                                           FontWeight="SemiBold"/>
+                            </StackPanel>
+                            <StackPanel Spacing="3" Margin="12,0,0,0">
+                                <TextBlock FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"
+                                           Text="Icon.Grid fills the nav glyph gap for the new DataGrid page — 15 icons now ship, up from 14"/>
+                                <TextBlock FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"
+                                           Text="Kuwantima.DataGrid: a new companion package styling Avalonia's DataGrid control"/>
+                                <TextBlock FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"
+                                           Text="Ships as a separate NuGet install — see README's &quot;DataGrid (optional)&quot; section"/>
+                                <TextBlock FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"
+                                           Text="Versioned in lockstep with Kuwantima; core package's control count stays 16"/>
+                            </StackPanel>
+                        </StackPanel>
+
                         <!-- v1.7.0 -->
                         <StackPanel Spacing="6">
                             <StackPanel Orientation="Horizontal" Spacing="10">

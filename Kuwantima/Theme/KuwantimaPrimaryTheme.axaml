@@ -5,6 +5,15 @@
 	App.axaml is all that's needed to apply the full theme:
 
 	VERSION HISTORY:
+	  1.8.0  2026-10-11  Icon.Grid, plus the first release of the Kuwantima.DataGrid companion package
+	         • Icon.Grid (Material Design Icons' view-grid) fills the nav glyph gap for the new
+	           DataGrid companion package — 15 icons now ship, up from 14. No controls added,
+	           removed, or renamed in this package; control count stays 16
+	         • Kuwantima.DataGrid is this library's first companion-package control: its own project,
+	           theme entry point and StyleInclude, versioned in lockstep with this package but
+	           shipping as a separate NuGet install because its control (Avalonia.Controls.DataGrid)
+	           lives in its own Avalonia package, not core Avalonia — see
+	           KuwantimaDataGridTheme.axaml's own VERSION HISTORY for what it covers
 	  1.7.0  2026-10-03  Validation error styling for TextBox / ComboBox, plus Icon.Add
 	         • KuwantimaValidationErrorBrush styles Avalonia's native :error pseudo-class — a
 	           headless probe proved Fluent supplies NO baseline treatment here, so this is a

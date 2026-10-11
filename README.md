@@ -189,7 +189,7 @@ Override them yourself only if you also re-check contrast against the background
 
 ## Icons
 
-The same `StyleInclude` brings in 14 icon geometries. They are ordinary `StreamGeometry` resources,
+The same `StyleInclude` brings in 15 icon geometries. They are ordinary `StreamGeometry` resources,
 so any control that takes a `Geometry` can use one:
 
 ```xml
@@ -202,7 +202,7 @@ so any control that takes a `Geometry` can use one:
 | `Icon.Gear` | `Icon.Clear.Circle` | `Icon.Copy` |
 | `Icon.Sliders` | `Icon.Layers` | `Icon.Sun` |
 | `Icon.Expand` | `Icon.Map` | `Icon.Moon.ThirdEye.Smiling` |
-| `Icon.Collapse` | `Icon.Add` | |
+| `Icon.Collapse` | `Icon.Add` | `Icon.Grid` |
 
 A key that does not exist renders **nothing** rather than failing loudly, so check a blank icon
 against this table before looking anywhere else.
@@ -213,7 +213,8 @@ Most of these are drawn from existing icon sets rather than original geometry, a
 credit is a condition of both licenses:
 
 - `Icon.Home`, `Icon.Gear`, `Icon.Sliders`, `Icon.Expand`, `Icon.Collapse`, `Icon.Search`,
-  `Icon.Clear.Circle`, `Icon.Layers`, `Icon.Refresh`, `Icon.Map`, `Icon.Copy`, `Icon.Add` — from
+  `Icon.Clear.Circle`, `Icon.Layers`, `Icon.Refresh`, `Icon.Map`, `Icon.Copy`, `Icon.Add`,
+  `Icon.Grid` — from
   [Material Design Icons](https://pictogrammers.com/library/mdi/) by Pictogrammers, licensed
   [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
 - `Icon.Sun` — from [Fluent System Icons](https://github.com/microsoft/fluentui-system-icons) by

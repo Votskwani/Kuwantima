@@ -13,7 +13,7 @@
 
     <!-- NuGet package metadata -->
     <PackageId>Kuwantima.DataGrid</PackageId>
-    <Version>1.7.0</Version>
+    <Version>1.8.0</Version>
     <Authors>Cole Larson</Authors>
     <Description>A styled DataGrid for Kuwantima, Avalonia's glass-glow design system. Ships separately so the core Kuwantima package stays free of the Avalonia.Controls.DataGrid dependency.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -21,15 +21,8 @@
     <PackageProjectUrl>https://github.com/Votskwani/Kuwantima</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Votskwani/Kuwantima</RepositoryUrl>
     <PackageTags>avalonia;ui;theme;glass;design-system;datagrid</PackageTags>
-    <!-- Lockstep with Kuwantima.csproj's <Version> — see CLAUDE.md's Version Management section.
-         PLACEHOLDER: <Version> above still reads 1.7.0, matching Kuwantima.csproj's last-STAMPED
-         value, per this repo's own convention (feature commits land unstamped; a separate "Stamp
-         vX.Y.Z" commit bumps <Version> and rewrites these notes — see the Version Bump Checklist).
-         v1.7.0 itself already shipped (validation styling + Icon.Add) before this package existed,
-         so this content belongs to whatever version the NEXT stamp actually picks (likely 1.8.0,
-         since this is new, additive content) — do not tag/publish under 1.7.0. Rewrite the leading
-         version number here, and bump <Version> above, together at that point. -->
-    <PackageReleaseNotes>First release of Kuwantima.DataGrid, a companion package styling Avalonia's DataGrid control (Avalonia.Controls.DataGrid) to match the rest of Kuwantima.
+    <!-- Lockstep with Kuwantima.csproj's <Version> — see CLAUDE.md's Version Management section. -->
+    <PackageReleaseNotes>v1.8.0 - First release of Kuwantima.DataGrid, a companion package styling Avalonia's DataGrid control (Avalonia.Controls.DataGrid) to match the rest of Kuwantima.
 
 Ships separately from the core Kuwantima package because DataGrid lives in its own Avalonia package, not core Avalonia — folding it into Kuwantima would force that dependency on every consumer, even ones who never use a grid. Install this alongside Kuwantima and add one more StyleInclude.
 

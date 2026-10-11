@@ -389,7 +389,7 @@ Each of these shipped (or nearly), and each survived a check that *felt* rigorou
 `dotnet test`, write a throwaway `[AvaloniaFact]`, list the directory, grep the *consumer*, resolve
 the key against the live theme. Not to a restatement, however many of them agree.
 
-## The DataGrid companion package — SHIPPED v1.7.0
+## The DataGrid companion package — SHIPPED v1.8.0
 
 `Kuwantima.DataGrid`, a new project/package styling Avalonia's `DataGrid`, Kuwantima's first
 *companion*-package control rather than a 17th entry in the core package. See README's
