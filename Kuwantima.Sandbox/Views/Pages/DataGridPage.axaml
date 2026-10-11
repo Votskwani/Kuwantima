@@ -17,7 +17,8 @@
                      x:DataType scope than the page declares above, so reflection bindings here
                      avoid a second x:DataType declaration for a single grid. -->
                 <DataGrid Classes="Kuwantima" AutoGenerateColumns="False" x:CompileBindings="False"
-                          ItemsSource="{Binding SampleVehicles}" Height="260">
+                          ItemsSource="{Binding SampleVehicles}" Height="260"
+                          CanUserReorderColumns="True">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Vehicle" Binding="{Binding Id}" Width="*"/>
                         <DataGridTextColumn Header="Site" Binding="{Binding Site}" Width="*"/>
