@@ -4,10 +4,14 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:   # lets a push for one package be retried without moving/recreating a tag
 
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write   # required for nuget.org Trusted Publishing's OIDC token exchange
 
     steps:
       - name: Checkout
@@ -38,9 +42,26 @@ jobs:
       - name: Pack Kuwantima.DataGrid
         run: dotnet pack Kuwantima.DataGrid/Kuwantima.DataGrid.csproj -c Release --no-build
 
+      # Trusted Publishing: exchange this run's short-lived GitHub OIDC token for a temporary
+      # (1-hour) nuget.org API key, scoped by the "Kuwantima GitHub Actions" policy. Replaces the
+      # long-lived NUGET_API_KEY secret, which that policy's glob (Kuwantima, Kuwantima.DataGrid)
+      # has superseded. `user` must be the nuget.org profile username, not an email address.
+      - name: NuGet login (OIDC → temp API key)
+        uses: NuGet/login@v1
+        id: nuget-login
+        with:
+          user: ${{ secrets.NUGET_USER }}
+
       # Both packages are versioned in lockstep (see CLAUDE.md's Version Management section) and
-      # publish from the same tag push, whether or not both changed content this release.
-      - name: Publish to NuGet
-        run: |
-          dotnet nuget push Kuwantima/bin/Release/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
-          dotnet nuget push Kuwantima.DataGrid/bin/Release/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
+      # publish from the same tag push, whether or not both changed content this release. Two
+      # independent steps rather than one — pushing an already-published version is a real,
+      # expected failure mode on a workflow_dispatch retry (e.g. one package's push succeeded
+      # already, only the other needs retrying), and it must not block the package that still
+      # needs to go out.
+      - name: Publish Kuwantima to NuGet
+        id: publish-kuwantima
+        run: dotnet nuget push Kuwantima/bin/Release/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
+
+      - name: Publish Kuwantima.DataGrid to NuGet
+        if: always() && steps.nuget-login.outcome == 'success'
+        run: dotnet nuget push Kuwantima.DataGrid/bin/Release/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
