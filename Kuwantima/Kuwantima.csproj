@@ -32,7 +32,7 @@
 
     <!-- NuGet package metadata -->
     <PackageId>Kuwantima</PackageId>
-    <Version>1.8.0</Version>
+    <Version>1.9.0</Version>
     <Authors>Cole Larson</Authors>
     <Description>A glass-glow design system for Avalonia UI. 16 styled controls, automatic light/dark theming, Fluent palette integration.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -42,13 +42,13 @@
     <PackageTags>avalonia;ui;theme;glass;design-system</PackageTags>
     <!-- Version-coupled: rewrite this every release. It is on the Version Bump Checklist in
          CLAUDE.md for that reason - stale release notes are worse than none. -->
-    <PackageReleaseNotes>v1.8.0 - Kuwantima: one new icon (Icon.Grid). Kuwantima.DataGrid: first release.
+    <PackageReleaseNotes>v1.9.0 - Kuwantima: Avalonia dependency bump only. Kuwantima.DataGrid: cell-editing chrome and frozen columns.
 
-Icon.Grid (Material Design Icons' view-grid, matching the existing MDI set) joins the icon set for the new DataGrid companion package's nav glyph, filling the one gap in the existing 14 that didn't read as a grid/table icon. 15 icons now ship, up from 14. Nothing else in the core package changed this release - no controls added, removed, or renamed. Control count stays 16.
+Kuwantima bumps its Avalonia / Avalonia.Themes.Fluent / Avalonia.Desktop dependency from 12.1.3 to 12.1.4. Dependency-minor, not a control change - no controls added, removed, or renamed. Control count stays 16.
 
-The real news this release is Kuwantima.DataGrid, a new companion package styling Avalonia's DataGrid control (Avalonia.Controls.DataGrid). It ships separately, as its own `dotnet add package`, because that control lives in its own Avalonia package, not core Avalonia - folding it into Kuwantima would force that dependency on every consumer, even ones who never use a grid. See the Kuwantima.DataGrid package's own release notes, and README's "DataGrid (optional)" section, for what it covers.
+The real news this release is in Kuwantima.DataGrid: inline cell-editing now picks up Kuwantima's own accent styling (DataGridTextColumn's edit-mode TextBox previously rendered as unstyled stock Fluent chrome inside a themed grid - reachable by just double-clicking or F2'ing any editable cell), and frozen columns are now demoed and verified. Both close items that v1.8.0's release notes explicitly listed as out of scope. Row grouping and row-details expansion remain out of scope - see the Kuwantima.DataGrid package's own release notes for the full picture.
 
-Both packages are versioned in lockstep (same number, same tag) even though only one of them has code changes beyond a single icon - see CLAUDE.md's Version Management section for why.</PackageReleaseNotes>
+Both packages are versioned in lockstep (same number, same tag) even though only Kuwantima.DataGrid has user-facing changes this release - see CLAUDE.md's Version Management section for why.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -71,14 +71,14 @@ Both packages are versioned in lockstep (same number, same tag) even though only
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="12.1.3" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.3" />
+    <PackageReference Include="Avalonia" Version="12.1.4" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.4" />
 
     <!-- Previewer only. The designer host needs a windowing backend to render into; without it
          there is no platform and the preview cannot start. PrivateAssets="all" keeps it out of the
          .nupkg entirely — a consumer picking up a desktop backend from a styles package would be a
          real dependency regression, so the pack output is checked (see CLAUDE.md). -->
-    <PackageReference Include="Avalonia.Desktop" Version="12.1.3" PrivateAssets="all" />
+    <PackageReference Include="Avalonia.Desktop" Version="12.1.4" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>

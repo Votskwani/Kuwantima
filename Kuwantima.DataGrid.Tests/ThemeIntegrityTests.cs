@@ -148,4 +148,41 @@ public class ThemeIntegrityTests
             control.Bounds.Width > 0 && control.Bounds.Height > 0,
             $"DataGrid laid out to a zero size under {variantName} ({control.Bounds}).");
     }
+
+    /// <summary>
+    /// Smoke test, not a pixel check — frozen columns have no dedicated resource keys in the
+    /// vendor theme (confirmed by reading its source), so there's no new styling surface to
+    /// assert values against. This only confirms FrozenColumnCount doesn't break templating.
+    /// </summary>
+    [AvaloniaTheory]
+    [MemberData(nameof(VariantNames))]
+    public void Frozen_columns_render_without_breaking_layout_or_styling(string variantName)
+    {
+        var control = new Avalonia.Controls.DataGrid
+        {
+            Classes = { "Kuwantima" },
+            AutoGenerateColumns = false,
+            FrozenColumnCount = 1,
+        };
+        control.Columns.Add(new DataGridTextColumn { Header = "A", Width = new DataGridLength(300) });
+        control.Columns.Add(new DataGridTextColumn { Header = "B", Width = new DataGridLength(300) });
+
+        var window = new Window
+        {
+            RequestedThemeVariant = variantName == "Light" ? ThemeVariant.Light : ThemeVariant.Dark,
+            Content = control,
+            Width = 400,
+            Height = 300,
+        };
+
+        window.Show();
+        Dispatcher.UIThread.RunJobs();
+
+        Assert.True(
+            control.GetVisualChildren().Any(),
+            $"DataGrid with FrozenColumnCount=1 produced no visual tree under {variantName}.");
+        Assert.True(
+            control.Bounds.Width > 0 && control.Bounds.Height > 0,
+            $"DataGrid with FrozenColumnCount=1 laid out to a zero size under {variantName} ({control.Bounds}).");
+    }
 }

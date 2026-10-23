@@ -217,4 +217,43 @@
 		<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaAccentOrangeBrush}"/>
 		<Setter Property="BorderThickness" Value="2,0,0,0"/>
 	</Style>
+
+	<!-- ═══ INLINE CELL EDITING: DataGrid.Kuwantima DataGridCell:edited TextBox#CellTextBox ═══
+	     DataGridTextColumn's edit-mode control is a bare TextBox named "CellTextBox", themed by
+	     the vendor's own DataGridCellTextBoxTheme (a ControlTheme BasedOn the base Fluent TextBox,
+	     not Classes="Kuwantima") — confirmed by reading DataGridTextColumn.cs and DataGridCell.cs
+	     before writing this, not assumed. It never carries Classes="Kuwantima", so TextBox.Kuwantima
+	     cannot reach it; this scopes directly to the generated part instead. ":edited" is
+	     DataGridCell's own pseudo-class (OwningGrid.EditingRow == OwningRow && EditingColumnIndex
+	     == ColumnIndex) — included on the ancestor selector even though the TextBox only exists in
+	     the tree while editing anyway, so intent reads explicitly rather than relying on the
+	     swap-in/out being the only guard.
+
+	     Background/BorderBrush/BorderThickness/CornerRadius target /template/ Border#PART_BorderElement
+	     rather than the TextBox control itself. The editing box is ALWAYS in Fluent's own :focus
+	     state, and Fluent's :focus style sets those same properties directly on that nested part —
+	     a value set directly on an element outranks one reaching it only via the parent's
+	     TemplateBinding, so a plain control-level Setter here would be silently overridden by stock
+	     Fluent focus chrome. This is the exact reason KuwantimaTextBox.axaml's own ^:focus override
+	     already targets this same template part instead of TextBox.BorderBrush — confirmed by that
+	     existing precedent, not just read from the vendor source. Padding, CaretBrush and
+	     SelectionBrush are NOT contested the same way (Fluent's :focus block doesn't touch them), so
+	     those stay at the control level. -->
+	<Style Selector="DataGrid.Kuwantima DataGridCell:edited TextBox#CellTextBox">
+		<!-- Starting estimate, NOT a verified final number — compensates for
+		     DataGridCellTextBlockTheme's Margin="12,0,12,0" (the DISPLAY TextBlock's inset) against
+		     this border's thickness so text doesn't visibly jump between display and edit mode.
+		     Needs an eyes-on check in the running sandbox (keyboard nav: Tab/arrow/F2, since
+		     synthetic mouse clicks don't reliably land in this environment) before trusting it. -->
+		<Setter Property="Padding" Value="9,0"/>
+		<Setter Property="CaretBrush" Value="{DynamicResource KuwantimaAccentOrangeBrush}"/>
+		<Setter Property="SelectionBrush" Value="{DynamicResource SystemControlBackgroundAccentBrush}"/>
+
+		<Style Selector="^ /template/ Border#PART_BorderElement">
+			<Setter Property="Background" Value="Transparent"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaAccentOrangeBrush}"/>
+			<Setter Property="BorderThickness" Value="1.5"/>
+			<Setter Property="CornerRadius" Value="4"/>
+		</Style>
+	</Style>
 </Styles>

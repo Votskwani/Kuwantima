@@ -13,7 +13,7 @@
 
     <!-- NuGet package metadata -->
     <PackageId>Kuwantima.DataGrid</PackageId>
-    <Version>1.8.0</Version>
+    <Version>1.9.0</Version>
     <Authors>Cole Larson</Authors>
     <Description>A styled DataGrid for Kuwantima, Avalonia's glass-glow design system. Ships separately so the core Kuwantima package stays free of the Avalonia.Controls.DataGrid dependency.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -22,13 +22,15 @@
     <RepositoryUrl>https://github.com/Votskwani/Kuwantima</RepositoryUrl>
     <PackageTags>avalonia;ui;theme;glass;design-system;datagrid</PackageTags>
     <!-- Lockstep with Kuwantima.csproj's <Version> — see CLAUDE.md's Version Management section. -->
-    <PackageReleaseNotes>v1.8.0 - First release of Kuwantima.DataGrid, a companion package styling Avalonia's DataGrid control (Avalonia.Controls.DataGrid) to match the rest of Kuwantima.
+    <PackageReleaseNotes>v1.9.0 - Inline cell-editing chrome, and frozen columns.
 
-Ships separately from the core Kuwantima package because DataGrid lives in its own Avalonia package, not core Avalonia — folding it into Kuwantima would force that dependency on every consumer, even ones who never use a grid. Install this alongside Kuwantima and add one more StyleInclude.
+DataGridTextColumn's edit-mode TextBox (swapped into a cell on double-click or F2) previously rendered as unstyled stock Fluent chrome, because it's themed by the vendor's own DataGridCellTextBoxTheme and never carries Classes="Kuwantima" - reachable by accident in any editable grid, not a hypothetical. It now picks up the same orange focus-border treatment every other Kuwantima input gets, plus Kuwantima's caret and selection colors.
 
-Covers: column headers (hover/pressed, sort-direction glyph in accent orange), rows (hover, selection joining the same accent family as ListBox/ComboBox — solid accent fill, white text, orange left edge), alternating-row tint, grid lines, disabled state, and :invalid reusing KuwantimaValidationErrorBrush. Out of scope for this release: row grouping, frozen columns, inline cell-editing chrome, row-details expansion.
+FrozenColumnCount is now demoed and verified - there are no dedicated frozen-column resource keys in the vendor theme, so this needed no new styling, just confirmation it composes cleanly with the existing row/cell/grid-line rendering.
 
-Nearly every color is a reuse of an existing Kuwantima brush (KuwantimaControlHoverBrush, KuwantimaGlassBackground, KuwantimaSplitterBrush, KuwantimaAccentOrangeBrush, KuwantimaValidationErrorBrush, the SystemAccentColor* ramp) rather than a new hue — consistent with Kuwantima's Color Philosophy of not introducing colors without intention.</PackageReleaseNotes>
+Both close items v1.8.0's release notes explicitly listed as out of scope. Still out of scope: row grouping, row-details expansion.
+
+Versioned in lockstep with Kuwantima - see CLAUDE.md's Version Management section for why.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -39,12 +41,12 @@ Nearly every color is a reuse of an existing Kuwantima brush (KuwantimaControlHo
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="12.1.3" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.3" />
+    <PackageReference Include="Avalonia" Version="12.1.4" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.4" />
     <PackageReference Include="Avalonia.Controls.DataGrid" Version="12.1.2" />
 
     <!-- Previewer only, same reasoning as Kuwantima.csproj. Kept out of the .nupkg. -->
-    <PackageReference Include="Avalonia.Desktop" Version="12.1.3" PrivateAssets="all" />
+    <PackageReference Include="Avalonia.Desktop" Version="12.1.4" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>

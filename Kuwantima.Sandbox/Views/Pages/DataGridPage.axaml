@@ -16,14 +16,18 @@
                      Vehicle, not this page's MainWindowViewModel DataContext — a different
                      x:DataType scope than the page declares above, so reflection bindings here
                      avoid a second x:DataType declaration for a single grid. -->
+                <!-- FrozenColumnCount="1" pins Vehicle while the rest scroll — fixed pixel widths
+                     (rather than Width="*") are deliberate here, so the four columns overflow this
+                     panel's width and there's an actual horizontal scroll to prove the freeze
+                     against. -->
                 <DataGrid Classes="Kuwantima" AutoGenerateColumns="False" x:CompileBindings="False"
                           ItemsSource="{Binding SampleVehicles}" Height="260"
-                          CanUserReorderColumns="True">
+                          CanUserReorderColumns="True" FrozenColumnCount="1">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Vehicle" Binding="{Binding Id}" Width="*"/>
-                        <DataGridTextColumn Header="Site" Binding="{Binding Site}" Width="*"/>
-                        <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*"/>
-                        <DataGridTextColumn Header="Fuel %" Binding="{Binding FuelPercent}" Width="80"/>
+                        <DataGridTextColumn Header="Vehicle" Binding="{Binding Id}" Width="180"/>
+                        <DataGridTextColumn Header="Site" Binding="{Binding Site}" Width="180"/>
+                        <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="180"/>
+                        <DataGridTextColumn Header="Fuel %" Binding="{Binding FuelPercent}" Width="180"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </StackPanel>

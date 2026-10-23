@@ -9,6 +9,20 @@
 		<StyleInclude Source="avares://Kuwantima.DataGrid/Theme/KuwantimaDataGridTheme.axaml"/>
 
 	VERSION HISTORY:
+	  1.9.0  2026-10-23  Inline cell-editing chrome, and frozen columns
+	         • DataGridTextColumn's edit-mode TextBox (Name="CellTextBox", swapped in on
+	           double-click or F2) is themed by the vendor's own DataGridCellTextBoxTheme and never
+	           carries Classes="Kuwantima" — unstyled, reachable by accident in any editable grid.
+	           Now picks up the same orange focus-border treatment every other Kuwantima input gets,
+	           via DataGrid.Kuwantima DataGridCell:edited TextBox#CellTextBox. Background/BorderBrush/
+	           BorderThickness/CornerRadius target /template/ Border#PART_BorderElement rather than
+	           the TextBox control itself — the editing box is ALWAYS in Fluent's own :focus state,
+	           and Fluent's :focus style sets those same properties directly on that nested part,
+	           which otherwise silently wins over a control-level Setter
+	         • FrozenColumnCount demoed and verified in the sandbox — no dedicated frozen-column
+	           resource keys exist in the vendor theme, so this needed no new styling surface
+	         • Both close items this package's own v1.8.0 notes explicitly listed as out of scope.
+	           Still out of scope: row grouping, row-details expansion
 	  1.8.0  2026-10-11  First release — DataGrid, Kuwantima's 1st companion-package control
 	         • Ships as a SEPARATE package from Kuwantima because DataGrid lives in a separate
 	           Avalonia package (Avalonia.Controls.DataGrid), not core Avalonia — folding it into

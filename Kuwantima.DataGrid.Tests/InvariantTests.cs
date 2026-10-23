@@ -10,7 +10,7 @@ namespace Kuwantima.DataGrid.Tests;
 /// doesn't need that machinery, so these are direct, explicit assertions against the real shipped
 /// markup instead — parsed as XML, never grepped as text, same discipline as the core suite.
 /// </summary>
-public class InvariantTests
+public partial class InvariantTests
 {
     private static readonly XNamespace Av = "https://github.com/avaloniaui";
 
