@@ -46,6 +46,33 @@ echo "════════════════════════�
 echo "  Kuwantima Publish — v$VERSION"
 echo "═══════════════════════════════════════════════════════"
 
+# ── Step 0: Sync check ───────────────────────────────────────────
+# Guards against clobbering a push that landed on origin/master since this checkout last synced —
+# relevant now that this repo may have more than one active contributor. Fetch-and-compare rather
+# than trusting local state, same "verify against ground truth" discipline as everything else in
+# this repo (see CLAUDE.md's verification-trap section).
+echo ""
+echo "Step 0/6: Checking sync with origin..."
+cd "$REPO_ROOT"
+git fetch origin
+LOCAL="$(git rev-parse master)"
+REMOTE="$(git rev-parse origin/master)"
+BASE="$(git merge-base master origin/master)"
+
+if [ "$LOCAL" = "$REMOTE" ]; then
+    echo "  → Up to date with origin/master"
+elif [ "$LOCAL" = "$BASE" ]; then
+    echo "Error: local master is behind origin/master — someone else has pushed since this checkout last synced."
+    echo "  Run 'git pull --rebase origin master' first, then re-run this script."
+    exit 1
+elif [ "$REMOTE" = "$BASE" ]; then
+    echo "  → Local master is ahead of origin/master (expected — you have unpushed work)"
+else
+    echo "Error: local and origin/master have DIVERGED — someone else has pushed different commits."
+    echo "  Resolve this manually (git fetch, then rebase or merge) before publishing."
+    exit 1
+fi
+
 # ── Pre-flight checks ────────────────────────────────────────────
 echo ""
 echo "Pre-flight checklist:"
@@ -77,7 +104,7 @@ cd "$REPO_ROOT"
 git add -A
 git commit -m "Release Kuwantima v$VERSION
 
-Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>"
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>"
 echo "  → Committed"
 
 # ── Step 3: Tag ──────────────────────────────────────────────────
@@ -87,15 +114,24 @@ git tag "v$VERSION"
 echo "  → Tagged v$VERSION"
 
 # ── Step 4: Push ─────────────────────────────────────────────────
+# Re-check sync immediately before pushing too — the window between Step 0 and here (the
+# pre-flight prompt alone can sit open indefinitely) is exactly when a second contributor's push
+# could land, and a stale fetch from Step 0 wouldn't catch it.
 echo ""
-echo "Step 4/6: Pushing to origin..."
+echo "Step 4/6: Re-checking sync, then pushing to origin..."
+git fetch origin
+if [ "$(git rev-parse origin/master)" != "$REMOTE" ]; then
+    echo "Error: origin/master moved since Step 0's check — someone else just pushed."
+    echo "  Run 'git pull --rebase origin master' (or merge) first, then re-run this script."
+    exit 1
+fi
 git push origin master
 git push origin "v$VERSION"
 echo "  → Pushed commit + tag"
 
 # ── Step 5: NuGet publish ────────────────────────────────────────
 echo ""
-echo "Step 5/5: NuGet publish triggered via GitHub Actions"
+echo "Step 5/6: NuGet publish triggered via GitHub Actions"
 echo "  → The v$VERSION tag push triggers .github/workflows/publish.yml"
 echo "  → GitHub Actions will build, pack, and publish to nuget.org"
 echo "  → Monitor at: https://github.com/Votskwani/Kuwantima/actions"
