@@ -213,7 +213,6 @@
 	     2.33:1 mistake v1.3.0 fixed everywhere else in the library; DataGridRow/DataGridCell don't
 	     set their own Foreground, so this cascades down through the cells by inheritance. -->
 	<Style Selector="DataGrid.Kuwantima DataGridRow:selected">
-		<Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}"/>
 		<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaAccentOrangeBrush}"/>
 		<Setter Property="BorderThickness" Value="2,0,0,0"/>
 	</Style>
@@ -236,16 +235,27 @@
 	     TemplateBinding, so a plain control-level Setter here would be silently overridden by stock
 	     Fluent focus chrome. This is the exact reason KuwantimaTextBox.axaml's own ^:focus override
 	     already targets this same template part instead of TextBox.BorderBrush — confirmed by that
-	     existing precedent, not just read from the vendor source. Padding, CaretBrush and
-	     SelectionBrush are NOT contested the same way (Fluent's :focus block doesn't touch them), so
-	     those stay at the control level. -->
+	     existing precedent, not just read from the vendor source. Padding, CaretBrush, SelectionBrush
+	     and Foreground are NOT contested the same way (Fluent's :focus block doesn't touch them), so
+	     those stay at the control level.
+
+	     Foreground is pinned to AccentButtonForeground (white) rather than left to inherit — found
+	     by eye, not predicted: the vendor's GenerateEditingElementDirect calls SyncProperties on the
+	     new TextBox, which snapshots the CELL's own Foreground (SystemBaseHighColor — dark ink in
+	     Light, light in Dark) at construction time rather than the ROW's :selected override
+	     (AccentButtonForeground), because that override lives on a Style selector the snapshot
+	     doesn't see. BeginEdit() requires the row to already be selected (confirmed from
+	     DataGrid.cs), so the accent-blue fill is always present while editing — in Dark, dark ink
+	     happens to read as light-on-blue and looks fine by accident; in Light it's dark-on-blue and
+	     unreadable. Dark theme's accidental pass is why this wasn't caught until a real eyes-on check
+	     in both variants, not assumed from one. -->
 	<Style Selector="DataGrid.Kuwantima DataGridCell:edited TextBox#CellTextBox">
-		<!-- Starting estimate, NOT a verified final number — compensates for
-		     DataGridCellTextBlockTheme's Margin="12,0,12,0" (the DISPLAY TextBlock's inset) against
-		     this border's thickness so text doesn't visibly jump between display and edit mode.
-		     Needs an eyes-on check in the running sandbox (keyboard nav: Tab/arrow/F2, since
-		     synthetic mouse clicks don't reliably land in this environment) before trusting it. -->
+		<!-- Verified in the running sandbox (Light and Dark, via keyboard nav since synthetic mouse
+		     clicks don't reliably land in this environment): holds up against
+		     DataGridCellTextBlockTheme's Margin="12,0,12,0" (the DISPLAY TextBlock's inset) with no
+		     visible text jump between display and edit mode. -->
 		<Setter Property="Padding" Value="9,0"/>
+		<Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}"/>
 		<Setter Property="CaretBrush" Value="{DynamicResource KuwantimaAccentOrangeBrush}"/>
 		<Setter Property="SelectionBrush" Value="{DynamicResource SystemControlBackgroundAccentBrush}"/>
 

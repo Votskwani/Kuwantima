@@ -96,15 +96,31 @@ public partial class InvariantTests
             .First(b => b.Name == "PART_BorderElement");
         borderElement.Transitions = null;
 
-        var expected = ResolveColor("KuwantimaAccentOrangeBrush", variant);
+        var expectedBorder = ResolveColor("KuwantimaAccentOrangeBrush", variant);
 
         Assert.True(
-            BrushColorEquals(borderElement.BorderBrush, expected.Color),
+            BrushColorEquals(borderElement.BorderBrush, expectedBorder.Color),
             $"{variantName}: editing TextBox's PART_BorderElement resolved to {Describe(borderElement.BorderBrush)}, "
-            + $"not KuwantimaAccentOrangeBrush ({expected.Color}). Check the DataGrid.Kuwantima "
+            + $"not KuwantimaAccentOrangeBrush ({expectedBorder.Color}). Check the DataGrid.Kuwantima "
             + "DataGridCell:edited TextBox#CellTextBox style in KuwantimaDataGrid.axaml targets "
             + "/template/ Border#PART_BorderElement rather than the TextBox control's own properties — "
             + "Fluent's own :focus state (which the editing box is always in) sets BorderBrush directly "
             + "on that nested part, which otherwise silently wins.");
+
+        // Found by eye in the live sandbox, Light only — Dark passed by accident. The vendor's
+        // SyncProperties snapshots the CELL's base Foreground (SystemBaseHighColor) when building
+        // the edit box, not the ROW's :selected override (AccentButtonForeground) — a Style
+        // selector the snapshot never sees. BeginEdit() requires row selection, so the accent-blue
+        // fill is always present while editing; dark ink on it is unreadable in Light and only
+        // looked fine in Dark because SystemBaseHighColor happens to be light there.
+        editBox.Transitions = null;
+        var expectedForeground = ResolveColor("AccentButtonForeground", variant);
+
+        Assert.True(
+            BrushColorEquals(editBox.Foreground, expectedForeground.Color),
+            $"{variantName}: editing TextBox's Foreground resolved to {Describe(editBox.Foreground)}, "
+            + $"not AccentButtonForeground ({expectedForeground.Color}). Without this pin the box "
+            + "inherits the cell's base ink instead of the selected row's white — readable in Dark "
+            + "by accident, unreadable in Light.");
     }
 }

@@ -24,7 +24,7 @@
     <!-- Lockstep with Kuwantima.csproj's <Version> — see CLAUDE.md's Version Management section. -->
     <PackageReleaseNotes>v1.9.0 - Inline cell-editing chrome, and frozen columns.
 
-DataGridTextColumn's edit-mode TextBox (swapped into a cell on double-click or F2) previously rendered as unstyled stock Fluent chrome, because it's themed by the vendor's own DataGridCellTextBoxTheme and never carries Classes="Kuwantima" - reachable by accident in any editable grid, not a hypothetical. It now picks up the same orange focus-border treatment every other Kuwantima input gets, plus Kuwantima's caret and selection colors.
+DataGridTextColumn's edit-mode TextBox (swapped into a cell on double-click or F2) previously rendered as unstyled stock Fluent chrome, because it's themed by the vendor's own DataGridCellTextBoxTheme and never carries Classes="Kuwantima" - reachable by accident in any editable grid, not a hypothetical. It now picks up the same orange focus-border treatment every other Kuwantima input gets, plus Kuwantima's caret, selection and foreground colors. The foreground pin matters on its own: the vendor snapshots the cell's base ink rather than the selected row's white override when building the edit box, which read fine in Dark by accident and was unreadable (dark text on the accent-blue fill) in Light - found in a real sandbox check, not assumed from one variant.
 
 FrozenColumnCount is now demoed and verified - there are no dedicated frozen-column resource keys in the vendor theme, so this needed no new styling, just confirmation it composes cleanly with the existing row/cell/grid-line rendering.
 

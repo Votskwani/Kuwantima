@@ -19,6 +19,13 @@
 	           the TextBox control itself — the editing box is ALWAYS in Fluent's own :focus state,
 	           and Fluent's :focus style sets those same properties directly on that nested part,
 	           which otherwise silently wins over a control-level Setter
+	         • Foreground is pinned to AccentButtonForeground too — found by eye in the running
+	           sandbox, Light only, and easy to have missed: the vendor's SyncProperties snapshots
+	           the CELL's base ink (SystemBaseHighColor) rather than the ROW's :selected white
+	           override when building the edit box, which happens to read fine in Dark (where that
+	           ink is itself light) and is unreadable in Light. Invariant_9 now asserts both
+	           BorderBrush and Foreground, proven to catch the regression by temporarily removing
+	           the Setter and watching it fail in both variants before restoring it
 	         • FrozenColumnCount demoed and verified in the sandbox — no dedicated frozen-column
 	           resource keys exist in the vendor theme, so this needed no new styling surface
 	         • Both close items this package's own v1.8.0 notes explicitly listed as out of scope.

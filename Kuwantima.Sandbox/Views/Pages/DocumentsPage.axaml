@@ -196,7 +196,7 @@
                                 <TextBlock FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"
                                            Text="Kuwantima bumps its Avalonia dependency from 12.1.3 to 12.1.4 — no controls added, removed, or renamed"/>
                                 <TextBlock FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"
-                                           Text="Kuwantima.DataGrid: inline cell editing now picks up Kuwantima's orange focus-border, caret and selection styling"/>
+                                           Text="Kuwantima.DataGrid: inline cell editing now picks up Kuwantima's orange focus-border, caret, selection and foreground styling"/>
                                 <TextBlock FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"
                                            Text="Kuwantima.DataGrid: FrozenColumnCount demoed and verified — see the Fleet Status grid on this page"/>
                                 <TextBlock FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"
