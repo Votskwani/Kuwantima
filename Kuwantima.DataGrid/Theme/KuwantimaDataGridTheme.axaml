@@ -30,6 +30,16 @@
 	           resource keys exist in the vendor theme, so this needed no new styling surface
 	         • Both close items this package's own v1.8.0 notes explicitly listed as out of scope.
 	           Still out of scope: row grouping, row-details expansion
+	         • Mid-development regression, caught before shipping, not a v1.8.0-to-v1.9.0 behaviour
+	           change: a sed command used to test-then-restore the Foreground fix above matched an
+	           identical Setter line in the separate, already-shipped DataGridRow:selected block and
+	           deleted both, silently reverting v1.8.0's selected-row white text to dark-on-accent for
+	           plain (non-editing) selection. Found by eye via mouse-click selection specifically —
+	           every automated check up to that point had selected rows via keyboard/UIA focus-entry,
+	           which happens to auto-select before first realization and never exercised the broken
+	           path. Invariant_10 now asserts it: realizes a grid UNSELECTED, selects afterward (the
+	           order that actually exposed the bug), proven to catch the regression the same way
+	           Invariant_9 was
 	  1.8.0  2026-10-11  First release — DataGrid, Kuwantima's 1st companion-package control
 	         • Ships as a SEPARATE package from Kuwantima because DataGrid lives in a separate
 	           Avalonia package (Avalonia.Controls.DataGrid), not core Avalonia — folding it into

@@ -213,6 +213,7 @@
 	     2.33:1 mistake v1.3.0 fixed everywhere else in the library; DataGridRow/DataGridCell don't
 	     set their own Foreground, so this cascades down through the cells by inheritance. -->
 	<Style Selector="DataGrid.Kuwantima DataGridRow:selected">
+		<Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}"/>
 		<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaAccentOrangeBrush}"/>
 		<Setter Property="BorderThickness" Value="2,0,0,0"/>
 	</Style>
