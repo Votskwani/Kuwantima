@@ -363,6 +363,37 @@ this gap, and the gap is now closed.
 
 - Migration plan (historical, values superseded by the shipped resource above): `Tunatya/NAVOTI-TO-KUWANTIMA.md`
 
+## Downstream: OdooDock
+
+**Open design question (2026-10-26): `Button.KuwantimaPalette`'s fixed, non-accent-tied appearance
+reads oddly once more accent-reactive controls sit next to it in the same row.** Flagged while
+building OdooDock's header, which now has four `KuwantimaMenu`/`KuwantimaPalette` buttons side by
+side: pane toggle, theme toggle, the palette trigger, and a new Misc-Menu toggle. When a non-default
+accent is picked and the toggles are in their `:checked` state, three of the four buttons visibly
+pick up the live accent color (`SystemControlBackgroundAccentBrush`) and one — the palette trigger
+itself — never does, by design (its three-dot icon is a literal "this opens a color picker" glyph,
+and its `Background` is pinned to `SystemControlBackgroundBaseLowBrush` regardless of the live
+accent; see the "Three overlapping dots" comment in `KuwantimaColorPalettePicker.axaml`). Confirmed
+this is intentional, existing behavior, not a regression — but sitting in a row of otherwise
+accent-reactive chrome, the one static tile "sticks out like a sore thumb" (Cole's words) rather than
+reading as a deliberate design choice.
+
+Not fixed here — this is a note to revisit the trigger button's look, not a bug report. A few
+directions worth weighing next time this file gets attention, none chosen yet:
+- Give the trigger a subtle accent-tinted border or glow (instead of background fill) when the
+  current accent isn't the default, so it reads as "this control is aware of the live accent"
+  without recoloring the literal 3-dot glyph that explains what it does.
+- Swap the fixed 3-dot glyph for a single swatch-shaped indicator that reflects the *current*
+  selection (echoing how the swatches themselves show a selection ring), while keeping a separate,
+  smaller "opens a picker" affordance.
+- Leave it exactly as-is and instead adjust *consumer* layout guidance (e.g. don't place the palette
+  trigger directly adjacent to multiple `:checked` `KuwantimaMenu` toggles) — cheaper, but punts the
+  actual visual question to every consumer.
+
+Whatever direction is chosen, re-run `Invariant_6` (`InvariantTests.Contrast.cs`) if it touches any
+`Background`/`Fill` setter — the palette trigger currently has no contrast obligation since nothing
+reads on top of its fixed fill except the three literal dot colors, but a redesign could change that.
+
 ## A verification trap this repo has set four times
 Each of these shipped (or nearly), and each survived a check that *felt* rigorous:
 
