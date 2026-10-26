@@ -394,6 +394,37 @@ Whatever direction is chosen, re-run `Invariant_6` (`InvariantTests.Contrast.cs`
 `Background`/`Fill` setter — the palette trigger currently has no contrast obligation since nothing
 reads on top of its fixed fill except the three literal dot colors, but a redesign could change that.
 
+**Icon set gap found the same day: no media/recording glyphs.** OdooDock wanted an icon for a
+"toggle navigation-event logging" debug button — something like a tape recorder / record dot / REC
+glyph — and `KuwantimaStreamIcons.axaml` has none (current 15: `Add`, `Clear.Circle`, `Collapse`,
+`Copy`, `Expand`, `Gear`, `Grid`, `Home`, `Layers`, `Map`, `Moon.ThirdEye.Smiling`, `Refresh`,
+`Search`, `Sliders`, `Sun`). Settled for `Icon.Map` as the closest available semantic fit
+("navigation" logging ≈ a map), not a real substitute. Worth a look next time this file gets
+attention: add a **media/recording set** (record, play, pause, stop at minimum — the usual transport
+glyph family) as a deliberate expansion, not a one-off, the same way the swatch palette was treated
+as a bounded, intentional addition rather than ad-hoc growth (see "Color Philosophy" above). Follow
+the New Control Checklist's icon-specific steps if adding — confirm against real Material Design
+Icons SVG source before use (the precedent `Icon.Grid` set in the DataGrid work above), and remember
+the control-count rule: `KuwantimaStreamIcons.axaml` itself isn't a counted control, but each new
+icon still touches the "15 icons" callouts wherever they're restated (README, theme header) if that
+count is cited anywhere alongside the control count — check before assuming it isn't.
+
+**Related idea, same day: an animated/pulsing icon button variant, as a reusable "background mode is
+active" indicator.** OdooDock wanted *some* persistent visual cue for "a debug recorder is running in
+the background" beyond just the icon's static color change it already has (muted vs. live-accent
+`Foreground`, no `KuwantimaMenu` chrome — see the bare-glyph nav-logger button above). The first idea
+was changing the cursor while hovering the embedded content, but that's dead for anything layered
+over a *windowed* child control (confirmed live: `NativeWebView`'s own `Cursor` property is silently
+ignored once the pointer is over the actual rendered WebView2 content — the native child handles its
+own `WM_SETCURSOR` and always wins; proved definitively via `GetCursorInfo`, not assumed). An animated
+icon — a slow pulse/breathe on opacity or scale, or a blinking dot badge, while a bound "active" state
+is true — doesn't have that problem, since it's pure Avalonia-rendered chrome, not something that has
+to compete with a native child's own cursor handling. Worth a look as a genuine variant (a `Classes`
+toggle plus a `Styles` entry with an `Animation`/`KeyFrame` block driving `Opacity` or `RenderTransform`
+on the icon), not a one-off hack — likely useful wherever a control needs to signal an ongoing
+background process rather than a binary on/off state, which the existing checked-state color treatment
+doesn't distinguish.
+
 ## A verification trap this repo has set four times
 Each of these shipped (or nearly), and each survived a check that *felt* rigorous:
 
