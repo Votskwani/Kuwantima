@@ -31,6 +31,22 @@ almost certainly a license/security scanner or mirror triggered by the publish e
 package pushes landed this week: v1.8.0 and `Kuwantima.DataGrid`'s debut). Same conclusion as both
 prior checks, now resting on evidence that doesn't depend on cross-source comparison to read.
 
+**Re-checked 2026-10-31, hours after publishing v1.10.0 (DatePicker + TimePicker): NuGet totals
+1,354 for `Kuwantima` and 186 for `Kuwantima.DataGrid` (search API — which this time already listed
+1.10.0, so it was current, unlike on 2026-10-11). GitHub: still 0 stars, 0 watchers, still exactly
+the one fork (`BBSStore/Kuwantima`, created 2026-05-23, last pushed 2026-06-10, dormant since), and
+0 views / 0 unique visitors in 14 days against 75 clones from 39 unique cloners, with the clone
+spikes landing on exactly the days commits or tags were pushed (20 on the 10-23 release day, 17 on
+10-27). Unmoved a fourth time.** The new evidence this round is NuGet's own per-version breakdown,
+which needs no GitHub comparison at all: every version has between 96 and 148 downloads regardless
+of age — 1.0.0 (19 months old) 138, 1.4.1 96, 1.9.0 (eight days old) 99; DataGrid's two versions 96
+and 90. A human population accumulates downloads over time, so old versions pull ahead; a flat
+~100 per version means each release is fetched about a hundred times by the same automated set
+within days of publish and then never again. The total is simply ~100 × versions published
+(13 × ~104 ≈ 1,354), so it grows with every release this repo cuts — including the lockstep
+DataGrid republishes that change nothing. Expect v1.10.0 to sit near 100 within a week; if it
+does, that is the mirrors, not a user. The known real consumers remain Cole's own projects
+(BBSpa, BBService, OdooDock, Tunatya).
 So Kuwantima's real user is **a student learning to fork, clone, edit and push** — not a NuGet
 consumer integrating a design system. Prioritise accordingly:
 - **The IDE previewer working is a first-class feature**, not a nicety. A beginner who opens a style
