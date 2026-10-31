@@ -109,7 +109,7 @@ is the first example) doesn't belong here — it follows "The DataGrid companion
 below's shape instead: its own project (`Kuwantima.{Control}`), its own theme entry point and
 resources file, its own test project (`Kuwantima.{Control}.Tests`), lockstep version with
 `Kuwantima` (see Version Management), and its own `StyleInclude` line for the consumer to add. The
-"16 controls" count this checklist's item 9 protects is specifically the core package's count and
+"18 controls" count this checklist's item 9 protects is specifically the core package's count and
 does not include companion-package controls.
 
 ### New Control Checklist
@@ -130,8 +130,8 @@ does not include companion-package controls.
 7. **Documents page** — add to the controls table in `DocumentsPage.axaml`
 8. **README.md** — add to the Controls table
 9. **Control count** — update in README intro, `.csproj` Description, and KuwantimaPrimaryTheme
-   header (2 places) — *tested*. **The count is CONTROLS, not style files.** There are 17 style
-   files but only **16 controls**: `KuwantimaStreamIcons.axaml` is a `ResourceDictionary` of icon
+   header (2 places) — *tested*. **The count is CONTROLS, not style files.** There are 19 style
+   files but only **18 controls**: `KuwantimaStreamIcons.axaml` is a `ResourceDictionary` of icon
    geometry, registered via `ResourceInclude`, and is not a control. Miscounting it is exactly the
    off-by-one that shipped in v1.0.0 and survived until the suite caught it.
 
@@ -311,7 +311,7 @@ side of the split; this repo's scope stops at the border.
 
 ## Downstream: Tunatya / Navoti
 Kuwantima **replaces** Navoti in `../Tunatya`. It does not compose with it — they are the same
-design system at two points in time (same architecture, same class convention, 16 controls vs
+design system at two points in time (same architecture, same class convention, 18 controls vs
 Navoti's 12). The Retired Resources list above is, literally, a changelog of what Navoti still has.
 
 **Migration executed 2026-09-25**, against this section as it stood at v1.4.2 — see `Tunatya/CLAUDE.md`
@@ -632,6 +632,68 @@ automation wasn't reliably reachable in that environment (synthetic mouse clicks
 the window even once it was confirmed foreground; keyboard navigation was) — so if a future session
 touches selection or disabled styling again, re-verify those two states specifically rather than
 assuming this entry covers them.
+
+## DatePicker and TimePicker — built 2026-10-31, controls 17 and 18
+
+`KuwantimaDatePicker.axaml` and `KuwantimaTimePicker.axaml` style Avalonia's looping-column
+pickers (the WinUI-shaped `DatePicker`/`TimePicker`, not `CalendarDatePicker`/`Calendar`, which
+were deliberately left out — a much larger vendor surface, and not what was asked for). Both are
+core-package controls and went through the whole New Control Checklist; the published count is
+**18**. Read the vendor templates first (`Avalonia.Themes.Fluent/Controls/DatePicker.xaml`,
+`TimePicker.xaml`, `DateTimePickerShared.xaml`, release tag matching the Avalonia version) — the
+design below only makes sense against them.
+
+### Each picker is two controls, and the half you click is the one that mattered
+The thing in the form is a trigger (`Button#PART_FlyoutButton` showing day/month/year fields);
+the thing you interact with is a `DatePickerPresenter`/`TimePickerPresenter` that exists only
+inside the trigger's `Popup`. Kuwantima styles both from the one file, so `Classes="Kuwantima"`
+restyles the whole experience. Three framework facts carry that, each verified rather than assumed:
+- **A value set inside a vendor ControlTemplate outranks a plain style setter aimed at it.**
+  Fluent paints the presenter's highlight band, dividers and item theme as literal values *inside*
+  its template, so no `Classes`-scoped setter could recolour them; only a pseudo-class trigger or
+  owning the template wins. The presenter's template is therefore REPLACED (every `PART_` name is
+  the control's template contract and must stay), reached by a plain descendant selector —
+  `DatePicker.Kuwantima DatePickerPresenter` — because Popup content stays in its owner's LOGICAL
+  tree even though it renders in its own window. `Invariant_9` (`InvariantTests.DateTimePickers.cs`)
+  guards exactly this: it raises `PART_FlyoutButton`'s Click headlessly (the one event the picker
+  listens to), then asserts the open popup holds the Kuwantima template, the opaque region surface,
+  the accent band, and white ink on the `:selected` item under it. Nothing static could catch that
+  regression; the trigger would still look perfect.
+- **Fluent's Button ControlTheme paints hover/pressed onto a part named `PART_ContentPresenter`.**
+  The trigger's inner Button keeps the default Button theme but gets an inline template whose
+  presenter is named `Chrome`, so those theme rules match nothing. State rules then set
+  Background/BorderBrush/Foreground on the *Button* (`^:pointerover /template/ Button#PART_FlyoutButton`,
+  `^ /template/ Button#PART_FlyoutButton:pressed`) — a pseudo-class style outranks the Button's own
+  TemplateBindings, which is the same mechanism ComboBox.Kuwantima's `Border#Background` relies on.
+- **Type selectors match the exact type.** The arrows are revealed by
+  `Panel:pointerover > RepeatButton.Step`; the hosts are bare `<Panel>`s, so the hidden ScrollBars'
+  own RepeatButtons (inside Grids) are never caught.
+
+Other decisions worth not re-deriving: the band is the ComboBoxItem selected chip (accent fill,
+orange 2px left edge, white ink via the item's `:selected` Foreground; the item itself stays
+transparent so the band shows through); `DataValidationErrors` is kept as the template root so the
+inline error message still renders, and `:error` paints `KuwantimaValidationErrorBrush` on the
+trigger (covered by the picker variant of `Invariant_8`); `:hasnodate`/`:hasnotime` use the
+placeholder ink, with a second rule restoring white under `:pressed` because ink set directly on the
+TextBlocks would otherwise outrank the Button's; internal template classes are `Step`/`Up`/`Down`
+and `Action`/`Accept` — not consumer-facing, so unprefixed; `SelectedDate="2026-10-31"` and
+`SelectedTime="14:30:00"` literals parse in BOTH compilers (build and previewer), so the previews
+show a real value. The vendor's column order and visibility are assigned in code
+(`SetGrid` in each control and presenter) from culture/`ClockIdentifier`/`UseSeconds`, so the
+templates declare placeholder or no ColumnDefinitions on purpose.
+
+### Eyeballing a popup without a GUI
+Native click automation is unreliable here (see the DataGrid section), and the previewer cannot
+open a popup. What worked: a throwaway console app referencing the Kuwantima project with
+`AppBuilder.Configure<App>().UseSkia().UseHeadless(new AvaloniaHeadlessPlatformOptions
+{ UseHeadlessDrawing = false }).SetupWithoutStarting()`, a `Window` shown with the control, the
+Click raised as above, then `window.CaptureRenderedFrame()!.Save(path)` — the headless platform
+uses OVERLAY popups, so the open flyout is in the window's frame. Force pseudo-classes
+(`:pointerover` on a host Panel, `:error`, `:pressed` on the inner Button) to capture states, and
+null the presenters' `Transitions` first or you capture a tween frame. `Popup.Host` is not public
+in 12.x; `TopLevel.GetTopLevel(presenter)` gives the root. Needs `Assembly.Load("Kuwantima")` in
+`App.Initialize`, the same trap `TestApp` documents. Deliberately not added to the repo — it is a
+ten-minute scratch tool, like the fresh-consumer app in the verification-trap section.
 
 ## Color Philosophy
 - **Cool anchor**: MidnightBlue (#191970) / AliceBlue (#F0F8FF)

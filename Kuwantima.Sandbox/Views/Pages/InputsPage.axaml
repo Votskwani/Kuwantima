@@ -39,6 +39,19 @@
                 </ComboBox>
             </StackPanel>
 
+            <!-- Date & Time pickers. Each is a trigger plus a looping-column flyout; click one to
+                 see the restyled presenter (highlight band, step arrows, accept/dismiss). -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="Date &amp; Time" FontWeight="SemiBold" FontSize="14"
+                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                <DatePicker Classes="Kuwantima" SelectedDate="{Binding DemoDate}" HorizontalAlignment="Stretch"/>
+                <DatePicker Classes="Kuwantima" HorizontalAlignment="Stretch"/>
+                <TimePicker Classes="Kuwantima" SelectedTime="{Binding DemoTime}" HorizontalAlignment="Stretch"/>
+                <TimePicker Classes="Kuwantima" SelectedTime="{Binding DemoTime}" ClockIdentifier="24HourClock" UseSeconds="True"
+                            HorizontalAlignment="Stretch"/>
+                <DatePicker Classes="Kuwantima" SelectedDate="{Binding DemoDate}" IsEnabled="False" HorizontalAlignment="Stretch"/>
+            </StackPanel>
+
             <!-- ListBox -->
             <StackPanel Spacing="8">
                 <TextBlock Text="ListBox" FontWeight="SemiBold" FontSize="14"
@@ -74,6 +87,11 @@
                         <Binding Path="ValidationDemoErrors"/>
                     </DataValidationErrors.Errors>
                 </ComboBox>
+                <DatePicker Classes="Kuwantima" SelectedDate="{Binding DemoDate}" HorizontalAlignment="Stretch">
+                    <DataValidationErrors.Errors>
+                        <Binding Path="ValidationDemoErrors"/>
+                    </DataValidationErrors.Errors>
+                </DatePicker>
                 <Button Classes="Kuwantima" Content="Show Validation Error" Command="{Binding ToggleValidationDemoCommand}"/>
             </StackPanel>
 

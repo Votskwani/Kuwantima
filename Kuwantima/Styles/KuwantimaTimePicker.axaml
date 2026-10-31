@@ -1,0 +1,493 @@
+<Styles xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<Design.PreviewWith>
+		<Border Padding="20" Width="640">
+			<!-- PREVIEW ONLY. At runtime the consumer's StyleInclude supplies these; here the
+			     file stands alone, and an unresolvable DynamicResource is SILENT, so without
+			     them every brush setter below is skipped and the preview renders bare. Do NOT
+			     swap in KuwantimaPrimaryTheme: it carries the SHIPPED control styles and would
+			     show you those instead of the edit you are making in this file. -->
+			<Border.Styles>
+				<FluentTheme/>
+			</Border.Styles>
+			<Border.Resources>
+				<ResourceDictionary>
+					<ResourceDictionary.MergedDictionaries>
+						<ResourceInclude Source="avares://Kuwantima/Theme/KuwantimaThemeResources.axaml"/>
+					</ResourceDictionary.MergedDictionaries>
+				</ResourceDictionary>
+			</Border.Resources>
+			<Grid ColumnDefinitions="*, *">
+				<!-- LEFT SIDE: LIGHT THEME PREVIEW -->
+				<ThemeVariantScope RequestedThemeVariant="Light" Grid.Column="0">
+					<Panel Background="{DynamicResource SystemRegionBrush}">
+						<StackPanel Spacing="16" Margin="20" HorizontalAlignment="Stretch">
+							<TextBlock Text="Light Theme" FontWeight="Bold" FontSize="18" HorizontalAlignment="Center"/>
+
+							<TimePicker Classes="Kuwantima" SelectedTime="14:30:00" HorizontalAlignment="Stretch"/>
+
+							<TimePicker Classes="Kuwantima" HorizontalAlignment="Stretch"/>
+
+							<TimePicker Classes="Kuwantima" SelectedTime="14:30:00" ClockIdentifier="24HourClock" HorizontalAlignment="Stretch"/>
+
+							<TimePicker Classes="Kuwantima" SelectedTime="14:30:00" IsEnabled="False" HorizontalAlignment="Stretch"/>
+
+							<!-- The flyout (TimePickerPresenter) cannot be shown in a static preview — it lives
+							     in a Popup that only opens on click. Run the sandbox's Inputs page to see it.
+							     :error is not demoed here either, for the reason given in KuwantimaTextBox.axaml. -->
+						</StackPanel>
+					</Panel>
+				</ThemeVariantScope>
+
+				<!-- RIGHT SIDE: DARK THEME PREVIEW -->
+				<ThemeVariantScope RequestedThemeVariant="Dark" Grid.Column="1">
+					<Panel Background="{DynamicResource SystemRegionBrush}">
+						<StackPanel Spacing="16" Margin="20" HorizontalAlignment="Stretch">
+							<TextBlock Text="Dark Theme" FontWeight="Bold" FontSize="18" HorizontalAlignment="Center"/>
+
+							<TimePicker Classes="Kuwantima" SelectedTime="14:30:00" HorizontalAlignment="Stretch"/>
+
+							<TimePicker Classes="Kuwantima" HorizontalAlignment="Stretch"/>
+
+							<TimePicker Classes="Kuwantima" SelectedTime="14:30:00" ClockIdentifier="24HourClock" HorizontalAlignment="Stretch"/>
+
+							<TimePicker Classes="Kuwantima" SelectedTime="14:30:00" IsEnabled="False" HorizontalAlignment="Stretch"/>
+						</StackPanel>
+					</Panel>
+				</ThemeVariantScope>
+
+				<!-- Vertical Divider -->
+				<Separator Width="1" VerticalAlignment="Stretch" Background="{DynamicResource KuwantimaDarkBorderBrush}" Grid.ColumnSpan="2"/>
+			</Grid>
+		</Border>
+	</Design.PreviewWith>
+
+	<!-- ═══ BASE: TimePicker.Kuwantima ═══
+	     The TimePicker is the DatePicker's twin — the same trigger-plus-popup shape, the same
+	     styling decisions, and the same reasons for them. KuwantimaDatePicker.axaml carries the
+	     full commentary; this file repeats only what differs:
+	       • up to four fields (hour / minute / second / AM-PM) instead of three — seconds appear
+	         only when UseSeconds is on, AM-PM only on the 12-hour clock
+	       • the "no value yet" pseudo-class is :hasnotime
+	       • the field hosts are Borders and the dividers are named *ColumnDivider, because that
+	         is what TimePicker.cs looks up by name -->
+	<Style Selector="TimePicker.Kuwantima">
+		<Setter Property="Background" Value="{DynamicResource SystemControlBackgroundBaseLowBrush}"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaGlassGlowBorder}"/>
+		<Setter Property="BorderThickness" Value="1.5"/>
+		<Setter Property="Padding" Value="12,8"/>
+		<Setter Property="CornerRadius" Value="4"/>
+		<Setter Property="Cursor" Value="Hand"/>
+
+		<Setter Property="Template">
+			<ControlTemplate>
+				<DataValidationErrors>
+					<Grid Name="LayoutRoot">
+						<Button Name="PART_FlyoutButton"
+						        Background="{TemplateBinding Background}"
+						        BorderBrush="{TemplateBinding BorderBrush}"
+						        BorderThickness="{TemplateBinding BorderThickness}"
+						        CornerRadius="{TemplateBinding CornerRadius}"
+						        Foreground="{TemplateBinding Foreground}"
+						        Padding="{TemplateBinding Padding}"
+						        IsEnabled="{TemplateBinding IsEnabled}"
+						        MinWidth="{TemplateBinding MinWidth}"
+						        MaxWidth="{TemplateBinding MaxWidth}"
+						        HorizontalAlignment="Stretch"
+						        VerticalAlignment="Stretch"
+						        FocusAdorner="{x:Null}"
+						        TemplatedControl.IsTemplateFocusTarget="True">
+							<Button.Template>
+								<ControlTemplate>
+									<ContentPresenter Name="Chrome"
+									                  Background="{TemplateBinding Background}"
+									                  BorderBrush="{TemplateBinding BorderBrush}"
+									                  BorderThickness="{TemplateBinding BorderThickness}"
+									                  CornerRadius="{TemplateBinding CornerRadius}"
+									                  Foreground="{TemplateBinding Foreground}"
+									                  Padding="{TemplateBinding Padding}"
+									                  Content="{TemplateBinding Content}"
+									                  HorizontalContentAlignment="Stretch"
+									                  VerticalContentAlignment="Stretch">
+										<ContentPresenter.Transitions>
+											<Transitions>
+												<BrushTransition Property="Background" Duration="0:0:0.2"/>
+												<BrushTransition Property="BorderBrush" Duration="0:0:0.2"/>
+											</Transitions>
+										</ContentPresenter.Transitions>
+									</ContentPresenter>
+								</ControlTemplate>
+							</Button.Template>
+
+							<!-- Column definitions, visibility and column placement are all assigned in
+							     code (TimePicker.SetGrid) from ClockIdentifier and UseSeconds, so the
+							     grid declares none. The names are the control's template contract. -->
+							<Grid Name="PART_FlyoutButtonContentGrid">
+								<Border Name="PART_FirstPickerHost" Grid.Column="0">
+									<TextBlock Name="PART_HourTextBlock"
+									           Text="{DynamicResource StringTimePickerHourText}"
+									           HorizontalAlignment="Center"
+									           VerticalAlignment="Center"/>
+								</Border>
+								<Rectangle Name="PART_FirstColumnDivider"
+								           Grid.Column="1"
+								           Width="1"
+								           HorizontalAlignment="Center"
+								           Fill="{DynamicResource KuwantimaSplitterBrush}"/>
+								<Border Name="PART_SecondPickerHost" Grid.Column="2">
+									<TextBlock Name="PART_MinuteTextBlock"
+									           Text="{DynamicResource StringTimePickerMinuteText}"
+									           HorizontalAlignment="Center"
+									           VerticalAlignment="Center"/>
+								</Border>
+								<Rectangle Name="PART_SecondColumnDivider"
+								           Grid.Column="3"
+								           Width="1"
+								           HorizontalAlignment="Center"
+								           Fill="{DynamicResource KuwantimaSplitterBrush}"/>
+								<Border Name="PART_ThirdPickerHost" Grid.Column="4">
+									<TextBlock Name="PART_SecondTextBlock"
+									           Text="{DynamicResource StringTimePickerSecondText}"
+									           HorizontalAlignment="Center"
+									           VerticalAlignment="Center"/>
+								</Border>
+								<Rectangle Name="PART_ThirdColumnDivider"
+								           Grid.Column="5"
+								           Width="1"
+								           HorizontalAlignment="Center"
+								           Fill="{DynamicResource KuwantimaSplitterBrush}"/>
+								<Border Name="PART_FourthPickerHost" Grid.Column="6">
+									<TextBlock Name="PART_PeriodTextBlock"
+									           HorizontalAlignment="Center"
+									           VerticalAlignment="Center"/>
+								</Border>
+							</Grid>
+						</Button>
+
+						<Popup Name="PART_Popup"
+						       WindowManagerAddShadowHint="False"
+						       IsLightDismissEnabled="True"
+						       PlacementTarget="{TemplateBinding}"
+						       Placement="Bottom">
+							<TimePickerPresenter Name="PART_PickerPresenter"/>
+						</Popup>
+					</Grid>
+				</DataValidationErrors>
+			</ControlTemplate>
+		</Setter>
+
+		<!-- Hover -->
+		<Style Selector="^:pointerover /template/ Button#PART_FlyoutButton">
+			<Setter Property="Background" Value="{DynamicResource KuwantimaControlHoverBrush}"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaGlassGlowBorderHover}"/>
+		</Style>
+
+		<!-- Pressed -->
+		<Style Selector="^ /template/ Button#PART_FlyoutButton:pressed">
+			<Setter Property="Background" Value="{DynamicResource SystemControlBackgroundAccentBrush}"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaAccentOrangeBrush}"/>
+			<Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}"/>
+		</Style>
+
+		<!-- Keyboard focus -->
+		<Style Selector="^ /template/ Button#PART_FlyoutButton:focus-visible">
+			<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaGlassGlowBorderHover}"/>
+		</Style>
+
+		<!-- No time yet: placeholder ink, kept readable on the pressed chip (see DatePicker). -->
+		<Style Selector="^:hasnotime /template/ Button#PART_FlyoutButton TextBlock">
+			<Setter Property="Foreground" Value="{DynamicResource TextControlPlaceholderForeground}"/>
+		</Style>
+		<Style Selector="^:hasnotime /template/ Button#PART_FlyoutButton:pressed TextBlock">
+			<Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}"/>
+		</Style>
+
+		<!-- Validation error — after :focus-visible, before :disabled; document order does the rest. -->
+		<Style Selector="^:error /template/ Button#PART_FlyoutButton">
+			<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaValidationErrorBrush}"/>
+		</Style>
+
+		<!-- Disabled: pin Background/Foreground to prevent Fluent's disabled brushes from double-dimming -->
+		<Style Selector="^:disabled">
+			<Setter Property="Opacity" Value="0.5"/>
+			<Setter Property="Foreground" Value="{DynamicResource SystemBaseHighColor}"/>
+			<Setter Property="Cursor" Value="Arrow"/>
+		</Style>
+		<Style Selector="^:disabled /template/ Button#PART_FlyoutButton">
+			<Setter Property="Background" Value="{DynamicResource SystemControlBackgroundBaseLowBrush}"/>
+			<Setter Property="BorderBrush" Value="Transparent"/>
+		</Style>
+	</Style>
+
+	<!-- ═══ FLYOUT: TimePicker.Kuwantima TimePickerPresenter ═══
+	     Four columns at most; which are shown, and the ColumnDefinitions, are assigned in code
+	     (TimePickerPresenter.SetGrid). Every PART_ name is the presenter's template contract. -->
+	<Style Selector="TimePicker.Kuwantima TimePickerPresenter">
+		<Setter Property="Background" Value="{DynamicResource SystemRegionBrush}"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaGlassGlowBorderHover}"/>
+		<Setter Property="BorderThickness" Value="1.5"/>
+		<Setter Property="CornerRadius" Value="4"/>
+		<Setter Property="Padding" Value="4"/>
+
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Name="PopupBorder"
+				        Background="{TemplateBinding Background}"
+				        BorderBrush="{TemplateBinding BorderBrush}"
+				        BorderThickness="{TemplateBinding BorderThickness}"
+				        CornerRadius="{TemplateBinding CornerRadius}"
+				        Padding="{TemplateBinding Padding}">
+					<Grid Name="ContentRoot" RowDefinitions="*,Auto">
+						<Grid Name="PART_PickerContainer">
+							<Panel Name="PART_HourHost" Grid.Column="0">
+								<ScrollViewer HorizontalScrollBarVisibility="Disabled"
+								              VerticalScrollBarVisibility="Hidden">
+									<DateTimePickerPanel Name="PART_HourSelector"
+									                     PanelType="Hour"
+									                     ItemHeight="40"
+									                     ShouldLoop="True"/>
+								</ScrollViewer>
+								<RepeatButton Name="PART_HourUpButton" Classes="Step Up"/>
+								<RepeatButton Name="PART_HourDownButton" Classes="Step Down"/>
+							</Panel>
+							<Panel Name="PART_MinuteHost" Grid.Column="2">
+								<ScrollViewer HorizontalScrollBarVisibility="Disabled"
+								              VerticalScrollBarVisibility="Hidden">
+									<DateTimePickerPanel Name="PART_MinuteSelector"
+									                     PanelType="Minute"
+									                     ItemHeight="40"
+									                     ShouldLoop="True"/>
+								</ScrollViewer>
+								<RepeatButton Name="PART_MinuteUpButton" Classes="Step Up"/>
+								<RepeatButton Name="PART_MinuteDownButton" Classes="Step Down"/>
+							</Panel>
+							<Panel Name="PART_SecondHost" Grid.Column="4">
+								<ScrollViewer HorizontalScrollBarVisibility="Disabled"
+								              VerticalScrollBarVisibility="Hidden">
+									<DateTimePickerPanel Name="PART_SecondSelector"
+									                     PanelType="Second"
+									                     ItemHeight="40"
+									                     ShouldLoop="True"/>
+								</ScrollViewer>
+								<RepeatButton Name="PART_SecondUpButton" Classes="Step Up"/>
+								<RepeatButton Name="PART_SecondDownButton" Classes="Step Down"/>
+							</Panel>
+							<Panel Name="PART_PeriodHost" Grid.Column="6">
+								<ScrollViewer HorizontalScrollBarVisibility="Disabled"
+								              VerticalScrollBarVisibility="Hidden">
+									<DateTimePickerPanel Name="PART_PeriodSelector"
+									                     PanelType="TimePeriod"
+									                     ItemHeight="40"
+									                     ShouldLoop="False"/>
+								</ScrollViewer>
+								<RepeatButton Name="PART_PeriodUpButton" Classes="Step Up"/>
+								<RepeatButton Name="PART_PeriodDownButton" Classes="Step Down"/>
+							</Panel>
+
+							<!-- The highlight band — see KuwantimaDatePicker.axaml. -->
+							<Border Name="HighlightBand"
+							        Grid.Column="0" Grid.ColumnSpan="7"
+							        ZIndex="-1"
+							        IsHitTestVisible="False"
+							        Height="40"
+							        VerticalAlignment="Center"
+							        CornerRadius="3"
+							        Background="{DynamicResource SystemControlBackgroundAccentBrush}"
+							        BorderBrush="{DynamicResource KuwantimaAccentOrangeBrush}"
+							        BorderThickness="2,0,0,0"/>
+
+							<Rectangle Name="PART_FirstSpacer"
+							           Grid.Column="1"
+							           Width="1"
+							           HorizontalAlignment="Center"
+							           Fill="{DynamicResource KuwantimaSplitterBrush}"/>
+							<Rectangle Name="PART_SecondSpacer"
+							           Grid.Column="3"
+							           Width="1"
+							           HorizontalAlignment="Center"
+							           Fill="{DynamicResource KuwantimaSplitterBrush}"/>
+							<Rectangle Name="PART_ThirdSpacer"
+							           Grid.Column="5"
+							           Width="1"
+							           HorizontalAlignment="Center"
+							           Fill="{DynamicResource KuwantimaSplitterBrush}"/>
+						</Grid>
+
+						<!-- Accept / dismiss — see KuwantimaDatePicker.axaml. -->
+						<Grid Name="AcceptDismissGrid" Grid.Row="1" ColumnDefinitions="*,*" Margin="0,4,0,0">
+							<Rectangle Grid.ColumnSpan="2"
+							           Height="1"
+							           VerticalAlignment="Top"
+							           Fill="{DynamicResource KuwantimaSplitterBrush}"/>
+							<Button Name="PART_AcceptButton" Grid.Column="0" Classes="Action Accept">
+								<Path Data="M 1,7 L 5.5,11.5 L 15,2"
+								      Stroke="{Binding $parent[Button].Foreground}"
+								      StrokeThickness="1.5"
+								      StrokeLineCap="Round"
+								      StrokeJoin="Round"/>
+							</Button>
+							<Button Name="PART_DismissButton" Grid.Column="1" Classes="Action">
+								<Path Data="M 2,2 L 12,12 M 2,12 L 12,2"
+								      Stroke="{Binding $parent[Button].Foreground}"
+								      StrokeThickness="1.5"
+								      StrokeLineCap="Round"/>
+							</Button>
+						</Grid>
+					</Grid>
+				</Border>
+			</ControlTemplate>
+		</Setter>
+	</Style>
+
+	<!-- ═══ ITEMS: TimePicker.Kuwantima DateTimePickerPanel > ListBoxItem ═══
+	     Every time column holds numbers or "AM"/"PM", so all are centered — there is no
+	     left-aligned MonthItem case here. Otherwise identical to the DatePicker's items. -->
+	<Style Selector="TimePicker.Kuwantima DateTimePickerPanel > ListBoxItem">
+		<Setter Property="Background" Value="Transparent"/>
+		<Setter Property="Foreground" Value="{DynamicResource SystemBaseHighColor}"/>
+		<Setter Property="Padding" Value="8,0"/>
+		<Setter Property="CornerRadius" Value="3"/>
+		<Setter Property="HorizontalContentAlignment" Value="Center"/>
+		<Setter Property="VerticalContentAlignment" Value="Center"/>
+		<Setter Property="Cursor" Value="Hand"/>
+
+		<Setter Property="Template">
+			<ControlTemplate>
+				<ContentPresenter Name="PART_ContentPresenter"
+				                  Foreground="{TemplateBinding Foreground}"
+				                  Background="{TemplateBinding Background}"
+				                  CornerRadius="{TemplateBinding CornerRadius}"
+				                  ContentTemplate="{TemplateBinding ContentTemplate}"
+				                  Content="{TemplateBinding Content}"
+				                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+				                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+				                  Padding="{TemplateBinding Padding}"/>
+			</ControlTemplate>
+		</Setter>
+
+		<!-- Hover / pressed -->
+		<Style Selector="^:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+			<Setter Property="Background" Value="{DynamicResource KuwantimaControlHoverBrush}"/>
+		</Style>
+		<Style Selector="^:pressed /template/ ContentPresenter#PART_ContentPresenter">
+			<Setter Property="Background" Value="{DynamicResource KuwantimaControlHoverBrush}"/>
+		</Style>
+
+		<!-- Selected: transparent so the band shows through; white ink to sit on it. -->
+		<Style Selector="^:selected /template/ ContentPresenter#PART_ContentPresenter">
+			<Setter Property="Background" Value="Transparent"/>
+			<Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}"/>
+		</Style>
+	</Style>
+
+	<!-- ═══ STEP ARROWS: TimePicker.Kuwantima TimePickerPresenter RepeatButton.Step ═══ -->
+	<Style Selector="TimePicker.Kuwantima TimePickerPresenter RepeatButton.Step">
+		<Setter Property="Background" Value="{DynamicResource SystemControlBackgroundBaseLowBrush}"/>
+		<Setter Property="Foreground" Value="{DynamicResource SystemBaseHighColor}"/>
+		<Setter Property="BorderThickness" Value="0"/>
+		<Setter Property="CornerRadius" Value="3"/>
+		<Setter Property="Height" Value="24"/>
+		<Setter Property="HorizontalAlignment" Value="Stretch"/>
+		<Setter Property="HorizontalContentAlignment" Value="Center"/>
+		<Setter Property="VerticalContentAlignment" Value="Center"/>
+		<Setter Property="Focusable" Value="False"/>
+		<Setter Property="IsVisible" Value="False"/>
+		<Setter Property="Cursor" Value="Hand"/>
+
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding CornerRadius}">
+					<ContentPresenter Name="StepChrome"
+					                  Background="Transparent"
+					                  CornerRadius="{TemplateBinding CornerRadius}"
+					                  Foreground="{TemplateBinding Foreground}"
+					                  Content="{TemplateBinding Content}"
+					                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+					                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+				</Border>
+			</ControlTemplate>
+		</Setter>
+
+		<Style Selector="^.Up">
+			<Setter Property="VerticalAlignment" Value="Top"/>
+			<Setter Property="Content">
+				<Template>
+					<Path Data="M 1,6 L 6,1 L 11,6"
+					      Stroke="{Binding $parent[RepeatButton].Foreground}"
+					      StrokeThickness="1.5"
+					      StrokeLineCap="Round"
+					      StrokeJoin="Round"/>
+				</Template>
+			</Setter>
+		</Style>
+		<Style Selector="^.Down">
+			<Setter Property="VerticalAlignment" Value="Bottom"/>
+			<Setter Property="Content">
+				<Template>
+					<Path Data="M 1,1 L 6,6 L 11,1"
+					      Stroke="{Binding $parent[RepeatButton].Foreground}"
+					      StrokeThickness="1.5"
+					      StrokeLineCap="Round"
+					      StrokeJoin="Round"/>
+				</Template>
+			</Setter>
+		</Style>
+
+		<Style Selector="^:pointerover /template/ ContentPresenter#StepChrome">
+			<Setter Property="Background" Value="{DynamicResource KuwantimaControlHoverBrush}"/>
+		</Style>
+		<Style Selector="^:pressed">
+			<Setter Property="Background" Value="{DynamicResource SystemControlBackgroundAccentBrush}"/>
+			<Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}"/>
+		</Style>
+	</Style>
+
+	<!-- Reveal the arrows while their column is hovered (exact-type Panel — see DatePicker). -->
+	<Style Selector="TimePicker.Kuwantima TimePickerPresenter Panel:pointerover > RepeatButton.Step">
+		<Setter Property="IsVisible" Value="True"/>
+	</Style>
+
+	<!-- ═══ ACTIONS: TimePicker.Kuwantima TimePickerPresenter Button.Action ═══ -->
+	<Style Selector="TimePicker.Kuwantima TimePickerPresenter Button.Action">
+		<Setter Property="Background" Value="Transparent"/>
+		<Setter Property="Foreground" Value="{DynamicResource SystemBaseHighColor}"/>
+		<Setter Property="BorderThickness" Value="0"/>
+		<Setter Property="CornerRadius" Value="3"/>
+		<Setter Property="Height" Value="36"/>
+		<Setter Property="Margin" Value="0,5,0,0"/>
+		<Setter Property="HorizontalAlignment" Value="Stretch"/>
+		<Setter Property="HorizontalContentAlignment" Value="Center"/>
+		<Setter Property="VerticalContentAlignment" Value="Center"/>
+		<Setter Property="Cursor" Value="Hand"/>
+
+		<Setter Property="Template">
+			<ControlTemplate>
+				<ContentPresenter Name="ActionChrome"
+				                  Background="{TemplateBinding Background}"
+				                  CornerRadius="{TemplateBinding CornerRadius}"
+				                  Foreground="{TemplateBinding Foreground}"
+				                  Content="{TemplateBinding Content}"
+				                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+				                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}">
+					<ContentPresenter.Transitions>
+						<Transitions>
+							<BrushTransition Property="Background" Duration="0:0:0.2"/>
+						</Transitions>
+					</ContentPresenter.Transitions>
+				</ContentPresenter>
+			</ControlTemplate>
+		</Setter>
+
+		<Style Selector="^.Accept">
+			<Setter Property="Foreground" Value="{DynamicResource SystemControlBackgroundAccentBrush}"/>
+		</Style>
+
+		<Style Selector="^:pointerover">
+			<Setter Property="Background" Value="{DynamicResource KuwantimaControlHoverBrush}"/>
+		</Style>
+		<Style Selector="^:pressed">
+			<Setter Property="Background" Value="{DynamicResource SystemControlBackgroundAccentBrush}"/>
+			<Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}"/>
+		</Style>
+	</Style>
+</Styles>

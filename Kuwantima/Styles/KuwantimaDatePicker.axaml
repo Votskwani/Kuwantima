@@ -1,0 +1,517 @@
+<Styles xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<Design.PreviewWith>
+		<Border Padding="20" Width="720">
+			<!-- PREVIEW ONLY. At runtime the consumer's StyleInclude supplies these; here the
+			     file stands alone, and an unresolvable DynamicResource is SILENT, so without
+			     them every brush setter below is skipped and the preview renders bare. Do NOT
+			     swap in KuwantimaPrimaryTheme: it carries the SHIPPED control styles and would
+			     show you those instead of the edit you are making in this file. -->
+			<Border.Styles>
+				<FluentTheme/>
+			</Border.Styles>
+			<Border.Resources>
+				<ResourceDictionary>
+					<ResourceDictionary.MergedDictionaries>
+						<ResourceInclude Source="avares://Kuwantima/Theme/KuwantimaThemeResources.axaml"/>
+					</ResourceDictionary.MergedDictionaries>
+				</ResourceDictionary>
+			</Border.Resources>
+			<Grid ColumnDefinitions="*, *">
+				<!-- LEFT SIDE: LIGHT THEME PREVIEW -->
+				<ThemeVariantScope RequestedThemeVariant="Light" Grid.Column="0">
+					<Panel Background="{DynamicResource SystemRegionBrush}">
+						<StackPanel Spacing="16" Margin="20" HorizontalAlignment="Stretch">
+							<TextBlock Text="Light Theme" FontWeight="Bold" FontSize="18" HorizontalAlignment="Center"/>
+
+							<DatePicker Classes="Kuwantima" SelectedDate="2026-10-31" HorizontalAlignment="Stretch"/>
+
+							<DatePicker Classes="Kuwantima" HorizontalAlignment="Stretch"/>
+
+							<DatePicker Classes="Kuwantima" SelectedDate="2026-10-31" IsEnabled="False" HorizontalAlignment="Stretch"/>
+
+							<!-- The flyout (DatePickerPresenter) cannot be shown in a static preview — it lives
+							     in a Popup that only opens on click. Run the sandbox's Inputs page to see it.
+							     :error is not demoed here either, for the reason given in KuwantimaTextBox.axaml. -->
+						</StackPanel>
+					</Panel>
+				</ThemeVariantScope>
+
+				<!-- RIGHT SIDE: DARK THEME PREVIEW -->
+				<ThemeVariantScope RequestedThemeVariant="Dark" Grid.Column="1">
+					<Panel Background="{DynamicResource SystemRegionBrush}">
+						<StackPanel Spacing="16" Margin="20" HorizontalAlignment="Stretch">
+							<TextBlock Text="Dark Theme" FontWeight="Bold" FontSize="18" HorizontalAlignment="Center"/>
+
+							<DatePicker Classes="Kuwantima" SelectedDate="2026-10-31" HorizontalAlignment="Stretch"/>
+
+							<DatePicker Classes="Kuwantima" HorizontalAlignment="Stretch"/>
+
+							<DatePicker Classes="Kuwantima" SelectedDate="2026-10-31" IsEnabled="False" HorizontalAlignment="Stretch"/>
+						</StackPanel>
+					</Panel>
+				</ThemeVariantScope>
+
+				<!-- Vertical Divider -->
+				<Separator Width="1" VerticalAlignment="Stretch" Background="{DynamicResource KuwantimaDarkBorderBrush}" Grid.ColumnSpan="2"/>
+			</Grid>
+		</Border>
+	</Design.PreviewWith>
+
+	<!-- ═══ BASE: DatePicker.Kuwantima ═══
+	     Avalonia's DatePicker is TWO controls wearing one name: the trigger you see in the form
+	     (this style) and a DatePickerPresenter that opens in a Popup underneath it — three looping
+	     columns (day / month / year), a highlight band across the middle marking the current
+	     value, and an accept/dismiss row at the bottom. Both are styled in this file, the
+	     presenter further down, so that Classes="Kuwantima" on the picker restyles the whole
+	     experience, not just the box in the form.
+
+	     The trigger's chrome is drawn by the inner Button, exactly as in the Fluent template,
+	     because that Button is what receives :pressed and keyboard focus. It gets an INLINE
+	     template rather than Fluent's default Button theme for one reason: Fluent's Button theme
+	     paints its own hover/pressed colours onto a part named PART_ContentPresenter, and the only
+	     way to keep those out of this control is to not have a part by that name. -->
+	<Style Selector="DatePicker.Kuwantima">
+		<Setter Property="Background" Value="{DynamicResource SystemControlBackgroundBaseLowBrush}"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaGlassGlowBorder}"/>
+		<Setter Property="BorderThickness" Value="1.5"/>
+		<Setter Property="Padding" Value="12,8"/>
+		<Setter Property="CornerRadius" Value="4"/>
+		<Setter Property="Cursor" Value="Hand"/>
+
+		<Setter Property="Template">
+			<ControlTemplate>
+				<!-- DataValidationErrors is kept from the Fluent template: it is what renders the
+				     inline "This field is required." message under an invalid picker, the same way
+				     TextBox.Kuwantima's (unreplaced) Fluent template does. -->
+				<DataValidationErrors>
+					<Grid Name="LayoutRoot">
+						<Button Name="PART_FlyoutButton"
+						        Background="{TemplateBinding Background}"
+						        BorderBrush="{TemplateBinding BorderBrush}"
+						        BorderThickness="{TemplateBinding BorderThickness}"
+						        CornerRadius="{TemplateBinding CornerRadius}"
+						        Foreground="{TemplateBinding Foreground}"
+						        Padding="{TemplateBinding Padding}"
+						        IsEnabled="{TemplateBinding IsEnabled}"
+						        MinWidth="{TemplateBinding MinWidth}"
+						        MaxWidth="{TemplateBinding MaxWidth}"
+						        HorizontalAlignment="Stretch"
+						        VerticalAlignment="Stretch"
+						        FocusAdorner="{x:Null}"
+						        TemplatedControl.IsTemplateFocusTarget="True">
+							<Button.Template>
+								<ControlTemplate>
+									<ContentPresenter Name="Chrome"
+									                  Background="{TemplateBinding Background}"
+									                  BorderBrush="{TemplateBinding BorderBrush}"
+									                  BorderThickness="{TemplateBinding BorderThickness}"
+									                  CornerRadius="{TemplateBinding CornerRadius}"
+									                  Foreground="{TemplateBinding Foreground}"
+									                  Padding="{TemplateBinding Padding}"
+									                  Content="{TemplateBinding Content}"
+									                  HorizontalContentAlignment="Stretch"
+									                  VerticalContentAlignment="Stretch">
+										<ContentPresenter.Transitions>
+											<Transitions>
+												<BrushTransition Property="Background" Duration="0:0:0.2"/>
+												<BrushTransition Property="BorderBrush" Duration="0:0:0.2"/>
+											</Transitions>
+										</ContentPresenter.Transitions>
+									</ContentPresenter>
+								</ControlTemplate>
+							</Button.Template>
+
+							<!-- The three fields. Their ORDER and the grid's column definitions are
+							     assigned in code (DatePicker.SetGrid) from the current culture's short
+							     date pattern — "d/M/yyyy" puts day first, "M/d/yyyy" puts month first —
+							     so the ColumnDefinitions here are only a placeholder that keeps the
+							     previewer happy. The names are the control's template contract. -->
+							<Grid Name="PART_ButtonContentGrid" ColumnDefinitions="78*,Auto,132*,Auto,78*">
+								<TextBlock Name="PART_DayTextBlock"
+								           Text="{DynamicResource StringDatePickerDayText}"
+								           HorizontalAlignment="Center"
+								           VerticalAlignment="Center"/>
+								<TextBlock Name="PART_MonthTextBlock"
+								           Text="{DynamicResource StringDatePickerMonthText}"
+								           TextAlignment="Left"
+								           Padding="9,0,0,0"
+								           VerticalAlignment="Center"/>
+								<TextBlock Name="PART_YearTextBlock"
+								           Text="{DynamicResource StringDatePickerYearText}"
+								           HorizontalAlignment="Center"
+								           VerticalAlignment="Center"/>
+								<Rectangle Name="PART_FirstSpacer"
+								           Grid.Column="1"
+								           Width="1"
+								           HorizontalAlignment="Center"
+								           Fill="{DynamicResource KuwantimaSplitterBrush}"/>
+								<Rectangle Name="PART_SecondSpacer"
+								           Grid.Column="3"
+								           Width="1"
+								           HorizontalAlignment="Center"
+								           Fill="{DynamicResource KuwantimaSplitterBrush}"/>
+							</Grid>
+						</Button>
+
+						<!-- The flyout. Its content is styled by the DatePickerPresenter block below. -->
+						<Popup Name="PART_Popup"
+						       WindowManagerAddShadowHint="False"
+						       IsLightDismissEnabled="True"
+						       PlacementTarget="{TemplateBinding}"
+						       Placement="Bottom">
+							<DatePickerPresenter Name="PART_PickerPresenter"/>
+						</Popup>
+					</Grid>
+				</DataValidationErrors>
+			</ControlTemplate>
+		</Setter>
+
+		<!-- Hover. The whole picker gets :pointerover whenever the pointer is anywhere over its
+		     button, and a pseudo-class style outranks the Button's TemplateBindings above. -->
+		<Style Selector="^:pointerover /template/ Button#PART_FlyoutButton">
+			<Setter Property="Background" Value="{DynamicResource KuwantimaControlHoverBrush}"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaGlassGlowBorderHover}"/>
+		</Style>
+
+		<!-- Pressed: the same accent chip ComboBox.Kuwantima shows while its button is held. -->
+		<Style Selector="^ /template/ Button#PART_FlyoutButton:pressed">
+			<Setter Property="Background" Value="{DynamicResource SystemControlBackgroundAccentBrush}"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaAccentOrangeBrush}"/>
+			<Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}"/>
+		</Style>
+
+		<!-- Keyboard focus -->
+		<Style Selector="^ /template/ Button#PART_FlyoutButton:focus-visible">
+			<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaGlassGlowBorderHover}"/>
+		</Style>
+
+		<!-- No date yet: the "day / month / year" labels are placeholders, inked like one. The
+		     second rule keeps them readable on the accent chip while the button is held, because
+		     the placeholder ink set directly on the TextBlocks would otherwise outrank the white
+		     Foreground the pressed rule puts on the Button. -->
+		<Style Selector="^:hasnodate /template/ Button#PART_FlyoutButton TextBlock">
+			<Setter Property="Foreground" Value="{DynamicResource TextControlPlaceholderForeground}"/>
+		</Style>
+		<Style Selector="^:hasnodate /template/ Button#PART_FlyoutButton:pressed TextBlock">
+			<Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}"/>
+		</Style>
+
+		<!-- Validation error — see KuwantimaTextBox.axaml for the full rationale. One plain selector:
+		     document order already makes it win over :focus-visible above and lose to :disabled
+		     below, with no compound selector needed. -->
+		<Style Selector="^:error /template/ Button#PART_FlyoutButton">
+			<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaValidationErrorBrush}"/>
+		</Style>
+
+		<!-- Disabled: pin Background/Foreground to prevent Fluent's disabled brushes from double-dimming -->
+		<Style Selector="^:disabled">
+			<Setter Property="Opacity" Value="0.5"/>
+			<Setter Property="Foreground" Value="{DynamicResource SystemBaseHighColor}"/>
+			<Setter Property="Cursor" Value="Arrow"/>
+		</Style>
+		<Style Selector="^:disabled /template/ Button#PART_FlyoutButton">
+			<Setter Property="Background" Value="{DynamicResource SystemControlBackgroundBaseLowBrush}"/>
+			<Setter Property="BorderBrush" Value="Transparent"/>
+		</Style>
+	</Style>
+
+	<!-- ═══ FLYOUT: DatePicker.Kuwantima DatePickerPresenter ═══
+	     Reached through the Popup by a plain descendant selector — Popup content stays in its
+	     owner's LOGICAL tree even though it renders in its own window, which is the same fact
+	     ComboBox.Kuwantima's item styles rely on.
+
+	     The template is replaced rather than recoloured because Fluent paints the parts that
+	     matter here (the highlight band, the column dividers, the items' theme) as literal values
+	     INSIDE its template, and a value set inside a template outranks any plain style setter
+	     aimed at it. Owning the template is the only way to own those brushes. Every PART_ name
+	     below is the presenter's template contract (DatePickerPresenter.cs) and must stay.
+
+	     OPAQUE background, matching ComboBox.Kuwantima's dropdown and the palette flyout: a popup
+	     floats over arbitrary content, so the translucent glass panel would read as broken here. -->
+	<Style Selector="DatePicker.Kuwantima DatePickerPresenter">
+		<Setter Property="Background" Value="{DynamicResource SystemRegionBrush}"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource KuwantimaGlassGlowBorderHover}"/>
+		<Setter Property="BorderThickness" Value="1.5"/>
+		<Setter Property="CornerRadius" Value="4"/>
+		<Setter Property="Padding" Value="4"/>
+
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Name="PopupBorder"
+				        Background="{TemplateBinding Background}"
+				        BorderBrush="{TemplateBinding BorderBrush}"
+				        BorderThickness="{TemplateBinding BorderThickness}"
+				        CornerRadius="{TemplateBinding CornerRadius}"
+				        Padding="{TemplateBinding Padding}">
+					<Grid Name="ContentRoot" RowDefinitions="*,Auto">
+
+						<!-- The columns. As with the trigger, their order and the ColumnDefinitions
+						     are assigned in code (DatePickerPresenter.SetGrid) from the culture's
+						     date pattern, so none are declared here. Each host Panel stacks a looping
+						     selector with a pair of step arrows that appear when the column is
+						     hovered (see RepeatButton.Step below). -->
+						<Grid Name="PART_PickerContainer">
+							<Panel Name="PART_MonthHost">
+								<ScrollViewer HorizontalScrollBarVisibility="Disabled"
+								              VerticalScrollBarVisibility="Hidden">
+									<DateTimePickerPanel Name="PART_MonthSelector"
+									                     PanelType="Month"
+									                     ItemHeight="40"
+									                     ShouldLoop="True"/>
+								</ScrollViewer>
+								<RepeatButton Name="PART_MonthUpButton" Classes="Step Up"/>
+								<RepeatButton Name="PART_MonthDownButton" Classes="Step Down"/>
+							</Panel>
+							<Panel Name="PART_DayHost">
+								<ScrollViewer HorizontalScrollBarVisibility="Disabled"
+								              VerticalScrollBarVisibility="Hidden">
+									<DateTimePickerPanel Name="PART_DaySelector"
+									                     PanelType="Day"
+									                     ItemHeight="40"
+									                     ShouldLoop="True"/>
+								</ScrollViewer>
+								<RepeatButton Name="PART_DayUpButton" Classes="Step Up"/>
+								<RepeatButton Name="PART_DayDownButton" Classes="Step Down"/>
+							</Panel>
+							<Panel Name="PART_YearHost">
+								<ScrollViewer HorizontalScrollBarVisibility="Disabled"
+								              VerticalScrollBarVisibility="Hidden">
+									<DateTimePickerPanel Name="PART_YearSelector"
+									                     PanelType="Year"
+									                     ItemHeight="40"
+									                     ShouldLoop="False"/>
+								</ScrollViewer>
+								<RepeatButton Name="PART_YearUpButton" Classes="Step Up"/>
+								<RepeatButton Name="PART_YearDownButton" Classes="Step Down"/>
+							</Panel>
+
+							<!-- The highlight band: the row across all three columns that marks the
+							     current value. Drawn BEHIND the columns (ZIndex -1; the items are
+							     transparent) as the same accent chip a selected ComboBoxItem gets —
+							     accent fill, white text (via the item style below), orange left edge.
+							     Its height is the selectors' ItemHeight. -->
+							<Border Name="HighlightBand"
+							        Grid.Column="0" Grid.ColumnSpan="5"
+							        ZIndex="-1"
+							        IsHitTestVisible="False"
+							        Height="40"
+							        VerticalAlignment="Center"
+							        CornerRadius="3"
+							        Background="{DynamicResource SystemControlBackgroundAccentBrush}"
+							        BorderBrush="{DynamicResource KuwantimaAccentOrangeBrush}"
+							        BorderThickness="2,0,0,0"/>
+
+							<Rectangle Name="PART_FirstSpacer"
+							           Grid.Column="1"
+							           Width="1"
+							           HorizontalAlignment="Center"
+							           Fill="{DynamicResource KuwantimaSplitterBrush}"/>
+							<Rectangle Name="PART_SecondSpacer"
+							           Grid.Column="3"
+							           Width="1"
+							           HorizontalAlignment="Center"
+							           Fill="{DynamicResource KuwantimaSplitterBrush}"/>
+						</Grid>
+
+						<!-- Accept / dismiss. Glyphs are stroked Paths bound to their Button's
+						     Foreground, so the pressed rule below turns them white along with the
+						     chip; the check is drawn in accent at rest, the same way CheckBox.Kuwantima
+						     draws its checkmark. -->
+						<Grid Name="AcceptDismissGrid" Grid.Row="1" ColumnDefinitions="*,*" Margin="0,4,0,0">
+							<Rectangle Grid.ColumnSpan="2"
+							           Height="1"
+							           VerticalAlignment="Top"
+							           Fill="{DynamicResource KuwantimaSplitterBrush}"/>
+							<Button Name="PART_AcceptButton" Grid.Column="0" Classes="Action Accept">
+								<Path Data="M 1,7 L 5.5,11.5 L 15,2"
+								      Stroke="{Binding $parent[Button].Foreground}"
+								      StrokeThickness="1.5"
+								      StrokeLineCap="Round"
+								      StrokeJoin="Round"/>
+							</Button>
+							<Button Name="PART_DismissButton" Grid.Column="1" Classes="Action">
+								<Path Data="M 2,2 L 12,12 M 2,12 L 12,2"
+								      Stroke="{Binding $parent[Button].Foreground}"
+								      StrokeThickness="1.5"
+								      StrokeLineCap="Round"/>
+							</Button>
+						</Grid>
+					</Grid>
+				</Border>
+			</ControlTemplate>
+		</Setter>
+	</Style>
+
+	<!-- ═══ ITEMS: DatePicker.Kuwantima DateTimePickerPanel > ListBoxItem ═══
+	     The selectors create their own ListBoxItems in code (DateTimePickerPanel.cs) and mark
+	     the one under the band :selected, so the band's white ink is simply the selected item's
+	     Foreground — the item itself stays transparent to let the band show through. This mirrors
+	     ListBox.Kuwantima's item style, including replacing the template so Fluent's own
+	     hover/selection fills on PART_ContentPresenter are overridden rather than layered. -->
+	<Style Selector="DatePicker.Kuwantima DateTimePickerPanel > ListBoxItem">
+		<Setter Property="Background" Value="Transparent"/>
+		<Setter Property="Foreground" Value="{DynamicResource SystemBaseHighColor}"/>
+		<Setter Property="Padding" Value="8,0"/>
+		<Setter Property="CornerRadius" Value="3"/>
+		<Setter Property="HorizontalContentAlignment" Value="Center"/>
+		<Setter Property="VerticalContentAlignment" Value="Center"/>
+		<Setter Property="Cursor" Value="Hand"/>
+
+		<Setter Property="Template">
+			<ControlTemplate>
+				<ContentPresenter Name="PART_ContentPresenter"
+				                  Foreground="{TemplateBinding Foreground}"
+				                  Background="{TemplateBinding Background}"
+				                  CornerRadius="{TemplateBinding CornerRadius}"
+				                  ContentTemplate="{TemplateBinding ContentTemplate}"
+				                  Content="{TemplateBinding Content}"
+				                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+				                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+				                  Padding="{TemplateBinding Padding}"/>
+			</ControlTemplate>
+		</Setter>
+
+		<!-- Month names are words, not numbers: left-aligned, like the trigger's month field. -->
+		<Style Selector="^.MonthItem">
+			<Setter Property="HorizontalContentAlignment" Value="Left"/>
+			<Setter Property="Padding" Value="12,0,8,0"/>
+		</Style>
+
+		<!-- Hover / pressed -->
+		<Style Selector="^:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+			<Setter Property="Background" Value="{DynamicResource KuwantimaControlHoverBrush}"/>
+		</Style>
+		<Style Selector="^:pressed /template/ ContentPresenter#PART_ContentPresenter">
+			<Setter Property="Background" Value="{DynamicResource KuwantimaControlHoverBrush}"/>
+		</Style>
+
+		<!-- Selected: transparent so the band shows through; white ink to sit on it. Placed after
+		     hover so document order keeps the band clean while the pointer rests on it. -->
+		<Style Selector="^:selected /template/ ContentPresenter#PART_ContentPresenter">
+			<Setter Property="Background" Value="Transparent"/>
+			<Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}"/>
+		</Style>
+	</Style>
+
+	<!-- ═══ STEP ARROWS: DatePicker.Kuwantima DatePickerPresenter RepeatButton.Step ═══
+	     One per end of each column. Hidden until the column is hovered (next block), opaque so
+	     the items scrolling beneath do not show through, and otherwise the plain Kuwantima button
+	     recipe: hover wash, accent chip on press. Not focusable — focus belongs to the selector. -->
+	<Style Selector="DatePicker.Kuwantima DatePickerPresenter RepeatButton.Step">
+		<Setter Property="Background" Value="{DynamicResource SystemControlBackgroundBaseLowBrush}"/>
+		<Setter Property="Foreground" Value="{DynamicResource SystemBaseHighColor}"/>
+		<Setter Property="BorderThickness" Value="0"/>
+		<Setter Property="CornerRadius" Value="3"/>
+		<Setter Property="Height" Value="24"/>
+		<Setter Property="HorizontalAlignment" Value="Stretch"/>
+		<Setter Property="HorizontalContentAlignment" Value="Center"/>
+		<Setter Property="VerticalContentAlignment" Value="Center"/>
+		<Setter Property="Focusable" Value="False"/>
+		<Setter Property="IsVisible" Value="False"/>
+		<Setter Property="Cursor" Value="Hand"/>
+
+		<Setter Property="Template">
+			<ControlTemplate>
+				<!-- Two layers: the outer Border stays opaque while the inner presenter takes the
+				     translucent hover wash, so the wash composites over the button rather than
+				     over the scrolling items. -->
+				<Border Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding CornerRadius}">
+					<ContentPresenter Name="StepChrome"
+					                  Background="Transparent"
+					                  CornerRadius="{TemplateBinding CornerRadius}"
+					                  Foreground="{TemplateBinding Foreground}"
+					                  Content="{TemplateBinding Content}"
+					                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+					                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+				</Border>
+			</ControlTemplate>
+		</Setter>
+
+		<Style Selector="^.Up">
+			<Setter Property="VerticalAlignment" Value="Top"/>
+			<Setter Property="Content">
+				<Template>
+					<Path Data="M 1,6 L 6,1 L 11,6"
+					      Stroke="{Binding $parent[RepeatButton].Foreground}"
+					      StrokeThickness="1.5"
+					      StrokeLineCap="Round"
+					      StrokeJoin="Round"/>
+				</Template>
+			</Setter>
+		</Style>
+		<Style Selector="^.Down">
+			<Setter Property="VerticalAlignment" Value="Bottom"/>
+			<Setter Property="Content">
+				<Template>
+					<Path Data="M 1,1 L 6,6 L 11,1"
+					      Stroke="{Binding $parent[RepeatButton].Foreground}"
+					      StrokeThickness="1.5"
+					      StrokeLineCap="Round"
+					      StrokeJoin="Round"/>
+				</Template>
+			</Setter>
+		</Style>
+
+		<Style Selector="^:pointerover /template/ ContentPresenter#StepChrome">
+			<Setter Property="Background" Value="{DynamicResource KuwantimaControlHoverBrush}"/>
+		</Style>
+		<Style Selector="^:pressed">
+			<Setter Property="Background" Value="{DynamicResource SystemControlBackgroundAccentBrush}"/>
+			<Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}"/>
+		</Style>
+	</Style>
+
+	<!-- Reveal the arrows while their column is hovered. The hosts are bare <Panel>s and this
+	     type selector matches that exact type, so the ScrollViewers' own (hidden) scrollbar
+	     buttons are not caught. -->
+	<Style Selector="DatePicker.Kuwantima DatePickerPresenter Panel:pointerover > RepeatButton.Step">
+		<Setter Property="IsVisible" Value="True"/>
+	</Style>
+
+	<!-- ═══ ACTIONS: DatePicker.Kuwantima DatePickerPresenter Button.Action ═══
+	     Accept (.Accept, check drawn in accent) and dismiss: transparent at rest, hover wash,
+	     accent chip with white glyph on press — Button.Kuwantima's recipe without the border. -->
+	<Style Selector="DatePicker.Kuwantima DatePickerPresenter Button.Action">
+		<Setter Property="Background" Value="Transparent"/>
+		<Setter Property="Foreground" Value="{DynamicResource SystemBaseHighColor}"/>
+		<Setter Property="BorderThickness" Value="0"/>
+		<Setter Property="CornerRadius" Value="3"/>
+		<Setter Property="Height" Value="36"/>
+		<Setter Property="Margin" Value="0,5,0,0"/>
+		<Setter Property="HorizontalAlignment" Value="Stretch"/>
+		<Setter Property="HorizontalContentAlignment" Value="Center"/>
+		<Setter Property="VerticalContentAlignment" Value="Center"/>
+		<Setter Property="Cursor" Value="Hand"/>
+
+		<Setter Property="Template">
+			<ControlTemplate>
+				<ContentPresenter Name="ActionChrome"
+				                  Background="{TemplateBinding Background}"
+				                  CornerRadius="{TemplateBinding CornerRadius}"
+				                  Foreground="{TemplateBinding Foreground}"
+				                  Content="{TemplateBinding Content}"
+				                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+				                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}">
+					<ContentPresenter.Transitions>
+						<Transitions>
+							<BrushTransition Property="Background" Duration="0:0:0.2"/>
+						</Transitions>
+					</ContentPresenter.Transitions>
+				</ContentPresenter>
+			</ControlTemplate>
+		</Setter>
+
+		<Style Selector="^.Accept">
+			<Setter Property="Foreground" Value="{DynamicResource SystemControlBackgroundAccentBrush}"/>
+		</Style>
+
+		<Style Selector="^:pointerover">
+			<Setter Property="Background" Value="{DynamicResource KuwantimaControlHoverBrush}"/>
+		</Style>
+		<Style Selector="^:pressed">
+			<Setter Property="Background" Value="{DynamicResource SystemControlBackgroundAccentBrush}"/>
+			<Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}"/>
+		</Style>
+	</Style>
+</Styles>

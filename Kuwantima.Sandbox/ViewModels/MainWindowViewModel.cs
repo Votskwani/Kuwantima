@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -99,6 +100,13 @@ namespace Kuwantima.Sandbox.ViewModels
 
         [ObservableProperty]
         private bool _isChecked = true;
+
+        /// <summary>Demo values for the Inputs page's DatePicker / TimePicker samples.</summary>
+        [ObservableProperty]
+        private DateTimeOffset? _demoDate = new(2026, 10, 31, 0, 0, 0, TimeSpan.Zero);
+
+        [ObservableProperty]
+        private TimeSpan? _demoTime = new(14, 30, 0);
 
         [ObservableProperty]
         private bool _isScrimVisible;

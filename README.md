@@ -1,7 +1,7 @@
 # Kuwantima
 
 A glass-glow design system for [Avalonia UI](https://avaloniaui.net/).
-One `StyleInclude`, 16 styled controls, automatic light/dark theming.
+One `StyleInclude`, 18 styled controls, automatic light/dark theming.
 
 <!-- TODO: Add screenshot of sandbox (light + dark side-by-side) -->
 
@@ -74,7 +74,7 @@ release — even on a release where only one of the two actually changed.
 
 ## Controls
 
-The table below is the **core `Kuwantima` package** — 16 controls, one dependency-light install.
+The table below is the **core `Kuwantima` package** — 18 controls, one dependency-light install.
 DataGrid ships separately; see [DataGrid (optional)](#datagrid-optional) above.
 
 | Control | Class | Variants |
@@ -83,6 +83,7 @@ DataGrid ships separately; see [DataGrid (optional)](#datagrid-optional) above.
 | CheckBox | `Kuwantima` | `Classic` |
 | Color Palette Picker | `KuwantimaPalette` (trigger), `KuwantimaSwatch` (swatch) | |
 | ComboBox | `Kuwantima` | `:error` |
+| DatePicker | `Kuwantima` | `:error` |
 | Expander | `Kuwantima` | |
 | Border (Glass) | `KuwantimaGlass` | |
 | GridSplitter | `Kuwantima` | `Pill`, `Arrow` (+ `Horizontal`/`Vertical`) |
@@ -93,11 +94,16 @@ DataGrid ships separately; see [DataGrid (optional)](#datagrid-optional) above.
 | Slider | `Kuwantima` | |
 | TabControl | `Kuwantima` | |
 | TextBox | `Kuwantima` | `ReadOnly`, `:error` |
+| TimePicker | `Kuwantima` | `:error` |
 | ToggleButton | `Kuwantima` | |
 | ToolTip | `Kuwantima` | |
 
 `:error` isn't a class you add — unlike every other variant above, it's Avalonia's native
 `:error` pseudo-class, which fires automatically from `DataValidationErrors`/binding validation.
+
+DatePicker and TimePicker restyle both halves of the control: the field in your form and the
+looping-column flyout that opens under it (highlight band, step arrows, accept/dismiss). Nothing
+extra to add — `Classes="Kuwantima"` on the picker is the whole opt-in.
 
 ### Variant Examples
 

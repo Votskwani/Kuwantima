@@ -117,6 +117,7 @@ public class ThemeIntegrityTests
             typeof(Button), typeof(CheckBox), typeof(RadioButton), typeof(ToggleButton),
             typeof(TextBox), typeof(ComboBox), typeof(ListBox), typeof(Slider),
             typeof(ProgressBar), typeof(TabControl), typeof(Expander),
+            typeof(DatePicker), typeof(TimePicker),
         }
         from variant in new[] { "Light", "Dark" }
         select new object[] { control, variant };

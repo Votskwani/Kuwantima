@@ -69,6 +69,8 @@ public partial class InvariantTests
         ["KuwantimaButton.axaml"] = new("Button", null, null),
         ["KuwantimaCheckBox.axaml"] = new("CheckBox", null, null),
         ["KuwantimaComboBox.axaml"] = new("ComboBox", null, null),
+        ["KuwantimaDatePicker.axaml"] = new("DatePicker", null, null),
+        ["KuwantimaTimePicker.axaml"] = new("TimePicker", null, null),
         ["KuwantimaExpander.axaml"] = new("Expander", null, null),
         ["KuwantimaListBox.axaml"] = new("ListBox", null, null),
         ["KuwantimaMenuToggleButton.axaml"] = new("ToggleButton (.KuwantimaMenu)", null, null),
