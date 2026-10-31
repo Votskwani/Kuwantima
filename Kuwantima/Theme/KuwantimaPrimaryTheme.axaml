@@ -5,6 +5,23 @@
 	App.axaml is all that's needed to apply the full theme:
 
 	VERSION HISTORY:
+	  1.10.0 2026-10-31  DatePicker and TimePicker — controls 17 and 18
+	         • Two new core style files (KuwantimaDatePicker.axaml, KuwantimaTimePicker.axaml) styling
+	           Avalonia's looping-column pickers; CalendarDatePicker / Calendar deliberately not included
+	         • Each picker is restyled WHOLE: the trigger in the form AND the presenter that opens in its
+	           Popup — highlight band as the accent chip (accent fill, orange left edge, white ink), step
+	           arrows on the hovered column, accent check / plain dismiss, opaque SystemRegionBrush
+	           surface matching the ComboBox dropdown and the palette flyout
+	         • The presenter's template is REPLACED, not recoloured: Fluent paints the band, dividers and
+	           item theme as literal values inside its template, which outrank any plain setter; it is
+	           reached by a descendant selector through the Popup (content stays in the logical tree)
+	         • :error paints KuwantimaValidationErrorBrush on the trigger (picker variant of Invariant_8);
+	           the DataValidationErrors root is kept so the inline message still renders
+	         • New Invariant_9 clicks PART_FlyoutButton headlessly and asserts the open popup holds the
+	           Kuwantima template, surface, band and selected-item ink — the one regression no static
+	           check could catch
+	         • Control count 16 → 18. Additive only: nothing renamed or removed. Kuwantima.DataGrid is
+	           unchanged and re-published in lockstep
 	  1.9.0  2026-10-23  Avalonia 12.1.3 → 12.1.4 dependency bump. No controls added, removed, or
 	                     renamed; control count stays 16. The real news this release is in the
 	                     Kuwantima.DataGrid companion package — see KuwantimaDataGridTheme.axaml's

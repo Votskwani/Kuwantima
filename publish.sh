@@ -104,7 +104,7 @@ cd "$REPO_ROOT"
 git add -A
 git commit -m "Release Kuwantima v$VERSION
 
-Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>"
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 echo "  → Committed"
 
 # ── Step 3: Tag ──────────────────────────────────────────────────

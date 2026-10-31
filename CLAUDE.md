@@ -633,7 +633,7 @@ the window even once it was confirmed foreground; keyboard navigation was) — s
 touches selection or disabled styling again, re-verify those two states specifically rather than
 assuming this entry covers them.
 
-## DatePicker and TimePicker — built 2026-10-31, controls 17 and 18
+## DatePicker and TimePicker — SHIPPED v1.10.0 (2026-10-31), controls 17 and 18
 
 `KuwantimaDatePicker.axaml` and `KuwantimaTimePicker.axaml` style Avalonia's looping-column
 pickers (the WinUI-shaped `DatePicker`/`TimePicker`, not `CalendarDatePicker`/`Calendar`, which

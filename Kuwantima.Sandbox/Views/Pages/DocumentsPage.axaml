@@ -187,6 +187,31 @@
                 <TextBlock Text="Version History" FontWeight="SemiBold" FontSize="18"/>
                 <Border Classes="KuwantimaGlass" Padding="16" CornerRadius="6">
                     <StackPanel Spacing="12">
+                        <!-- v1.10.0 -->
+                        <StackPanel Spacing="6">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <Border Background="{DynamicResource SystemControlBackgroundAccentBrush}"
+                                        CornerRadius="4" Padding="8,2">
+                                    <TextBlock Text="v1.10.0" FontWeight="Bold" FontSize="12"
+                                               Foreground="{DynamicResource AccentButtonForeground}"/>
+                                </Border>
+                                <TextBlock Text="2026-10-31" FontSize="12" VerticalAlignment="Center"
+                                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                                <TextBlock Text="DatePicker and TimePicker — controls 17 and 18" FontSize="12" VerticalAlignment="Center"
+                                           FontWeight="SemiBold"/>
+                            </StackPanel>
+                            <StackPanel Spacing="3" Margin="12,0,0,0">
+                                <TextBlock FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"
+                                           Text="Classes=&quot;Kuwantima&quot; restyles the whole picker: the field in the form and the looping-column flyout under it"/>
+                                <TextBlock FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"
+                                           Text="Flyout: accent highlight band with the warm-orange edge, step arrows on the hovered column, accept/dismiss row"/>
+                                <TextBlock FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"
+                                           Text="Native :error styling and the inline validation message, the same as TextBox and ComboBox"/>
+                                <TextBlock FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"
+                                           Text="Kuwantima.DataGrid: no changes — re-published in lockstep under the shared version"/>
+                            </StackPanel>
+                        </StackPanel>
+
                         <!-- v1.9.0 -->
                         <StackPanel Spacing="6">
                             <StackPanel Orientation="Horizontal" Spacing="10">
