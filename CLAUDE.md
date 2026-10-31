@@ -425,6 +425,21 @@ on the icon), not a one-off hack — likely useful wherever a control needs to s
 background process rather than a binary on/off state, which the existing checked-state color treatment
 doesn't distinguish.
 
+**Same ad-hoc pattern recurring a third time (2026-10-27): consider a first-class "color-changing
+icon button" control/style, not another one-off.** OdooDock's Widget Area tray (a Completed Services
+widget, not the nav-logger above) needed a bare `PathIcon` glyph whose `Foreground` tracks the live
+accent color — same shape as the nav-logger case two entries up, same hand-rolled fix each time: a
+plain `Button`, custom `ControlTemplate` to strip `KuwantimaMenu` chrome, and
+`Foreground="{DynamicResource SystemControlBackgroundAccentBrush}"` written out again in the
+consumer's own XAML (confirmed live: resolves correctly, renders as the current accent color, not a
+silent-failure blank glyph). Nothing wrong with the result, but it's the third time a downstream
+consumer has reinvented the same few lines rather than reaching for a built-in Kuwantima control.
+Worth a look next time this file gets attention: a `PathIcon`-wrapping control or a
+`Classes="KuwantimaAccentIcon"`-style convention that bakes in "transparent click-area padding +
+muted-at-rest/live-accent `Foreground`" as a single reusable piece, the same way `KuwantimaMenu`
+bakes in the tile chrome for icon+label buttons. Not started — flagging the pattern, not designing
+the control yet.
+
 ## A verification trap this repo has set four times
 Each of these shipped (or nearly), and each survived a check that *felt* rigorous:
 
