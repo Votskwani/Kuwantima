@@ -456,6 +456,22 @@ muted-at-rest/live-accent `Foreground`" as a single reusable piece, the same way
 bakes in the tile chrome for icon+label buttons. Not started — flagging the pattern, not designing
 the control yet.
 
+**DatePicker.Kuwantima under `HorizontalAlignment="Stretch"` (OdooDock, 2026-11-01, v1.10.0):** Fluent's base
+`DatePicker` ControlTheme sets `MinWidth` 296 / `MaxWidth` 456 on the *control* (not just on its inner Button),
+and `KuwantimaDatePicker.axaml`'s replacement template carries both through via `TemplateBinding`. So in a form
+column wider than 456 px a stretched picker stays 456 wide and centres in the slack while the `ComboBox.Kuwantima`
+above and below it fill the column — OdooDock's onboarding wizard hit exactly this and works around it per
+instance with `MaxWidth="Infinity"`. Open question for the style: should `DatePicker.Kuwantima` (and
+`TimePicker.Kuwantima`, same vendor setters) reset `MaxWidth` to `Infinity` so Stretch behaves like the other
+Kuwantima inputs, or is the vendor cap a deliberate "a date field shouldn't be a mile wide" choice worth keeping?
+Not changed here; the Sandbox's Inputs page column is narrow enough that it never shows.
+
+**No power/toggle/status glyph in the icon set (OdooDock, 2026-11-01):** OdooDock's new "Subscription Status"
+Actions Menu entry (activate / inactivate a subscription) needed an on/off or status icon and the 13 `Icon.*`
+keys offer nothing closer than `Icon.Refresh`, which is what it uses as a placeholder. Alongside the
+stop/close gap this is the second time a nav entry has had to borrow an unrelated glyph; a small
+status/power set (power, pause, play, stop) would cover both.
+
 ## A verification trap this repo has set four times
 Each of these shipped (or nearly), and each survived a check that *felt* rigorous:
 
