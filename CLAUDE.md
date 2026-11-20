@@ -472,6 +472,16 @@ keys offer nothing closer than `Icon.Refresh`, which is what it uses as a placeh
 stop/close gap this is the second time a nav entry has had to borrow an unrelated glyph; a small
 status/power set (power, pause, play, stop) would cover both.
 
+**No billing / money / document glyph in the icon set (OdooDock, 2026-11-20).** OdooDock's new "Billing" Actions-Menu entry
+(Hub Phase 2: month-end run preview, exception list, run history) needed an icon and the set has nothing that says invoice,
+receipt, ledger or currency; it ships with `Icon.Grid` as a placeholder (the only unused glyph that reads as "a table of
+rows"). Request: an **`Icon.Receipt`** (a receipt / invoice sheet — a tall rounded rectangle with two or three short text
+lines and a zig-zag or straight bottom edge) in the same stroke weight as `Gear`/`Layers`, and optionally a `Icon.Dollar`
+companion for the Widget Area tile's "charge" zone. OdooDock carries a `// TODO Kuwantima: Icon.Receipt` comment at the
+`NavPage` line and switches the moment the glyph ships (Cole, 2026-11-20: "suggest a more appropriate icon to Kuwantima with
+note to change when/if it gets done"). Same request shape as the power/toggle one above: a deliberate small addition to the
+icon family, not a one-off.
+
 ## A verification trap this repo has set four times
 Each of these shipped (or nearly), and each survived a check that *felt* rigorous:
 
