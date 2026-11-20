@@ -472,7 +472,8 @@ muted-at-rest/live-accent `Foreground`" as a single reusable piece, the same way
 bakes in the tile chrome for icon+label buttons. Not started — flagging the pattern, not designing
 the control yet.
 
-**DECIDED 2026-11-20 (Cole agreed): build it as a chrome-less `ToggleButton` variant in v1.12.0, after v1.11.0
+**DECIDED 2026-11-20 (Cole agreed) and PINNED as the next release's work (v1.12.0), NOT STARTED — begin only when asked:
+build it as a chrome-less `ToggleButton` variant, after v1.11.0
 ships — not a new control.** Count stays 18; the New Variant Checklist applies. Shape: transparent, no border,
 hover wash, glyph muted at rest (`SystemControlForegroundBaseMediumBrush`) and accent when `:checked`; Cursor and
 disabled pins inherited from the base. The reciprocal glyph pair (Play ↔ Pause) stays a documented two-`PathIcon`
