@@ -47,6 +47,18 @@ within days of publish and then never again. The total is simply ~100 × version
 DataGrid republishes that change nothing. Expect v1.10.0 to sit near 100 within a week; if it
 does, that is the mirrors, not a user. The known real consumers remain Cole's own projects
 (BBSpa, BBService, OdooDock, Tunatya).
+**Re-checked 2026-11-20, minutes after publishing v1.11.0 (seven icons + Avalonia 12.1.6) — and this time the
+14-day window (11-06 → 11-19) contained NO push at all, the first check against a quiet window.** NuGet
+(search API, which still listed 1.10.0 as latest, i.e. current as of the last index): `Kuwantima` 1,571
+(+217 since 10-31), `Kuwantima.DataGrid` 318 (+132). GitHub: still 0 stars, 0 watchers, still exactly the one
+dormant fork; **0 views / 0 unique visitors in 14 days, and clones fell to 8 from 7 uniques** (from 75 / 39 in
+the previous, release-bearing window) — confirming the 10-31 reading that clone spikes are push-triggered: no
+pushes, almost no clones. The new evidence this round is in the per-version *deltas*: **every version rose by
+a similar amount regardless of age** — 1.0.0 138 → 141, 1.4.1 96 → 105, 1.9.0 99 → 116, 1.10.0 (three weeks
+old) 122, DataGrid 96 / 90 → 106 / 103. A human population concentrates on the newest version; a flat increment
+across thirteen versions is a mirror re-sweeping the whole catalogue. So the +217 with no release was catalogue
+sweeps, not adopters. The 10-31 prediction held — v1.10.0 plateaued at 122, like every other version. Unmoved a
+fifth time; the audience is unchanged. Expect v1.11.0 near 100–120 within a week.
 So Kuwantima's real user is **a student learning to fork, clone, edit and push** — not a NuGet
 consumer integrating a design system. Prioritise accordingly:
 - **The IDE previewer working is a first-class feature**, not a nicety. A beginner who opens a style
