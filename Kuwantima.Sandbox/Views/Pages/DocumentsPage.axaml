@@ -187,6 +187,31 @@
                 <TextBlock Text="Version History" FontWeight="SemiBold" FontSize="18"/>
                 <Border Classes="KuwantimaGlass" Padding="16" CornerRadius="6">
                     <StackPanel Spacing="12">
+                        <!-- v1.11.0 -->
+                        <StackPanel Spacing="6">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <Border Background="{DynamicResource SystemControlBackgroundAccentBrush}"
+                                        CornerRadius="4" Padding="8,2">
+                                    <TextBlock Text="v1.11.0" FontWeight="Bold" FontSize="12"
+                                               Foreground="{DynamicResource AccentButtonForeground}"/>
+                                </Border>
+                                <TextBlock Text="2026-11-20" FontSize="12" VerticalAlignment="Center"
+                                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                                <TextBlock Text="Seven new icons, and Avalonia 12.1.6" FontSize="12" VerticalAlignment="Center"
+                                           FontWeight="SemiBold"/>
+                            </StackPanel>
+                            <StackPanel Spacing="3" Margin="12,0,0,0">
+                                <TextBlock FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"
+                                           Text="Icon.Receipt and Icon.Dollar for billing, Icon.Power for status, and the transport family Icon.Record / Play / Pause / Stop — 22 icons now ship, up from 15"/>
+                                <TextBlock FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"
+                                           Text="All seven from Material Design Icons, credited in the README — see the Containers page for the full set"/>
+                                <TextBlock FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"
+                                           Text="Avalonia 12.1.4 → 12.1.6: keyboard navigation now works inside the DatePicker and TimePicker flyouts"/>
+                                <TextBlock FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumHighBrush}"
+                                           Text="Kuwantima.DataGrid: same Avalonia bump, otherwise unchanged — re-published in lockstep"/>
+                            </StackPanel>
+                        </StackPanel>
+
                         <!-- v1.10.0 -->
                         <StackPanel Spacing="6">
                             <StackPanel Orientation="Horizontal" Spacing="10">

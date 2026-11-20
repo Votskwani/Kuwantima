@@ -9,6 +9,10 @@
 		<StyleInclude Source="avares://Kuwantima.DataGrid/Theme/KuwantimaDataGridTheme.axaml"/>
 
 	VERSION HISTORY:
+	  1.11.0 2026-11-20  Avalonia 12.1.4 → 12.1.6; no styling changes
+	         • Dependency bump only, matching the core package. Kuwantima gained seven icons this release;
+	           see KuwantimaPrimaryTheme.axaml's VERSION HISTORY. Re-published in lockstep per CLAUDE.md's
+	           Version Management section
 	  1.10.0 2026-10-31  Lockstep version bump only — nothing in this package changed
 	         • Kuwantima (the core package) gained DatePicker and TimePicker, controls 17 and 18; see
 	           KuwantimaPrimaryTheme.axaml's VERSION HISTORY. This package is re-published under the

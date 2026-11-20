@@ -5,6 +5,20 @@
 	App.axaml is all that's needed to apply the full theme:
 
 	VERSION HISTORY:
+	  1.11.0 2026-11-20  Seven new icons, and Avalonia 12.1.6
+	         • Icon.Receipt and Icon.Dollar (billing), Icon.Power (status), and the transport family
+	           Icon.Record / Icon.Play / Icon.Pause / Icon.Stop — 22 icons now ship, up from 15. All seven
+	           are Material Design Icons (receipt-text, currency-usd, power, record, play, pause, stop),
+	           pasted verbatim from the SVG source and credited in README's Icon Attribution list
+	         • The transport four are solid shapes of matching weight, meant to sit in one toolbar row;
+	           Record is the plain dot so it still reads when a consumer pulses its opacity
+	         • Avalonia 12.1.4 → 12.1.6 (two upstream patch releases; nothing touching Fluent resource
+	           keys or templates). Keyboard navigation now works inside the DatePicker / TimePicker
+	           flyouts — a code-only upstream fix the replaced Kuwantima presenter templates inherit
+	         • New InvariantTests.Icons.cs guards README's icon count / table / attribution against the
+	           dictionary and requires the icon file's own preview to show every key under both themes
+	         • No controls added, removed or renamed. Kuwantima.DataGrid takes the same Avalonia bump
+	           and is otherwise unchanged, re-published in lockstep
 	  1.10.0 2026-10-31  DatePicker and TimePicker — controls 17 and 18
 	         • Two new core style files (KuwantimaDatePicker.axaml, KuwantimaTimePicker.axaml) styling
 	           Avalonia's looping-column pickers; CalendarDatePicker / Calendar deliberately not included

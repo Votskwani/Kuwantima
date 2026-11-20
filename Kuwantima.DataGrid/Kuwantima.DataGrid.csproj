@@ -13,7 +13,7 @@
 
     <!-- NuGet package metadata -->
     <PackageId>Kuwantima.DataGrid</PackageId>
-    <Version>1.10.0</Version>
+    <Version>1.11.0</Version>
     <Authors>Cole Larson</Authors>
     <Description>A styled DataGrid for Kuwantima, Avalonia's glass-glow design system. Ships separately so the core Kuwantima package stays free of the Avalonia.Controls.DataGrid dependency.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -22,9 +22,9 @@
     <RepositoryUrl>https://github.com/Votskwani/Kuwantima</RepositoryUrl>
     <PackageTags>avalonia;ui;theme;glass;design-system;datagrid</PackageTags>
     <!-- Lockstep with Kuwantima.csproj's <Version> — see CLAUDE.md's Version Management section. -->
-    <PackageReleaseNotes>v1.10.0 - No changes to this package. Lockstep version bump only.
+    <PackageReleaseNotes>v1.11.0 - Avalonia dependency bump 12.1.4 to 12.1.6. No styling changes to this package.
 
-Kuwantima (the core package) gained DatePicker and TimePicker in this release - see its release notes. Kuwantima.DataGrid's content is identical to v1.9.0; it is re-published under the shared number because both packages are versioned in lockstep. See CLAUDE.md's Version Management section for why.</PackageReleaseNotes>
+Kuwantima (the core package) gained seven icons in this release - see its release notes. Kuwantima.DataGrid's styling content is identical to v1.10.0; it is re-published under the shared number because both packages are versioned in lockstep. See CLAUDE.md's Version Management section for why.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
