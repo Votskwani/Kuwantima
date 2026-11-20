@@ -460,6 +460,30 @@ muted-at-rest/live-accent `Foreground`" as a single reusable piece, the same way
 bakes in the tile chrome for icon+label buttons. Not started — flagging the pattern, not designing
 the control yet.
 
+**DECIDED 2026-11-20 (Cole agreed): build it as a chrome-less `ToggleButton` variant in v1.12.0, after v1.11.0
+ships — not a new control.** Count stays 18; the New Variant Checklist applies. Shape: transparent, no border,
+hover wash, glyph muted at rest (`SystemControlForegroundBaseMediumBrush`) and accent when `:checked`; Cursor and
+disabled pins inherited from the base. The reciprocal glyph pair (Play ↔ Pause) stays a documented two-`PathIcon`
+recipe with `IsVisible` bound to the toggle's `IsChecked`, not a second geometry slot in the template — a
+zero-C# library has no clean property for one and the Tag-plus-Content trick is the cleverness a student reader
+should not meet. The pulse animation is phase two, after the static variant is measured. `Button.Kuwantima.Minimal`
+already IS the stateless icon-only button (the sandbox's Icon-Only row uses it); OdooDock's `WidgetZone`
+re-template is Minimal with a custom CornerRadius — point consumers at Minimal rather than adding a Button twin.
+
+**The one real finding, measured before designing (WCAG source-over compositing against this theme's actual
+values: region `#F3F3F3`/`#1C1C1C`, glass Black@5% / White@10%, hover `#33A0C0FF`/`#33D4DFFF`):** `#0078D4` as a
+bare glyph FAILS in Dark on the library's own surfaces — 3.76 on the region, **2.80 on glass, 1.64 under the
+hover wash on glass** — against even the 3:1 non-text bar. Light reads 4.08 / 3.66 / 3.39: above 3:1, under 4.5.
+OdooDock's hand-rolled accent glyphs (its own comment now counts the FOURTH recurrence, `PathIcon.AddonGlyph.live`)
+and this repo's own Containers sandbox page paint exactly that today. So the variant needs a new per-variant
+**accent-INK** role key: stock accent in Light, a light shade in Dark — `#A3D7FF` (`SystemAccentColorLight3`)
+measured 11.14 / 8.29 / 4.86 there — which is what Fluent itself does for hyperlinks in dark mode. It is an ink,
+not a fill, so it does not collide with the v1.3.0 ban on Light3 as a *fill* (that ban was about white text on
+it), but it must go into `Invariant_6` with the page / glass / hover backdrop chain and be measured per palette
+swatch the way the swatch test already does — a non-default live accent re-derives everything. Follow-on: fix
+the Containers page's accent-on-glass glyphs with the same key. Demo as a transport row (Record / Play / Pause /
+Stop) on the Toggles page.
+
 **DatePicker.Kuwantima under `HorizontalAlignment="Stretch"` (OdooDock, 2026-11-01, v1.10.0):** Fluent's base
 `DatePicker` ControlTheme sets `MinWidth` 296 / `MaxWidth` 456 on the *control* (not just on its inner Button),
 and `KuwantimaDatePicker.axaml`'s replacement template carries both through via `TemplateBinding`. So in a form
