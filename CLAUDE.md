@@ -372,10 +372,13 @@ solid blocking surface, not to chase the AA floor. Full checklist done: both the
 resource catalog entry, README table entry, `Invariant_6` fixture, sandbox demo (Feedback page,
 "Show Blocking Overlay").
 
-**Not yet done, and it is a `Tunatya`-repo change, not a Kuwantima one:** point `Tunatya/App.axaml`'s
-`Application.Resources` merge at the new Kuwantima keys and delete
-`Tunatya.DevTools/Styles/TunatyaOverlayResources.axaml` — the stopgap file's only reason to exist is
-this gap, and the gap is now closed.
+**Tunatya-side wiring — DONE, verified 2026-11-20.** `Tunatya/Tunatya.DeveTools.Administrator/Views/`
+`OnboardingView.axaml` binds `KuwantimaScrimBackground` / `KuwantimaScrimForeground` directly, supplied by
+the one Kuwantima `StyleInclude` in that project's `App.axaml`, and `TunatyaOverlayResources.axaml` no
+longer exists anywhere in the Tunatya tree (grep + find against the repo, not the migration doc). This
+paragraph read "not yet done" from 2026-09-25 to 2026-11-20 — the work landed in the Tunatya repo and
+nothing here was told. A cross-repo "pending" note is a claim about *another* repo's state and goes stale
+silently; check that repo before acting on one.
 
 - Migration plan (historical, values superseded by the shipped resource above): `Tunatya/NAVOTI-TO-KUWANTIMA.md`
 
