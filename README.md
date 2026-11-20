@@ -195,20 +195,25 @@ Override them yourself only if you also re-check contrast against the background
 
 ## Icons
 
-The same `StyleInclude` brings in 15 icon geometries. They are ordinary `StreamGeometry` resources,
+The same `StyleInclude` brings in 22 icon geometries. They are ordinary `StreamGeometry` resources,
 so any control that takes a `Geometry` can use one:
 
 ```xml
 <PathIcon Data="{StaticResource Icon.Home}" Width="18" Height="18"/>
 ```
 
-| Key | Key | Key |
-|---|---|---|
-| `Icon.Home` | `Icon.Search` | `Icon.Refresh` |
-| `Icon.Gear` | `Icon.Clear.Circle` | `Icon.Copy` |
-| `Icon.Sliders` | `Icon.Layers` | `Icon.Sun` |
-| `Icon.Expand` | `Icon.Map` | `Icon.Moon.ThirdEye.Smiling` |
-| `Icon.Collapse` | `Icon.Add` | `Icon.Grid` |
+| Key | Key | Key | Key |
+|---|---|---|---|
+| `Icon.Home` | `Icon.Search` | `Icon.Refresh` | `Icon.Record` |
+| `Icon.Gear` | `Icon.Clear.Circle` | `Icon.Copy` | `Icon.Play` |
+| `Icon.Sliders` | `Icon.Layers` | `Icon.Sun` | `Icon.Pause` |
+| `Icon.Expand` | `Icon.Map` | `Icon.Moon.ThirdEye.Smiling` | `Icon.Stop` |
+| `Icon.Collapse` | `Icon.Add` | `Icon.Grid` | `Icon.Power` |
+| `Icon.Receipt` | `Icon.Dollar` | | |
+
+The right-hand column is the transport family plus Power: solid shapes of matching visual weight,
+meant to sit together in one toolbar row. `Icon.Record` is the plain dot so it still reads when a
+consumer pulses its opacity as a "something is running in the background" indicator.
 
 A key that does not exist renders **nothing** rather than failing loudly, so check a blank icon
 against this table before looking anywhere else.
@@ -220,7 +225,8 @@ credit is a condition of both licenses:
 
 - `Icon.Home`, `Icon.Gear`, `Icon.Sliders`, `Icon.Expand`, `Icon.Collapse`, `Icon.Search`,
   `Icon.Clear.Circle`, `Icon.Layers`, `Icon.Refresh`, `Icon.Map`, `Icon.Copy`, `Icon.Add`,
-  `Icon.Grid` — from
+  `Icon.Grid`, `Icon.Receipt`, `Icon.Dollar`, `Icon.Power`, `Icon.Record`, `Icon.Play`,
+  `Icon.Pause`, `Icon.Stop` — from
   [Material Design Icons](https://pictogrammers.com/library/mdi/) by Pictogrammers, licensed
   [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
 - `Icon.Sun` — from [Fluent System Icons](https://github.com/microsoft/fluentui-system-icons) by

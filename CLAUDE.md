@@ -410,9 +410,10 @@ Whatever direction is chosen, re-run `Invariant_6` (`InvariantTests.Contrast.cs`
 `Background`/`Fill` setter — the palette trigger currently has no contrast obligation since nothing
 reads on top of its fixed fill except the three literal dot colors, but a redesign could change that.
 
-**Icon set gap found the same day: no media/recording glyphs.** OdooDock wanted an icon for a
+**Icon set gap found the same day: no media/recording glyphs. SHIPPED v1.11.0 (2026-11-20) as `Icon.Record`,
+`Icon.Play`, `Icon.Pause`, `Icon.Stop` — see "The icon set" below.** OdooDock wanted an icon for a
 "toggle navigation-event logging" debug button — something like a tape recorder / record dot / REC
-glyph — and `KuwantimaStreamIcons.axaml` has none (current 15: `Add`, `Clear.Circle`, `Collapse`,
+glyph — and `KuwantimaStreamIcons.axaml` had none (then 15: `Add`, `Clear.Circle`, `Collapse`,
 `Copy`, `Expand`, `Gear`, `Grid`, `Home`, `Layers`, `Map`, `Moon.ThirdEye.Smiling`, `Refresh`,
 `Search`, `Sliders`, `Sun`). Settled for `Icon.Map` as the closest available semantic fit
 ("navigation" logging ≈ a map), not a real substitute. Worth a look next time this file gets
@@ -466,13 +467,16 @@ instance with `MaxWidth="Infinity"`. Open question for the style: should `DatePi
 Kuwantima inputs, or is the vendor cap a deliberate "a date field shouldn't be a mile wide" choice worth keeping?
 Not changed here; the Sandbox's Inputs page column is narrow enough that it never shows.
 
-**No power/toggle/status glyph in the icon set (OdooDock, 2026-11-01):** OdooDock's new "Subscription Status"
-Actions Menu entry (activate / inactivate a subscription) needed an on/off or status icon and the 13 `Icon.*`
-keys offer nothing closer than `Icon.Refresh`, which is what it uses as a placeholder. Alongside the
+**No power/toggle/status glyph in the icon set (OdooDock, 2026-11-01). SHIPPED v1.11.0 as `Icon.Power`, with the
+transport set covering pause/play/stop.** OdooDock's new "Subscription Status"
+Actions Menu entry (activate / inactivate a subscription) needed an on/off or status icon and the 15 `Icon.*`
+keys then shipping offered nothing closer than `Icon.Refresh`, which is what it used as a placeholder. Alongside the
 stop/close gap this is the second time a nav entry has had to borrow an unrelated glyph; a small
 status/power set (power, pause, play, stop) would cover both.
 
-**No billing / money / document glyph in the icon set (OdooDock, 2026-11-20).** OdooDock's new "Billing" Actions-Menu entry
+**No billing / money / document glyph in the icon set (OdooDock, 2026-11-20). SHIPPED the same day in v1.11.0 as
+`Icon.Receipt` and `Icon.Dollar` — OdooDock's `// TODO Kuwantima: Icon.Receipt` can be switched once the package is
+consumed.** OdooDock's new "Billing" Actions-Menu entry
 (Hub Phase 2: month-end run preview, exception list, run history) needed an icon and the set has nothing that says invoice,
 receipt, ledger or currency; it ships with `Icon.Grid` as a placeholder (the only unused glyph that reads as "a table of
 rows"). Request: an **`Icon.Receipt`** (a receipt / invoice sheet — a tall rounded rectangle with two or three short text
@@ -481,6 +485,38 @@ companion for the Widget Area tile's "charge" zone. OdooDock carries a `// TODO 
 `NavPage` line and switches the moment the glyph ships (Cole, 2026-11-20: "suggest a more appropriate icon to Kuwantima with
 note to change when/if it gets done"). Same request shape as the power/toggle one above: a deliberate small addition to the
 icon family, not a one-off.
+
+## The icon set — 22 keys as of v1.11.0 (2026-11-20)
+
+`KuwantimaStreamIcons.axaml` is a `ResourceDictionary` of `StreamGeometry`, merged into the theme by
+`ResourceInclude`. It is **not a control** (see the control-count rule in the New Control Checklist) and
+its count is restated in exactly one current-state place: README's "N icon geometries" line. The theme
+header's VERSION HISTORY also quotes icon counts, but those are frozen historical bullets, never edited.
+
+**v1.11.0 added seven at once, as a set, closing all three OdooDock requests above**: `Icon.Receipt`
+(MDI `receipt-text` — the receipt sheet with text lines and zig-zag edges OdooDock described) and
+`Icon.Dollar` (MDI `currency-usd`) for billing; `Icon.Power` (MDI `power`) for status; and the transport
+family `Icon.Record`, `Icon.Play`, `Icon.Pause`, `Icon.Stop` (MDI `record`/`play`/`pause`/`stop`). The four
+transport glyphs are deliberately all solid shapes of matching visual weight so they sit evenly in one
+toolbar row; `record` (the plain dot) was chosen over `record-circle` because its first consumer wants to
+pulse it as a "background recorder is running" indicator, and a solid dot reads at any opacity. Every
+path was fetched from `Templarian/MaterialDesign` `svg/*.svg` the same day and pasted verbatim — the
+`Icon.Grid` precedent. Attribution lives in README's "Icon Attribution" list and is a licence condition.
+
+**Adding an icon**: geometry in `KuwantimaStreamIcons.axaml` → a preview row in BOTH the Light and Dark
+columns of that file's `Design.PreviewWith` → README's count, key table and attribution list → the
+Containers sandbox page if it is worth showing → the VERSION HISTORY entry. The first three are
+**enforced** by `InvariantTests.Icons.cs` (`Published_icon_set_matches_the_icons_that_exist` reads the
+keys from the parsed dictionary and checks README's count, table and attribution, and that the preview
+demonstrates every key on both sides — the preview had silently drifted to 12 of 15 before this test
+existed; `Every_icon_geometry_parses_and_resolves_under_both_variants` runs `StreamGeometry.Parse` on
+each path, which is the check a copy-paste from an SVG actually needs, then resolves each key through
+the live theme under both variants).
+
+**Avalonia `StreamGeometry` fills EvenOdd by default**, which is why MDI's "cut-out" glyphs (Gear's hub,
+Clear.Circle's X, Receipt's text lines, Pause's gap) render correctly without any `F1` prefix: inner
+figures become holes regardless of winding. Unclosed figures (`Icon.Grid`, `Icon.Power`'s bar) fill as
+if closed. Don't "fix" either.
 
 ## A verification trap this repo has set four times
 Each of these shipped (or nearly), and each survived a check that *felt* rigorous:
@@ -1051,6 +1087,11 @@ suite covers instead:
   parse markup at runtime. Completes the trio: `Invariant_5` asks *does this key resolve against the
   whole theme*, `Invariant_6` asks *is the result readable*, `Invariant_7` asks *can this file find
   it on its own*. The third question is the one that went unasked from v1.0.0 to 2026-09-23.
+
+- **Tier 2 `InvariantTests.Icons.cs`** — the icon-set contract: README's icon count, key table and
+  attribution list match the parsed `KuwantimaStreamIcons.axaml`, the file's own preview demonstrates
+  every key under both themes, and every path parses as a `StreamGeometry` and resolves through the
+  live theme. Added v1.11.0 — see "The icon set" below.
 
 **The linked sources are hidden from Solution Explorer on purpose (`Visible="false"`).** They are
 `EmbeddedResource` items pointing at `..\Kuwantima\Styles\*.axaml`, and MSBuild gives each a `Link`,

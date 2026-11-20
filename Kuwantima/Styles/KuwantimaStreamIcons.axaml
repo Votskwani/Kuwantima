@@ -93,6 +93,56 @@
 									<TextBlock Text="Grid" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource SystemBaseHighColor}"/>
 								</StackPanel>
 
+								<StackPanel Orientation="Horizontal" Spacing="10">
+									<PathIcon Data="{StaticResource Icon.Refresh}" Foreground="{DynamicResource SystemFillColorAttentionBrush}"/>
+									<TextBlock Text="Refresh" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource SystemBaseHighColor}"/>
+								</StackPanel>
+
+								<StackPanel Orientation="Horizontal" Spacing="10">
+									<PathIcon Data="{StaticResource Icon.Map}" Foreground="{DynamicResource SystemFillColorAttentionBrush}"/>
+									<TextBlock Text="Map" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource SystemBaseHighColor}"/>
+								</StackPanel>
+
+								<StackPanel Orientation="Horizontal" Spacing="10">
+									<PathIcon Data="{StaticResource Icon.Copy}" Foreground="{DynamicResource SystemFillColorAttentionBrush}"/>
+									<TextBlock Text="Copy" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource SystemBaseHighColor}"/>
+								</StackPanel>
+
+								<StackPanel Orientation="Horizontal" Spacing="10">
+									<PathIcon Data="{StaticResource Icon.Receipt}" Foreground="{DynamicResource SystemFillColorAttentionBrush}"/>
+									<TextBlock Text="Receipt" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource SystemBaseHighColor}"/>
+								</StackPanel>
+
+								<StackPanel Orientation="Horizontal" Spacing="10">
+									<PathIcon Data="{StaticResource Icon.Dollar}" Foreground="{DynamicResource SystemFillColorAttentionBrush}"/>
+									<TextBlock Text="Dollar" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource SystemBaseHighColor}"/>
+								</StackPanel>
+
+								<StackPanel Orientation="Horizontal" Spacing="10">
+									<PathIcon Data="{StaticResource Icon.Power}" Foreground="{DynamicResource SystemFillColorAttentionBrush}"/>
+									<TextBlock Text="Power" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource SystemBaseHighColor}"/>
+								</StackPanel>
+
+								<StackPanel Orientation="Horizontal" Spacing="10">
+									<PathIcon Data="{StaticResource Icon.Record}" Foreground="{DynamicResource SystemFillColorAttentionBrush}"/>
+									<TextBlock Text="Record" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource SystemBaseHighColor}"/>
+								</StackPanel>
+
+								<StackPanel Orientation="Horizontal" Spacing="10">
+									<PathIcon Data="{StaticResource Icon.Play}" Foreground="{DynamicResource SystemFillColorAttentionBrush}"/>
+									<TextBlock Text="Play" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource SystemBaseHighColor}"/>
+								</StackPanel>
+
+								<StackPanel Orientation="Horizontal" Spacing="10">
+									<PathIcon Data="{StaticResource Icon.Pause}" Foreground="{DynamicResource SystemFillColorAttentionBrush}"/>
+									<TextBlock Text="Pause" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource SystemBaseHighColor}"/>
+								</StackPanel>
+
+								<StackPanel Orientation="Horizontal" Spacing="10">
+									<PathIcon Data="{StaticResource Icon.Stop}" Foreground="{DynamicResource SystemFillColorAttentionBrush}"/>
+									<TextBlock Text="Stop" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource SystemBaseHighColor}"/>
+								</StackPanel>
+
 							</StackPanel>
 						</Border>
 					</ThemeVariantScope>
@@ -163,6 +213,56 @@
 								<StackPanel Orientation="Horizontal" Spacing="10">
 									<PathIcon Data="{StaticResource Icon.Grid}" Foreground="{DynamicResource SystemFillColorAttentionBrush}"/>
 									<TextBlock Text="Grid" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource SystemBaseHighColor}"/>
+								</StackPanel>
+
+								<StackPanel Orientation="Horizontal" Spacing="10">
+									<PathIcon Data="{StaticResource Icon.Refresh}" Foreground="{DynamicResource SystemFillColorAttentionBrush}"/>
+									<TextBlock Text="Refresh" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource SystemBaseHighColor}"/>
+								</StackPanel>
+
+								<StackPanel Orientation="Horizontal" Spacing="10">
+									<PathIcon Data="{StaticResource Icon.Map}" Foreground="{DynamicResource SystemFillColorAttentionBrush}"/>
+									<TextBlock Text="Map" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource SystemBaseHighColor}"/>
+								</StackPanel>
+
+								<StackPanel Orientation="Horizontal" Spacing="10">
+									<PathIcon Data="{StaticResource Icon.Copy}" Foreground="{DynamicResource SystemFillColorAttentionBrush}"/>
+									<TextBlock Text="Copy" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource SystemBaseHighColor}"/>
+								</StackPanel>
+
+								<StackPanel Orientation="Horizontal" Spacing="10">
+									<PathIcon Data="{StaticResource Icon.Receipt}" Foreground="{DynamicResource SystemFillColorAttentionBrush}"/>
+									<TextBlock Text="Receipt" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource SystemBaseHighColor}"/>
+								</StackPanel>
+
+								<StackPanel Orientation="Horizontal" Spacing="10">
+									<PathIcon Data="{StaticResource Icon.Dollar}" Foreground="{DynamicResource SystemFillColorAttentionBrush}"/>
+									<TextBlock Text="Dollar" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource SystemBaseHighColor}"/>
+								</StackPanel>
+
+								<StackPanel Orientation="Horizontal" Spacing="10">
+									<PathIcon Data="{StaticResource Icon.Power}" Foreground="{DynamicResource SystemFillColorAttentionBrush}"/>
+									<TextBlock Text="Power" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource SystemBaseHighColor}"/>
+								</StackPanel>
+
+								<StackPanel Orientation="Horizontal" Spacing="10">
+									<PathIcon Data="{StaticResource Icon.Record}" Foreground="{DynamicResource SystemFillColorAttentionBrush}"/>
+									<TextBlock Text="Record" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource SystemBaseHighColor}"/>
+								</StackPanel>
+
+								<StackPanel Orientation="Horizontal" Spacing="10">
+									<PathIcon Data="{StaticResource Icon.Play}" Foreground="{DynamicResource SystemFillColorAttentionBrush}"/>
+									<TextBlock Text="Play" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource SystemBaseHighColor}"/>
+								</StackPanel>
+
+								<StackPanel Orientation="Horizontal" Spacing="10">
+									<PathIcon Data="{StaticResource Icon.Pause}" Foreground="{DynamicResource SystemFillColorAttentionBrush}"/>
+									<TextBlock Text="Pause" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource SystemBaseHighColor}"/>
+								</StackPanel>
+
+								<StackPanel Orientation="Horizontal" Spacing="10">
+									<PathIcon Data="{StaticResource Icon.Stop}" Foreground="{DynamicResource SystemFillColorAttentionBrush}"/>
+									<TextBlock Text="Stop" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource SystemBaseHighColor}"/>
 								</StackPanel>
 
 							</StackPanel>
@@ -239,5 +339,26 @@
 
 	<!-- Grid — added for the DataGrid sandbox nav entry (Kuwantima.DataGrid, v1.7.0) -->
 	<StreamGeometry x:Key="Icon.Grid">M3,11H11V3H3M3,21H11V13H3M13,21H21V13H13M13,3V11H21V3</StreamGeometry>
+
+	<!-- Billing — added for OdooDock's Billing menu entry (v1.11.0). Material Design Icons' receipt-text:
+	     a receipt sheet with three text lines and zig-zag top and bottom edges. -->
+	<StreamGeometry x:Key="Icon.Receipt">M3,22L4.5,20.5L6,22L7.5,20.5L9,22L10.5,20.5L12,22L13.5,20.5L15,22L16.5,20.5L18,22L19.5,20.5L21,22V2L19.5,3.5L18,2L16.5,3.5L15,2L13.5,3.5L12,2L10.5,3.5L9,2L7.5,3.5L6,2L4.5,3.5L3,2M18,9H6V7H18M18,13H6V11H18M18,17H6V15H18V17Z</StreamGeometry>
+
+	<!-- Material Design Icons' currency-usd -->
+	<StreamGeometry x:Key="Icon.Dollar">M7,15H9C9,16.08 10.37,17 12,17C13.63,17 15,16.08 15,15C15,13.9 13.96,13.5 11.76,12.97C9.64,12.44 7,11.78 7,9C7,7.21 8.47,5.69 10.5,5.18V3H13.5V5.18C15.53,5.69 17,7.21 17,9H15C15,7.92 13.63,7 12,7C10.37,7 9,7.92 9,9C9,10.1 10.04,10.5 12.24,11.03C14.36,11.56 17,12.22 17,15C17,16.79 15.53,18.31 13.5,18.82V21H10.5V18.82C8.47,18.31 7,16.79 7,15Z</StreamGeometry>
+
+	<!-- Status — Material Design Icons' power (v1.11.0). Requested by OdooDock for an activate /
+	     inactivate menu entry that had been borrowing Icon.Refresh. -->
+	<StreamGeometry x:Key="Icon.Power">M16.56,5.44L15.11,6.89C16.84,7.94 18,9.83 18,12A6,6 0 0,1 12,18A6,6 0 0,1 6,12C6,9.83 7.16,7.94 8.88,6.88L7.44,5.44C5.36,6.88 4,9.28 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12C20,9.28 18.64,6.88 16.56,5.44M13,3H11V13H13</StreamGeometry>
+
+	<!-- Transport — the usual media glyph family, added together as a set (v1.11.0), not one at a
+	     time: Material Design Icons' record, play, pause, stop. All four are solid shapes of matching
+	     visual weight so they sit evenly in one toolbar row. Record is the plain dot (the universal
+	     REC mark) rather than record-circle, because its first consumer wants to pulse it as a
+	     "background recorder is running" indicator, and a solid dot reads at any opacity. -->
+	<StreamGeometry x:Key="Icon.Record">M19,12C19,15.86 15.86,19 12,19C8.14,19 5,15.86 5,12C5,8.14 8.14,5 12,5C15.86,5 19,8.14 19,12Z</StreamGeometry>
+	<StreamGeometry x:Key="Icon.Play">M8,5.14V19.14L19,12.14L8,5.14Z</StreamGeometry>
+	<StreamGeometry x:Key="Icon.Pause">M14,19H18V5H14M6,19H10V5H6V19Z</StreamGeometry>
+	<StreamGeometry x:Key="Icon.Stop">M18,18H6V6H18V18Z</StreamGeometry>
 
 </ResourceDictionary>

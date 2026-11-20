@@ -104,6 +104,34 @@
                             <PathIcon Data="{StaticResource Icon.Copy}" Foreground="{DynamicResource SystemAccentColor}"/>
                             <TextBlock Text="Copy" FontSize="10" HorizontalAlignment="Center"/>
                         </StackPanel>
+                        <StackPanel Spacing="4" Margin="8" HorizontalAlignment="Center">
+                            <PathIcon Data="{StaticResource Icon.Receipt}" Foreground="{DynamicResource SystemAccentColor}"/>
+                            <TextBlock Text="Receipt" FontSize="10" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Spacing="4" Margin="8" HorizontalAlignment="Center">
+                            <PathIcon Data="{StaticResource Icon.Dollar}" Foreground="{DynamicResource SystemAccentColor}"/>
+                            <TextBlock Text="Dollar" FontSize="10" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Spacing="4" Margin="8" HorizontalAlignment="Center">
+                            <PathIcon Data="{StaticResource Icon.Power}" Foreground="{DynamicResource SystemAccentColor}"/>
+                            <TextBlock Text="Power" FontSize="10" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Spacing="4" Margin="8" HorizontalAlignment="Center">
+                            <PathIcon Data="{StaticResource Icon.Record}" Foreground="{DynamicResource KuwantimaWarningTextBrush}"/>
+                            <TextBlock Text="Record" FontSize="10" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Spacing="4" Margin="8" HorizontalAlignment="Center">
+                            <PathIcon Data="{StaticResource Icon.Play}" Foreground="{DynamicResource SystemFillColorSuccessBrush}"/>
+                            <TextBlock Text="Play" FontSize="10" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Spacing="4" Margin="8" HorizontalAlignment="Center">
+                            <PathIcon Data="{StaticResource Icon.Pause}" Foreground="{DynamicResource SystemFillColorCautionBrush}"/>
+                            <TextBlock Text="Pause" FontSize="10" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Spacing="4" Margin="8" HorizontalAlignment="Center">
+                            <PathIcon Data="{StaticResource Icon.Stop}" Foreground="{DynamicResource SystemAccentColor}"/>
+                            <TextBlock Text="Stop" FontSize="10" HorizontalAlignment="Center"/>
+                        </StackPanel>
                     </WrapPanel>
                 </Border>
             </StackPanel>
