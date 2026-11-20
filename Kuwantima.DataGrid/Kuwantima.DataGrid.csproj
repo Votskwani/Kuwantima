@@ -35,12 +35,12 @@ Kuwantima (the core package) gained DatePicker and TimePicker in this release - 
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="12.1.4" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.4" />
+    <PackageReference Include="Avalonia" Version="12.1.6" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.6" />
     <PackageReference Include="Avalonia.Controls.DataGrid" Version="12.1.2" />
 
     <!-- Previewer only, same reasoning as Kuwantima.csproj. Kept out of the .nupkg. -->
-    <PackageReference Include="Avalonia.Desktop" Version="12.1.4" PrivateAssets="all" />
+    <PackageReference Include="Avalonia.Desktop" Version="12.1.6" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>

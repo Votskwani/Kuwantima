@@ -71,14 +71,14 @@ Kuwantima.DataGrid ships again under the same number with identical content - bo
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="12.1.4" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.4" />
+    <PackageReference Include="Avalonia" Version="12.1.6" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.6" />
 
     <!-- Previewer only. The designer host needs a windowing backend to render into; without it
          there is no platform and the preview cannot start. PrivateAssets="all" keeps it out of the
          .nupkg entirely — a consumer picking up a desktop backend from a styles package would be a
          real dependency regression, so the pack output is checked (see CLAUDE.md). -->
-    <PackageReference Include="Avalonia.Desktop" Version="12.1.4" PrivateAssets="all" />
+    <PackageReference Include="Avalonia.Desktop" Version="12.1.6" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>
