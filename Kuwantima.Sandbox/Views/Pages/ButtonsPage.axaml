@@ -97,6 +97,34 @@
                                     ToolTip.Tip="Add">
                                 <PathIcon Data="{StaticResource Icon.Add}" Width="16" Height="16"/>
                             </Button>
+                            <Button Classes="Kuwantima Minimal" Margin="0,0,8,8"
+                                    ToolTip.Tip="Receipt">
+                                <PathIcon Data="{StaticResource Icon.Receipt}" Width="16" Height="16"/>
+                            </Button>
+                            <Button Classes="Kuwantima Minimal" Margin="0,0,8,8"
+                                    ToolTip.Tip="Dollar">
+                                <PathIcon Data="{StaticResource Icon.Dollar}" Width="16" Height="16"/>
+                            </Button>
+                            <Button Classes="Kuwantima Minimal" Margin="0,0,8,8"
+                                    ToolTip.Tip="Power">
+                                <PathIcon Data="{StaticResource Icon.Power}" Width="16" Height="16"/>
+                            </Button>
+                            <Button Classes="Kuwantima Minimal" Margin="0,0,8,8"
+                                    ToolTip.Tip="Record">
+                                <PathIcon Data="{StaticResource Icon.Record}" Width="16" Height="16"/>
+                            </Button>
+                            <Button Classes="Kuwantima Minimal" Margin="0,0,8,8"
+                                    ToolTip.Tip="Play">
+                                <PathIcon Data="{StaticResource Icon.Play}" Width="16" Height="16"/>
+                            </Button>
+                            <Button Classes="Kuwantima Minimal" Margin="0,0,8,8"
+                                    ToolTip.Tip="Pause">
+                                <PathIcon Data="{StaticResource Icon.Pause}" Width="16" Height="16"/>
+                            </Button>
+                            <Button Classes="Kuwantima Minimal" Margin="0,0,8,8"
+                                    ToolTip.Tip="Stop">
+                                <PathIcon Data="{StaticResource Icon.Stop}" Width="16" Height="16"/>
+                            </Button>
                         </WrapPanel>
                     </StackPanel>
                 </ScrollViewer>
